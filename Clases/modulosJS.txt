@@ -1,0 +1,45 @@
+Para definir archivos:
+
+var SG6671 =  SG6671 || {};
+
+call -> llama a la funcion pero aplica sobre "(parametro)"
+EJ desde Rectangulo:
+
+Forma.call(this) -> Aplica las funciones de Forma sobre Rectangulo
+
+Shaders: programas que escribimos para la GPU
+
+------
+
+Triangulo:
+
+->posicion a cada vertice
+->color a cada vertice (en RGB)
+
+Canvas:
+			1
+			|
+			|
+			|
+-1 -------------------- 1
+			|
+			|
+			|
+			-1
+
+Z tambien va de -1 (profundo) y 1 (saliente)
+
+Dentro del canvas puedo setear una porcion que se va a renderizar con el viewport
+
+IMPORTANTE:
+
+//ULTIMO PARAMETRO = cantidad de vertices
+gl.drawArrays(gl.TRIANGLES, 0,6);
+
+DISTINTOS DIBUJOS:
+POINTS -> dibuja puntos
+LINES -> une de a dos el tercero no lo une
+TRIANGULES -> dibuja triangulos
+LINE_STRIP -> no une el ultimo vertice con el primero
+LINE_LOOP -> si une lo de arriba
+

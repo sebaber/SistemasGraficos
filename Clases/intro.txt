@@ -1,0 +1,33 @@
+Ayudante:
+-> Federico Beiro
+-> Javier
+
+Herramientas:
+-> Pagina de la materia: www.sg6671.com.ar
+- Material de la practica
+- Bibliografia
+*Shader -> OpenGL shaders
+- Mails
+- info@sg6671.com.ar -> para consultas practicas: enviar nombre, padron y email
+
+Grupo:
+-> alumnos6671fiuba@googlegroups.com.ar: subscribirse
+
+Parcial:
+-> 2* quincena Octubre (2 recus)
+-> Algunos temas de teoria
+-> Practica
+
+Temas de octubre a nov a coloquio
+
+TP (2 partes):
+-1° Parte:
+-> Modelado (con o sin animacion)
+
+-2° Parte:
+-> Color e iluminacion
+
+- Usar:
+* WebGL: se corresponde a OpenGL 2ES
+
+Para WebGL: learning webgl en la pagina
