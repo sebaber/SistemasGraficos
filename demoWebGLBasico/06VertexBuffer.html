@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+
+<head>
+  <style>
+    body{ background-color: grey; }
+    canvas{ background-color: midnightblue; }
+    textarea{ background-color: black; foreground-color: white;}
+  </style>
+
+  <script type="text/javascript" src="gl-matrix.js"></script>
+
+  <!--
+  Vertex shader
+
+  El vertex shader define la posición y forma de cada vertice de cada polígono.
+  --> 
+  <script id="shader-vs" type="x-shader/x-vertex">
+    // Los atributos son características propias de cada vertice.
+    attribute vec3 aVertexPosition;
+    attribute vec4 aVertexColor;
+
+    // Los uniforms son características propias de una etapa de dibujado completa.
+    // Son comunes a todos los vertices involucrados en el dibujado.
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    // Los varying son propiedades que toman valor para cada fragmento a partir
+    // de interpolar linealmente entre los valores que se les asigna en cada 
+    // vértice del polígono al cual pertenecen.
+    varying highp vec4 vColor;    
+  
+    void main(void) {
+      // gl_Position es una variable "built-in" de GLSL que es usada para 
+      // almacenar la posición resultante del fragmento.
+      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+      vColor = aVertexColor;
+    }
+  </script>
+
+  <!--
+  Fragment shader
+ 
+  Cada pixel en un polígono se llama fragmento. El fragment shader se encarga de
+  establecer el color de cada pixel. En este caso, asignamos el color blanco a 
+  cada pixel.
+  -->
+  <script id="shader-fs" type="x-shader/x-fragment">
+    varying highp vec4 vColor;
+
+    void main(void) {
+      // gl_FragColor es una variable "built-in" de GLSL que es usada para 
+      // almacenar el color resultante del fragmento.
+      gl_FragColor = vColor;
+    }
+  </script>
+
+  <script type="text/javascript">
+  var canvas;
+
+  var mvMatrix = mat4.create();
+  var pMatrix = mat4.create();
+
+  // Variable global para el contexto GL
+  var gl;
+
+  // SHADERS FUNCTION
+  function getShader(gl, id) {
+    var shaderScript, src, currentChild, shader;
+    
+    // Obtenemos el elemento <script> que contiene el código fuente del shader.
+    shaderScript = document.getElementById(id);
+    if (!shaderScript) {
+      return null;
+    }
+    
+    // Extraemos el contenido de texto del <script>.
+    src = "";
+    currentChild = shaderScript.firstChild;
+    while(currentChild) {
+      if (currentChild.nodeType == currentChild.TEXT_NODE) {
+        src += currentChild.textContent;
+      }
+      
+      currentChild = currentChild.nextSibling;
+    }
+
+    // Creamos un shader WebGL según el atributo type del <script>.
+    if (shaderScript.type == "x-shader/x-fragment") {
+      shader = gl.createShader(gl.FRAGMENT_SHADER);
+    } else if (shaderScript.type == "x-shader/x-vertex") {
+      shader = gl.createShader(gl.VERTEX_SHADER);
+    } else {
+      return null;
+    }
+
+    // Le decimos a WebGL que vamos a usar el texto como fuente para el shader.
+    gl.shaderSource(shader, src);
+    
+    // Compilamos el shader.
+    gl.compileShader(shader);  
+      
+    // Chequeamos y reportamos si hubo algún error.
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {  
+      alert("An error occurred compiling the shaders: " + 
+            gl.getShaderInfoLog(shader));  
+      return null;  
+    }
+      
+    return shader;
+  }
+
+
+  function initShaders() {
+    // Obtenemos los shaders ya compilados
+    var fragmentShader = getShader(gl, "shader-fs");
+    var vertexShader = getShader(gl, "shader-vs");
+    
+    // Creamos un programa de shaders de WebGL.
+    shaderProgram = gl.createProgram();
+
+    // Asociamos cada shader compilado al programa.
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+
+    // Linkeamos los shaders para generar el programa ejecutable.
+    gl.linkProgram(shaderProgram);
+    
+    // Chequeamos y reportamos si hubo algún error.
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      alert("Unable to initialize the shader program: " + 
+            gl.getProgramInfoLog(shaderProgram));
+      return null;
+    }
+  
+    // Le decimos a WebGL que de aquí en adelante use el programa generado.
+    gl.useProgram(shaderProgram);
+    
+    // Tomamos referencias Javascript para acceder a las variables propias 
+    // del shader.
+    shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, 
+                                                                 "aVertexPosition");
+    gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+    shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, 
+                                                              "aVertexColor");
+    gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+
+    shaderProgram.pUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+    shaderProgram.mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
+    return shaderProgram;
+  }
+
+  function initWebGL(canvas) {
+    gl = null;
+    
+    try {
+      // Intentamos primero con el contexto estandar. Si falla, probamos con el
+      // experimental.
+      gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    } catch(e) {}
+    
+    // Si no tenemos un contexto, abortamos.
+    if (!gl) {
+      alert("Unable to initialize WebGL. Your browser may not support it.");
+      gl = null;
+    }
+    
+    return gl;
+  }
+
+
+  // VERTEX BUFFERS
+  function initBuffers() {
+    // Definimos un array de Javascript con las posiciones de los vertices.
+    var vertices = [
+      // Cara frontal
+      -1.0, -1.0,  1.0,
+       1.0, -1.0,  1.0,
+       1.0,  1.0,  1.0,
+      -1.0,  1.0,  1.0,
+      
+      // Cara de atrás
+      -1.0, -1.0, -1.0,
+      -1.0,  1.0, -1.0,
+       1.0,  1.0, -1.0,
+       1.0, -1.0, -1.0,
+      
+      // Cara de arriba
+      -1.0,  1.0, -1.0,
+      -1.0,  1.0,  1.0,
+       1.0,  1.0,  1.0,
+       1.0,  1.0, -1.0,
+      
+      // Cara de abajo
+      -1.0, -1.0, -1.0,
+       1.0, -1.0, -1.0,
+       1.0, -1.0,  1.0,
+      -1.0, -1.0,  1.0,
+      
+      // Cara de la derecha
+       1.0, -1.0, -1.0,
+       1.0,  1.0, -1.0,
+       1.0,  1.0,  1.0,
+       1.0, -1.0,  1.0,
+      
+      // Cara de la izquierda
+      -1.0, -1.0, -1.0,
+      -1.0, -1.0,  1.0,
+      -1.0,  1.0,  1.0,
+      -1.0,  1.0, -1.0
+    ];
+
+    // Creamos un buffer de vertices para WebGL.
+    cubeVertexBuffer = gl.createBuffer();
+
+    // Le decimos a WebGL que las siguientes funciones se relacionan con ese buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexBuffer);
+
+    // Cargamos datos de posiciones en el buffer.
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+    // Definimos los colores de cada cara en un nuevo array Javascript.
+    var colors = [
+      [1.0,  1.0,  1.0,  1.0],    // Cara frontal: blanco
+      [1.0,  0.0,  0.0,  1.0],    // Cara de atrás: rojo
+      [0.0,  1.0,  0.0,  1.0],    // Cara de arriba: verde
+      [0.0,  0.0,  1.0,  1.0],    // Cara de abajo: azul
+      [1.0,  1.0,  0.0,  1.0],    // Cara de la derecha: amarillo
+      [1.0,  0.0,  1.0,  1.0]     // Cara de la izquierda: violeta
+    ];
+  
+    // Replicamos los colores de cada cara cuatro veces.
+    var generatedColors = [];
+    for (var j=0; j<colors.length; j++) {
+      var c = colors[j];
+      for (var i=0; i<4; i++) {
+        generatedColors = generatedColors.concat(c);
+      }
+    }
+
+    // Cargamos los datos de los colores en un nuevo buffer igual que con las posiciones
+    cubeVertexColorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(generatedColors), gl.STATIC_DRAW);
+
+    // Definimos con que indices de los buffers definidos antes, se debe dibujar
+    // cada vertice de cada triangulo. 
+    // Cada cara del cubo se compone de dos triángulos.
+    var cubeVertexIndices = [
+      0,  1,  2,      0,  2,  3,    // adelante
+      4,  5,  6,      4,  6,  7,    // atrás
+      8,  9,  10,     8,  10, 11,   // arriba
+      12, 13, 14,     12, 14, 15,   // abajo
+      16, 17, 18,     16, 18, 19,   // derecha
+      20, 21, 22,     20, 22, 23    // izquierda
+    ];
+  
+    // Definimos y cargamos los datos en el buffer WebGL correspondiente.
+    // Notar que esta vez se usa ELEMENT_ARRAY_BUFFER en lugar de ARRAY_BUFFER.
+    // Notar también que se usa un array de enteros en lugar de floats.
+    cubeVertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), 
+                  gl.STATIC_DRAW);
+  }
+
+  // DRAW 
+  var t = 0.0;
+  function drawScene() {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  
+    // Preparamos una matriz de perspectiva.
+    mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
+    gl.uniformMatrix4fv(gl.shaderProgram.pUniform, false, pMatrix);
+
+    // Preparamos una matriz de modelo+vista.
+    mat4.identity(mvMatrix);
+    mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -5.0]);
+    mat4.rotate(mvMatrix, mvMatrix, t, [1.0, 0.0, 1.0]);
+    mat4.rotate(mvMatrix, mvMatrix, t/5.0, [0.0, 1.0, 0.0]);
+
+    gl.uniformMatrix4fv(gl.shaderProgram.mvUniform, false, mvMatrix);
+    
+    // Asociamos un atributo del shader con cada uno de los buffers que creamos.
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexBuffer);
+    gl.vertexAttribPointer(gl.shaderProgram.vertexPositionAttribute, 3, gl.FLOAT, 
+                           false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexColorBuffer);
+    gl.vertexAttribPointer(gl.shaderProgram.vertexColorAttribute, 4, gl.FLOAT, 
+                           false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+
+    // Dibujamos.
+    gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
+    t = t + 0.01;
+  }
+
+  // INIT
+  function start() {
+    var canvas = document.getElementById("glcanvas");
+
+    // Inicializamos el contexto GL
+    gl = initWebGL(canvas);      
+    if (!gl)
+      return;
+
+    // Compilamos y linkeamos los shaders
+    gl.shaderProgram = initShaders();
+    if (!gl.shaderProgram)
+      return;
+    
+    // Color de fondo para la escena 
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+    gl.enable(gl.DEPTH_TEST);                              
+    gl.depthFunc(gl.LEQUAL); 
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+
+    initBuffers();
+    setInterval(drawScene, 10);
+  }
+  </script>
+
+</head>
+
+<body onload="start()">
+  <center>
+      <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
+      <h2>WebGL - Vertex & Index buffers</h2>
+      <canvas id="glcanvas" width="640" height="480">
+        Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
+      </canvas>
+  </center>
+</body>
+</html>

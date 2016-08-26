@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Demo glMatrix</title>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,500' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+
+
+<body>
+
+
+
+<div id="contenido">
+
+  
+    <div id="panel3d">
+
+    </div>
+
+
+</div>
+	
+	<table id="form">
+		<tr>
+			<td colspan="4"> Matríz de Modelado</td>
+		</tr>		
+		<tr>
+			<td> <input id="m11" value="1"/></td>
+			<td> <input id="m12" value="0"/></td>
+			<td> <input id="m13" value="0"/></td>
+			<td> <input id="m14" value="0"/></td>
+		</tr>
+		
+		<tr>
+			<td> <input id="m21" value="0"/></td>
+			<td> <input id="m22" value="1"/></td>
+			<td> <input id="m23" value="0"/></td>
+			<td> <input id="m24" value="0"/></td>
+		</tr>
+		
+		<tr>
+			<td> <input id="m31" value="0"/></td>
+			<td> <input id="m32" value="0"/></td>
+			<td> <input id="m33" value="1"/></td>
+			<td> <input id="m34" value="0"/></td>		
+		</tr>
+		
+		<tr>
+			<td> <input id="m41" value="0"/></td>
+			<td> <input id="m42" value="0"/></td>
+			<td> <input id="m43" value="0"/></td>
+			<td> <input id="m44" value="1"/></td>
+		</tr>		
+		<tr>
+			<td colspan="4"><button onclick="aplicar();">aplicar</button> &nbsp; <button onclick="identidad();">identidad</button></td>
+		</tr>
+	</table>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/gl-matrix-min.js"></script>
+
+<script src="js/three.min.r71.js" type="text/javascript"></script>
+<script src="js/controls/OrbitControls.js" type="text/javascript"></script>
+<script src="js/loaders/ColladaLoader.js"></script>
+
+<script src="js/stats.min.js" type="text/javascript"></script>
+<script src="js/dat.gui.min.js" type="text/javascript"></script>
+
+
+
+<script>
+
+
+var escena;
+
+var tiempo=0;
+var stats;
+var controls;
+var cameraManual;
+var renderer;
+
+
+
+
+function initThreeJS() {
+
+
+    var cont=$("#contenido");
+
+
+    var container = document.getElementById('panel3d');
+
+    escena = new THREE.Scene();
+
+
+
+    cameraManual = new THREE.PerspectiveCamera(fov = 45, cont.width()/ cont.height(), 1, 10000);
+    cameraManual.position.x = 10;
+    cameraManual.position.y = 10;
+    cameraManual.position.z = 10;
+    cameraManual.far = 10000;
+
+
+    controls = new THREE.OrbitControls(cameraManual, container);
+    controls.target.y = 2;
+    controls.update();
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(cont.width(), cont.height());
+    renderer.setClearColor(0xaaaaaa, 1);
+
+    renderer.shadowMapEnabled = true;
+    renderer.shadowMapSoft = true;
+
+    renderer.shadowMapBias = 0.1;
+    renderer.shadowMapWidth = 2048;
+    renderer.shadowMapHeight = 2048;
+
+    $( window ).resize(function() {
+
+        renderer.setSize(cont.width(), cont.height());
+
+
+    });
+
+    container.appendChild(renderer.domElement);
+
+    var gridHelper = new THREE.GridHelper( 50, 5 );
+   // gridHelper.setColors(new THREE.Color(200,200,200,0),new THREE.Color(0,0,0))
+    escena.add( gridHelper );
+
+
+   }
+
+
+function createAxisHelper(size){
+
+    var w=size*0.05;
+    var x = new THREE.BoxGeometry( size, w, w );
+    var y = new THREE.BoxGeometry( w, size, w);
+    var z = new THREE.BoxGeometry( w, w, size);
+
+    var red = new THREE.MeshBasicMaterial( {color: 0xf00f00} );
+    var green = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    var blue = new THREE.MeshBasicMaterial( {color: 0x0000ff} );
+
+    var axisX = new THREE.Mesh( x,red );
+    axisX.position.x=size/2;
+    var axisY = new THREE.Mesh( y,green );
+    axisY.position.y=size/2;
+    var axisZ = new THREE.Mesh( z,blue);
+    axisZ.position.z=size/2;
+
+    var axis=new THREE.Object3D();
+    axis.add(axisX);
+    axis.add(axisY);
+    axis.add(axisZ);
+
+    return axis;
+
+}
+
+function setupLights(){
+    dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight.color.setHSL(0.1, 1, 0.95);
+
+    dirLight.position.set(40,40, 40);
+    dirLight.position.multiplyScalar(1);
+
+    dirLight.castShadow = true;
+
+    dirLight.shadowMapWidth = 2048;
+    dirLight.shadowMapHeight = 2048;
+
+    var d = 60;
+
+    dirLight.shadowCameraLeft = -d;
+    dirLight.shadowCameraRight = d;
+    dirLight.shadowCameraTop = d;
+    dirLight.shadowCameraBottom = -d;
+
+    dirLight.shadowCameraNear = 1;
+    dirLight.shadowCameraFar = 120;
+   //dirLight.shadowBias = 10;
+    dirLight.shadowDarkness = 0.5;
+   //dirLight.shadowCameraVisible = true;
+
+
+    escena.add(dirLight);
+
+
+
+
+    var hemiLight = new THREE.HemisphereLight(0x666666, 0x666666, 0.75);
+    hemiLight.color.setHSL(0.6, 0.3, .5);
+    hemiLight.groundColor.setHSL(0.095, 0.2, 0.6);
+    hemiLight.position.set(0, 10, 0);
+    escena.add(hemiLight);
+
+
+    var light = new THREE.AmbientLight( 0x333333 ); // soft white light
+    escena.add( light );
+
+/*
+    var pointlight1 = new THREE.PointLight( 0xff0000, 10, 100 );
+    pointlight1.position.set( 0, 0, 0 );
+    scene.add( pointlight1 );
+    */
+}
+
+
+
+    
+    var modelos = {
+        "r":null,
+        "q":null,
+        "g":null
+    };
+    
+    var loadedCounter;
+    
+    function cargarModelos(onCompleteCallback){
+        
+        
+        var keys=Object.keys(modelos);
+        loadedCounter=keys.length;
+
+
+        for (var i = 0; i < keys.length; i++) {
+            var loader = new THREE.ColladaLoader();
+            
+            console.log("load Model "+ keys[i] + '.DAE');
+            
+            loader.load('modelos/'+keys[i]+'.DAE',
+                (function (key, context,onCompleteCallback) {
+                    var f = function (collada) {                        
+
+                        var geometry = collada.scene.children[0].children[0].geometry;
+                        context.modelos[key] = geometry;
+                                                
+                        context.loadedCounter--;
+
+                        if (context.loadedCounter == 0)  {
+                            
+                            console.log("carga completa")
+                            onCompleteCallback();
+                        }
+
+                    }
+                    return f;
+                }(keys[i],this,onCompleteCallback))
+            );
+        } // for
+  
+    }
+
+
+var modR
+var modQ;
+
+function f(m1){
+
+    console.log(m1[3]+" "+m1[7]+" "+m1[11]+" "+m1[15]);
+
+    var m2=new THREE.Matrix4();
+    m2.set(m1[0],m1[4],m1[8],m1[12],
+           m1[1],m1[5],m1[9],m1[13],
+           m1[2],m1[6],m1[10],m1[14],
+           m1[3],m1[7],m1[11],m1[15]
+           );
+
+    return m2;
+
+}
+
+function onLoadedModels(){
+
+        var axisHelper = createAxisHelper(5);
+        escena.add(axisHelper);
+
+        var mat1=new THREE.MeshPhongMaterial({
+            color: 0xCC33CC,
+            specular: 0x222222,
+            shininess: 1,
+            shading: THREE.SmoothShading
+        });
+
+        var mat2=new THREE.MeshPhongMaterial({
+            color: 0x33CCCC,
+            specular: 0x222222,
+            shininess: 1,
+            shading: THREE.SmoothShading
+        });
+
+        var mat3=new THREE.MeshPhongMaterial({
+            color: 0xCCCC33,
+            specular: 0x222222,
+            shininess: 1,
+            shading: THREE.SmoothShading
+        });
+
+
+
+        axisHelper = createAxisHelper(2);
+        
+        var meshR = new THREE.Mesh(this.modelos["r"],mat1);
+        modR = new THREE.Object3D();
+        modR.add(meshR);
+        modR.add(axisHelper);
+		modR.matrixAutoUpdate=false;
+        escena.add(modR);
+
+
+ 
+        axisHelper = new THREE.AxisHelper( 5 );
+        escena.add( axisHelper );
+
+        init();
+}
+
+
+
+function render() {
+    requestAnimationFrame(render);
+    renderer.render(escena, cameraManual);
+    
+
+}
+
+
+   
+console.log("ready");
+initThreeJS();
+setupLights();
+cargarModelos(onLoadedModels);
+
+
+function init(){
+    console.log("init()");
+
+	aplicar();
+   
+
+}
+
+function identidad(){
+
+	$("#m11").val(1);
+	$("#m12").val(0);	
+	$("#m13").val(0);
+	$("#m14").val(0);
+	
+	$("#m21").val(0);
+	$("#m22").val(1);
+	$("#m23").val(0);
+	$("#m24").val(0);
+	
+	$("#m31").val(0);
+	$("#m32").val(0);
+	$("#m33").val(1);
+	$("#m34").val(0);
+	
+	$("#m41").val(0);
+	$("#m42").val(0);
+	$("#m43").val(0);
+	$("#m44").val(1);
+	
+	modR.matrix.set(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);		
+	
+}
+
+
+function aplicar(){
+
+	
+	var m11=$("#m11").val();
+	var m12=$("#m12").val();
+	var m13=$("#m13").val();
+	var m14=$("#m14").val();
+
+	var m21=$("#m21").val();
+	var m22=$("#m22").val();
+	var m23=$("#m23").val();
+	var m24=$("#m24").val();
+
+	var m31=$("#m31").val();
+	var m32=$("#m32").val();
+	var m33=$("#m33").val();
+	var m34=$("#m34").val();
+	
+	var m41=$("#m41").val();
+	var m42=$("#m42").val();
+	var m43=$("#m43").val();
+	var m44=$("#m44").val();
+	
+
+	
+    var m1;
+   
+    
+    var m1=new THREE.Matrix4();
+    //m1.set(m11,m21,m31,m41,m12,m22,m32,m42,m13,m23,m33,m43,m14,m24,m34,m44);	
+	//modR.matrix.set(m11,m12,m13,m14,m21,m22,m23,m24,m31,m32,m33,m34,m41,m42,m43,m44);		
+	modR.matrix.set(m11,m12,m13,m14,m21,m22,m23,m24,m31,m32,m33,m34,m41,m42,m43,m44);			
+    //modR.matrix.set(m1);	
+	
+}
+
+
+
+render();
+	
+
+
+</script>
+
+</body>
+</html>

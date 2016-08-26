@@ -1,0 +1,471 @@
+
+<html>
+
+<head>
+<title>Demo Jupiter - Vertex Buffers Objetcs</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script type="text/javascript" src="gl-matrix.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec2 aVertexTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    uniform vec3 uAmbientColor;
+
+    uniform vec3 uLightPosition;
+    uniform vec3 uDirectionalColor;
+
+    uniform bool uUseLighting;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    void main(void) {
+	
+		// Transformamos al vértice al espacio de la cámara
+		vec4 pos_camera_view = uMVMatrix * vec4(aVertexPosition, 1.0);
+		
+		// Transformamos al vértice al espacio de la proyección
+        gl_Position = uPMatrix * pos_camera_view;
+		
+		// Coordenada de textura sin modifiaciones
+        vTextureCoord = aVertexTextureCoord;
+							
+		////////////////////////////////////////////
+		// Cálculos de la iluminación
+		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
+		normalize(light_dir);
+        if (!uUseLighting) 
+		{
+            vLightWeighting = vec3(1.0, 1.0, 1.0);
+        }
+		else 
+		{
+            vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+            float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+            normalize(vLightWeighting);
+        }
+		////////////////////////////////////////////
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    var gl;
+
+    function initGL(canvas) {
+        try {
+            gl = canvas.getContext("experimental-webgl");
+            gl.viewportWidth = canvas.width;
+            gl.viewportHeight = canvas.height;
+        } catch (e) {
+        }
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+        }
+    }
+
+
+    function getShader(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
+
+    var shaderProgram;
+
+
+       function initShaders() {
+        var fragmentShader = getShader(gl, "shader-fs");
+        var vertexShader = getShader(gl, "shader-vs");
+
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aVertexTextureCoord");
+        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+
+        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
+        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+        shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+        shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightPosition");
+        shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+    }
+
+
+    function handleLoadedTexture() {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.bindTexture(gl.TEXTURE_2D, jupiter.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, jupiter.texture.image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.generateMipmap(gl.TEXTURE_2D);
+
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+
+    var mvMatrix = mat4.create();
+    var pMatrix = mat4.create();
+
+    var jupiter = null;
+    var jupiterRotationMatrix = mat4.create();
+    mat4.identity(jupiterRotationMatrix);
+
+
+    function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+
+        var normalMatrix = mat3.create();
+        mat3.identity(normalMatrix);
+        mat3.normalFromMat4(normalMatrix, mvMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+    }
+
+
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+    // Esta función modela un objeto que es un esfera texturada.
+    // La función recibe dos parámetros que son el número de bandas
+    // en que se va a subdivir la esfera en sentido de la latituda y longitud.
+    // A partir de esas subdivisines se crearán los vértices y luego se definen
+    // los triángulos.
+    function TexturedSphere(latitude_bands, longitude_bands){
+
+        this.latitudeBands = latitude_bands;
+        this.longitudeBands = longitude_bands;
+        
+        // Estas variables son los buffers para cada atributo del vértice.
+        // Estos buffers almacenan la informacióñ a nivel de la aplicación en JS
+        this.position_buffer = null;
+        this.normal_buffer = null;
+        this.texture_coord_buffer = null;
+
+        // El index-buffer tiene la informacióñ de como se organizan los vértices 
+        // lógicamente para formar los triángulos
+        this.index_buffer = null;
+
+        // A nivel de WEB-GL tb necesitamos crear buffers para cargarlos con la informacióñ
+        // de la geometría del objeto.
+        this.webgl_position_buffer = null;
+        this.webgl_normal_buffer = null;
+        this.webgl_texture_coord_buffer = null;
+        this.webgl_index_buffer = null;
+        
+
+        // Manejo del archivo de imagen usado como textura.
+        this.texture = null;
+        this.initTexture = function(texture_file){
+            
+            this.texture = gl.createTexture();
+            this.texture.image = new Image();
+
+            this.texture.image.onload = function () {
+                   handleLoadedTexture()
+            }
+            this.texture.image.src = texture_file;
+        }
+
+
+        // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
+        // Y también la información de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de índices 
+        // a todos los triángulos de la esfera.
+        // Cuando se genera la geometría la información se guarda en los buffers a nivel de la aplicación JS.
+        // Luego se crean los buffers a nivel de WEB-GL y se asocian entre sí.
+        this.initBuffers = function(){
+
+            this.position_buffer = [];
+            this.normal_buffer = [];
+            this.texture_coord_buffer = [];
+
+            var latNumber;
+            var longNumber;
+
+            for (latNumber=0; latNumber <= this.latitudeBands; latNumber++) {
+                var theta = latNumber * Math.PI / this.latitudeBands;
+                var sinTheta = Math.sin(theta);
+                var cosTheta = Math.cos(theta);
+
+                for (longNumber=0; longNumber <= this.longitudeBands; longNumber++) {
+                    var phi = longNumber * 2 * Math.PI / this.longitudeBands;
+                    var sinPhi = Math.sin(phi);
+                    var cosPhi = Math.cos(phi);
+
+                    var x = cosPhi * sinTheta;
+                    var y = cosTheta;
+                    var z = sinPhi * sinTheta;
+                    var u = 1.0 - (longNumber / this.longitudeBands);
+                    var v = 1.0 - (latNumber / this.latitudeBands);
+
+                    this.normal_buffer.push(x);
+                    this.normal_buffer.push(y);
+                    this.normal_buffer.push(z);
+
+                    this.texture_coord_buffer.push(u);
+                    this.texture_coord_buffer.push(v);
+                    
+                    this.position_buffer.push(x);
+                    this.position_buffer.push(y);
+                    this.position_buffer.push(z);
+                }
+            }
+
+            // Buffer de indices de los triangulos
+            this.index_buffer = [];
+          
+            for (latNumber=0; latNumber < this.latitudeBands; latNumber++) {
+                for (longNumber=0; longNumber < this.longitudeBands; longNumber++) {
+                    var first = (latNumber * (this.longitudeBands + 1)) + longNumber;
+                    var second = first + this.longitudeBands + 1;
+                    this.index_buffer.push(first);
+                    this.index_buffer.push(second);
+                    this.index_buffer.push(first + 1);
+
+                    this.index_buffer.push(second);
+                    this.index_buffer.push(second + 1);
+                    this.index_buffer.push(first + 1);
+                }
+            }
+
+            // Creación e Inicialización de los buffers a nivel de OpenGL
+
+            // gl.createBuffer(), creo un Vertex Buffer Object (VBO) y devuelve un identificador o handler
+            // para referenciar a dicho buffer.
+            this.webgl_normal_buffer = gl.createBuffer();
+
+            // gl.bindBuffer() define como va a ser usado el buffer y lo pone en modo activo. Cualquier operacióñ
+            // posterior afectara a este buffer.
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer); //LO PONE EN FOCO Y LE DICE COMO USARLO EJ: ARRAY_BUFFER
+                                                                      //(CUANDO QUEREMOS CARGAR ATRIBUTOS DE VERTICES)
+
+            // Se realiza una copia para inicializar el contenido del VBO
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW); //STATIC: no la modifico
+            // Se guarda información del formato y dimensióñ del buffer a nivel de aplicación JS para su
+            // uso más adelante a la hora de renderizar.
+            this.webgl_normal_buffer.itemSize = 3;
+            this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
+
+
+            // Repetimos los pasos para cada buffer
+            this.webgl_texture_coord_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+            this.webgl_texture_coord_buffer.itemSize = 2;
+            this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+
+            // Repetimos los pasos para cada buffer
+            this.webgl_position_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), gl.STATIC_DRAW);
+            this.webgl_position_buffer.itemSize = 3;
+            this.webgl_position_buffer.numItems = this.position_buffer.length / 3;
+
+            // Repetimos los pasos para cada buffer
+            this.webgl_index_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
+            this.webgl_index_buffer.itemSize = 1;
+            this.webgl_index_buffer.numItems = this.index_buffer.length;
+        }
+
+        this.draw = function(){
+
+            // Se configuran los buffers que alimentarán el pipeline
+            // Debe vincularse la variable uniform del vertex shader con el buffer que contiene
+            // el atributo del vértice correspondiente
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+            gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            // Se configura la textura
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.uniform1i(shaderProgram.samplerUniform, 0);
+            
+            // Se "activa" el index buffer con el que se va a trabajar que dice a webgl
+            // como asociar lógicamente los datos presentes en el buffer.
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+
+
+            //gl.drawElements(gl.LINE_LOOP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+            gl.drawElements(gl.TRIANGLES, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+            /////////////////////////////////
+        }
+        
+    }
+
+
+    function drawScene() {
+	
+		// Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda 
+		// el área disponible
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		
+		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		// Se configura la matriz de proyección
+        mat4.perspective(pMatrix, degToRad(30.0), gl.viewportWidth / gl.viewportHeight, 0.1, 100.0);
+
+        // Se inicializan las variables asociadas con la Iluminación
+		var lighting;
+       	gl.uniform3f(shaderProgram.ambientColorUniform, 0.1, 0.1, 0.1 );
+		gl.uniform3f(shaderProgram.directionalColorUniform, 0.12, 0.12, 0.10);
+        
+		
+		// Definimos la ubicación de la camara
+		// Pensamos por el momento solamente la posición de la cámara, la cual siempre mira a Jupiter
+		var matriz_camara = mat4.create();
+		mat4.identity(matriz_camara);
+		mat4.translate(matriz_camara, matriz_camara, [0, 0, -6]);
+		
+		/////////////////////////////////
+		// Dibujamos Jupiter
+		lighting = true;
+		gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+		
+		// Siempre aplicamos la matriz de la camara
+		mat4.identity(mvMatrix);		
+		
+		// Aplico la matriz de modelo de Jupiter
+		mat4.multiply(mvMatrix, mvMatrix, matriz_camara);
+ 		mat4.multiply(mvMatrix, mvMatrix, jupiterRotationMatrix);
+		
+		var lightPosition = [10.0,0.0, -3.0];
+		gl.uniform3fv(shaderProgram.lightingDirectionUniform, lightPosition);
+		
+		setMatrixUniforms();
+
+        jupiter.draw();
+		
+		/////////////////////////////////		
+    }
+
+
+    function tick() {
+        requestAnimFrame(tick);
+		var newRotationMatrix = mat4.create();
+        mat4.identity(newRotationMatrix);
+        mat4.rotate(newRotationMatrix, newRotationMatrix, 0.005, [0, 1, 0]);
+		mat4.multiply(jupiterRotationMatrix, newRotationMatrix, jupiterRotationMatrix);
+        drawScene();
+    }
+
+
+
+    function webGLStart() {
+        var canvas = document.getElementById("clase03-vertex shader");
+        initGL(canvas);
+        initShaders();
+
+        jupiter = new TexturedSphere(64, 64);
+        jupiter.initBuffers();
+        jupiter.initTexture("jupiter2_1k.jpg");
+        
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+
+        tick();
+    }
+
+</script>
+
+
+</head>
+
+
+<body onload="webGLStart();">
+    <center>
+            <h1>Sistemas Gráficos - 66.71</h1>
+            <h2>WebGL - Vertex Buffer Objetcts</h2>
+            <canvas id="clase03-vertex shader" style="border: none;" width="960" height="540">
+            Your browser does not support the HTML5 canvas element.
+            </scanvas>
+            
+        </center>
+    <br/>
+    Las texturas son cortesía de <a href="http://maps.jpl.nasa.gov/">Jet Propulsion Laboratory</a>.
+    <br/>
+    <br/>
+
+ </body>
+
+</html>

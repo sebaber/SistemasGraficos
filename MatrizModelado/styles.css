@@ -1,0 +1,61 @@
+* {
+    font-family:Raleway,Arial, sans-serif;
+    font-size:15px;
+}
+
+body{
+    background-color: #333333;
+    margin:auto;
+    text-align: center;
+}
+
+h3{
+    font-size: 35px;
+    margin: 0px 0px 20px 0px;
+}
+
+h5 {
+    font-size: 20px;
+    margin: 0px 0px 5px 0px;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#contenido {
+    position: relative;
+    margin:auto;
+    padding: 0px;
+
+    display: inline-block;
+    background-color: #666666;
+}
+
+
+#panel3d{
+    height: 500px;
+    width: 700px;
+
+}
+
+#form{
+ display:inline-block;
+ background-color:grey;
+ vertical-align:top;
+}
+
+#form td input{
+	width:120px;
+	font-size:25px;
+	text-align:center;
+	margin:5px;
+}
+
+

@@ -1,0 +1,70 @@
+* {
+    font-family:Raleway,Arial, sans-serif;
+    font-size:15px;
+}
+
+body{
+    background-color: #333333;
+    margin:auto;
+    text-align: center;
+}
+
+h3{
+    font-size: 35px;
+    margin: 0px 0px 20px 0px;
+}
+
+h5 {
+    font-size: 20px;
+    margin: 0px 0px 5px 0px;
+}
+
+a{
+    text-decoration: none;
+    color: inherit;
+
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#contenido {
+    position: relative;
+    margin:auto;
+    padding: 0px;
+
+    display: inline-block;
+    background-color: #666666;
+}
+
+
+#contenido{
+    height: 480px;
+    width: 640px;
+
+}
+
+
+
+@media (min-width: 800px) and (min-height: 600px)  {
+
+    #contenido{
+        height: 600px;
+        width: 800px;
+
+    }
+
+}
+@media (min-width: 1000px) and (min-height: 750px)  {
+
+    #contenido{
+        height: 750px;
+        width: 1000px;
+
+    }
+
+}
+
+
+

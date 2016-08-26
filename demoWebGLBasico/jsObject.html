@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Hola Mundo Js</title>
+</head>
+<body>
+
+<script>
+
+
+	var a="999";
+
+	function UnObjeto(valor1, valor2, valor3){
+		
+		var soyPrivada1="secreto 1";
+		var soyPrivada2="secreto 2"
+		
+		this.metodoPublico1=function(param1, param2){
+			//
+			var a=1;
+			var b=2;
+			
+			console.log("  this.metodoPublico1, a="+a);
+			var resultado=param1+" "+param2+" "+a+" "+b+" valores de variables privadas:"+soyPrivada1+" "+soyPrivada2;
+			
+			return resultado
+		}
+		
+		this.metodoPublico2=function(){
+			
+			var resultado=" ******  "+this.metodoPublico1("manzanas","peras");
+			
+			return resultado;
+		}
+	};
+
+
+
+	var o= new UnObjeto();
+	
+
+	console.log("a="+a);
+	
+	console.log("o.metodoPublico1: "+ o.metodoPublico1("hola","que tal?"));
+	
+	console.log("o.metodoPublico2: "+o.metodoPublico2());
+	
+	
+	
+</script>
+
+</body>
+</html>

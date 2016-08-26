@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Js Scopes</title>
+</head>
+
+<body>
+
+
+<script>
+
+
+var a=1; // estan definidas en el scope global
+var b=2;
+
+
+function f1(){
+	
+	function add(v){
+		return v+1;
+	}
+	
+	function sub(v){
+		return v-1;
+	}
+	console.log("f1() c= "+c);	
+	// c viene del scope global, no importa que se haya definido luego de definir f1, 
+	// lo queimporta es que f1 es invocada luego de definir c=3
+	
+	
+	console.log("add(a) "+add(a));
+	console.log("sub(b) "+sub(b));	
+	console.log("add(c) "+add(c));	
+	
+};
+
+
+var c=3;
+
+
+f1();
+
+console.log("c="+c);
+
+
+
+
+</script>
+</body>
+</html>

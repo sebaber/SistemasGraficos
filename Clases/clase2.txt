@@ -1,0 +1,106 @@
+Matriz de transformacion:
+-> (x,y,z,w)
+w: traslacion
+tx: cuanto me quiero mover en x
+ty: cuanto me quiero mover en y
+tz: cuanto me quiero mover en z
+
+glmatrix.net
+-> lib que tiene las operaciones a usar:
+2.x: es la que usaremos
+Siempre trabajaremos por lo general con multiplicaciones (de matrices mayormente)
+
+mat4.<operacion>(ouput,input,parametros(puede ser mas de uno)) -> mat4.traslacion(m1,m2,Math.PI/2,[0,1,0],....)
+
+mat4.create() -> devuelve matriz indentidad
+mat4.<operacion>(output,input,[0,0,10]) trasladar el input -10 z y lo guardo en output
+ej: mat4.rotate(m1,m1,[0,0,10]) m1 = m1 x Mtrasz10
+
+Recurso para generar objeto en partes del espacio:
+
+Programa de Vértices (GLSL)
+
+Matríz de ModeladoVistaProyección Mat(4x4)= MatrizMVP
+
+Prog1 {
+ Vértice = MatrízMVP * Vértice
+}
+
+Rotacion:
+
+->Se rota tomando la distancia al centro del mundo
+
+Si queres rotarlo sobre su eje, y no esta en el centro del mundo, se tiene que:
+
+-> llevarlo al centro del mundo
+-> rotarlo
+-> devolverlo
+
+Multiplicacion por vector:
+
+Si tenemos M1xM2xM3xV1
+
+primero:
+Res1=M3xV1
+
+segundo:
+Res2=M2xRes1
+
+tercero:
+Res3=M1xRes2
+
+Ojo con lo que agregues a mat4
+
+-> se hace de abajo hacia arriba!!!
+
+Orden correcto de las cosas:
+1° Escalado
+2° Rotacion
+3° Traslado
+
+-------
+
+WebGL:
+
+Cada Vertice:
+Pos [x,y,z]
+Color [r,g,b]
+Normal [nx,ny,nz]
+
+Tambien tengo el index buffer
+
+Buffer de vertices:
+-> Solo coloco una vez cada vertice
+
+si tengo:
+
+v0		v1 		v3
+
+	v2		v4
+
+y tengo = [v0,v1,v2,v3,v4]
+
+Buffer de indices(index buffer):
+-> les aplico un sentido de dibujo
+
+buffer_index = [0,1,2,1,4,2,1,3,4]
+
+----------------
+
+VBO: vertex buffer object: para pasar los buffers de JS a WebGL
+
+-> Puedo aclararle que lo de JS es solo lectura para que lo guarde en la memoria de la placa de video
+
+-> Cuando dibujo utilizo el VBO
+
+Shader:
+
+-> Programa que corre en la GPU
+
+GPU: renderiza de a un objeto a la vez
+
+Supertipos:
+
+attribute: atributos del vertice
+varying: despacho el resultado del procesamiento
+uniform: uniforme/global para que todos apliquen la misma matriz o vector o lo que sea, al vertice(ya que tienen vertices del mismo objeto)
