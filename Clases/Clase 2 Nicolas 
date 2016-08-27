@@ -1,0 +1,34 @@
+(matriz 4x4) * (x, y, z ,w)^t 
+
+donde w se utiliza para la traslacion junta con la fila 4 y columna 4.
+
+y las primeras tres filas y columnas deciden la rotacion 
+
+libreira de gl-matrix (glmatrix.net) 2.0 
+
+
+		1 0 0 tx
+		0 1 0 ty
+		0 0 1 tz    donde tx ty y tz son la traslacion que deberian moverse
+		0 0 0 1  
+
+Nosotros solo creamos la matriz y le pasamos las matrices de 4 x 4 
+y componerlas (mutiplicar entre estas)
+siempre que se compone, se multiplica a la derecha. Porque importa el orden 
+con que se logran estas operaciones
+traslacion por identidas
+(rotar, trasladar y escalar)
+Se rota siempre desde el cero del universo
+Si se multiplica M = m1xm2xm3 entonces primero aplico
+m3 , luego m2 y m1. ya que M x v => m1xm2xm3xv entonces las multiplicaciones son
+de derecha a izquierda. En codigo seria de abajo para arriba. 
+
+		|1 0 0 tx|
+		|0 1 0 ty|
+		|0 0 1 tz|
+		|0 0 0 1 |
+
+con los numero en la diagonal hacemos que crezan en scala
+
+mat4.rotate(m1, m1 , pi/2, [0,1,0] ) 
+rota 90 grados en torno al eje y 
