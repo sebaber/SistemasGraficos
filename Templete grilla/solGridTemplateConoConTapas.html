@@ -145,7 +145,10 @@
                     // se genere el index buffer correspondiente para renderizar la grilla utilizando
                     // triangle-strip
                     //
-                    this.index_buffer = [0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23, 0, 12];
+                    this.index_buffer = [
+                    0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23, 0, 12,
+                    12, 24, 13, 25, 14, 26, 15, 27, 16, 28, 17, 29, 18, 30, 19, 31, 20, 32, 21, 33, 22, 34, 23, 35, 12, 24, 12, 24
+                    ];
                 }
 
                 // Esta función inicializa el position_buffer y el color buffer de forma de 
@@ -164,10 +167,20 @@
 
                            // Para cada vértice definimos su posición
                            // como coordenada (x, y, z=0)
+                        if(i==0){
+                            this.position_buffer.push(0);
+                            this.position_buffer.push(i);
+                            this.position_buffer.push(0);
+                        }else if(i == 2){
+                            this.position_buffer.push(0);
+                            this.position_buffer.push(0);
+                            this.position_buffer.push(i-1);
                            
-                           this.position_buffer.push(radio*Math.sin((j*Math.PI)/ 6 ));
-                           this.position_buffer.push(radio*Math.cos((j*Math.PI)/ 6 ));
-                           this.position_buffer.push(i);
+                        }else{
+                            this.position_buffer.push(radio*Math.sin((j*Math.PI)/ 6 ));
+                            this.position_buffer.push(radio*Math.cos((j*Math.PI)/ 6 ));
+                            this.position_buffer.push(i);
+                        }
 
                            // Para cada vértice definimos su color
                            this.color_buffer.push(1.0/this.rows * i);
@@ -315,7 +328,7 @@
             
             function setupBuffers()
             {
-                my_grid = new VertexGrid(2,12);
+                my_grid = new VertexGrid(3,12);
                 my_grid.createUniformPlaneGrid();
                 my_grid.createIndexBuffer();
                 my_grid.setupWebGLBuffers();

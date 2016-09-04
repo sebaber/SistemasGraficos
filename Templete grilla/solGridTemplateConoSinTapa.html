@@ -164,10 +164,15 @@
 
                            // Para cada vértice definimos su posición
                            // como coordenada (x, y, z=0)
-                           
-                           this.position_buffer.push(radio*Math.sin((j*Math.PI)/ 6 ));
-                           this.position_buffer.push(radio*Math.cos((j*Math.PI)/ 6 ));
-                           this.position_buffer.push(i);
+                           if(i!=0){
+                            this.position_buffer.push(0);
+                            this.position_buffer.push(0);
+                            this.position_buffer.push(i);
+                           }else{
+                            this.position_buffer.push(radio*Math.sin((j*Math.PI)/ 6 ));
+                            this.position_buffer.push(radio*Math.cos((j*Math.PI)/ 6 ));
+                            this.position_buffer.push(i);
+                            }
 
                            // Para cada vértice definimos su color
                            this.color_buffer.push(1.0/this.rows * i);
