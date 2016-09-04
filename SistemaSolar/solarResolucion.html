@@ -478,20 +478,7 @@ function setTransform(obj,m1){
     setTransform(tierra,m1);
   
 
-    // luna
-    m3=mat4.create();
-    mat4.rotate(m3,m3,frame/300,[0,1,0]);
-    mat4.translate(m3,m3,[20,0,0]);
-    // mat4.rotate(m3,m3,Math.PI*frame/100,vec3.fromValues(0,1,0));
-    setTransform(luna,m3);
-
-
-    // iss
-    m4=mat4.create();
-    mat4.rotate(m4,m4,frame/300,[0,0,1]);
-    mat4.translate(m4,m4,[-10,0,0]);
-    // mat4.rotate(m3,m3,Math.PI*frame/100,vec3.fromValues(0,1,0));
-    setTransform(iss,m4);
+    
 
     // grupoTierraLuna
     m2=mat4.create();
@@ -507,7 +494,20 @@ function setTransform(obj,m1){
   */ 
     setTransform(grupoTierraLuna,m2);
 
+    // luna
+    m3=mat4.create();
+    mat4.rotate(m3,m3,frame/300,[0,1,0]);
+    mat4.translate(m3,m3,vec3.fromValues(20,1,0));
+    // mat4.rotate(m3,m3,Math.PI*frame/100,vec3.fromValues(0,1,0));
+    setTransform(luna,m3);
 
+
+    // iss
+    m4=mat4.create();
+    mat4.rotate(m4,m4,frame/300,[0,0,1]);
+    mat4.translate(m4,m4,[-10,0,0]);
+    // mat4.rotate(m3,m3,Math.PI*frame/100,vec3.fromValues(0,1,0));
+    setTransform(iss,m4);
 
 
 

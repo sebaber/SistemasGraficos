@@ -1,0 +1,90 @@
+.Triangle Fan (Etiqueta que debo pasarle al .draw de WebGL):
+
+- Elijo un centro y un sentido de orientacion
+- Ese centro es compartido por todos los triangulos.
+- Cada triangulo comparte una arista.
+
+Importante: el primer slot del vertice es el centro
+
+Para caso molinete seria: 0-1-2-0-3-4
+
+.Triangle Strip (tira de triangulos):
+ 
+ -> Los sentidos de circulacion se van invirtiendo, pero al especificarle el tag "TRIANGLE STRIP" los corrige
+
+ Para este caso: 0-3-1-4-2-5
+
+ .Para mallas:
+
+ Hago un triangle strip y luego repito el ultimo vertice inf a la der, y volves dibujando otro triangle strip en sentido inverso
+
+ Importante:
+
+ -> El algoritmo de la logica de dibujado es independiente de la posicionra luna
+
+ Sistema solar:
+
+ 			   raiz
+ 				/\
+ 			I  /  \ R1*T1
+ 			  /	   \            R6*T6    
+ 			sol  Tierra-luna -------- Satelite
+ 			 		   /\
+ 			 	R2*T2 /  \	R3
+ 			 		 /	  \
+ 			 Sist Luna	  	Tierra
+ 			 	 /\
+ 			 I	/  \ R4*T4*R5
+ 			   /	\
+ 			 Luna	Apollo
+
+Mtieera = R1*T1*R3
+
+- Los objetos compuestos compartes atributos de matrices de rotacion y traslacion
+
+Objeto 3D:
+
+- Todo objeto 3D (nodo) tiene que tener una matriz asociada que representa su estado en la escena (la que paso por parametro a sus hijos) o podria tener:
+
+Privdos:
+_matriz = posicion*orientacion*escala
+_hijos
+
+Publicos:
+* escala: x,y,z
+* posicion: x,y,z
+* orientacion: x,y,z
+
+
+
+- Deberia tener un metodo "Dibujar" que llama al suyo, y a cada hijo le pasa su matriz asociada como parametro
+- Build-> llena el buffer con los numeros (cada objeto que herede de Objeto 3D deberia implementarlo)
+- Agregar hijo
+- Quitar hijo
+
+- Atributos: hijos (lista)
+
+Parcial:
+
+									__________________
+								    |	Circulo      |
+								    ------------------
+								   /      |             \
+						R(x+0°)	  /       | R(x+120°)    \ R(x + 240°)
+								 /	      |               \
+								/	      |                \
+							Barrra	     Barra             Barra
+															  |
+															  |
+															  | Tx(6) * R(90°)
+															  |
+															Circulo
+															  |
+										-					  | R(-x-90°+240)
+															  |
+															Grupo 
+															/  \
+													  T*E  /	\  T
+														  /		 \
+														 /		  \
+													  Barra  	  Balde
