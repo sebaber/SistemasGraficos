@@ -1,0 +1,20 @@
+Para programar el cilindro eficientemente:
+- Tapa inf -> TRIANG_FAN
+- Pared -> 
+- Tapa sup -> TRIANG_FAN
+
+Como seteo distintas formas de juntar los puntos?
+-> DrawElements: le paso bien el rango del index buffer
+
+Sistema de coordenadas:
+
+-> Matriz de modelado:
+matriz del modelo
+
+-> Matriz de vista:
+matriiz que se le aplica al modelo, para simular la vista de la camara
+Se usa mat4.lookAt(...)
+
+->Extrusion = forma + recorrido normal
+
+-> Para extruciones curvas: me paro en el recorrido y lo giro

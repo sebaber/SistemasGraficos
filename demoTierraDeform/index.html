@@ -1,0 +1,484 @@
+
+<html>
+
+<head>
+<title>Demo Tierra Deform</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="webgl-utils.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    uniform vec3 uAmbientColor;
+
+    uniform vec3 uLightPosition;
+    uniform vec3 uDirectionalColor;
+	
+	uniform float frame;
+
+    uniform bool uUseLighting;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    void main(void) {
+	
+		
+		/////////////////////////////////////////////////
+		// ACTIVIDAD
+		// Deformar la esfera operando sobre los vértices
+		vec3 vertice = aVertexPosition;
+		
+		
+		/////////////////////////////////////////////////
+		
+		vertice.y = vertice.y+0.2*sin(vertice.z*10.0);
+		
+		// escribir AQUI !!!
+		
+		
+		///////////////////////////////////////////////////
+		
+		
+		// Transformamos al vértice al espacio de la cámara
+		vec4 pos_camera_view = uMVMatrix * vec4(vertice, 1.0);
+		// Transformamos al vértice al espacio de la proyección
+        gl_Position = uPMatrix * pos_camera_view;
+		// Coordenada de textura sin modifiaciones
+        vTextureCoord = aTextureCoord;
+							
+
+							
+		////////////////////////////////////////////
+		// Calculos de la iluminación
+		vec3 light_dir =  uLightPosition - vec3( pos_camera_view );
+		normalize(light_dir);
+        if (!uUseLighting) 
+		{
+            vLightWeighting = vec3(1.0, 1.0, 1.0);
+        }
+		else 
+		{
+            vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+            float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        }
+		////////////////////////////////////////////
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    var gl;
+	
+	var frame=0;
+
+    function initGL(canvas) {
+        try {
+            gl = canvas.getContext("experimental-webgl");
+            gl.viewportWidth = canvas.width;
+            gl.viewportHeight = canvas.height;
+        } catch (e) {
+        }
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+        }
+    }
+
+
+    function getShader(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
+
+    var shaderProgram;
+
+
+       function initShaders() {
+        var fragmentShader = getShader(gl, "shader-fs");
+        var vertexShader = getShader(gl, "shader-vs");
+
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+
+        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
+        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+        shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+		shaderProgram.frameUniform = gl.getUniformLocation(shaderProgram, "frame");
+        shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightPosition");
+        shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+    }
+
+
+    function handleLoadedTexture() {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.bindTexture(gl.TEXTURE_2D, earth.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, earth.texture.image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.generateMipmap(gl.TEXTURE_2D);
+
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+
+    var mvMatrix = mat4.create();
+    var mvMatrixStack = [];
+    var pMatrix = mat4.create();
+
+    var mouseDown = false;
+    var lastMouseX = null;
+    var lastMouseY = null;
+
+    var earth = null;
+
+    var earthRotationMatrix = mat4.create();
+    mat4.identity(earthRotationMatrix);
+
+    function mvPushMatrix() {
+        var copy = mat4.create();
+        mat4.set(mvMatrix, copy);
+        mvMatrixStack.push(copy);
+    }
+
+    function mvPopMatrix() {
+        if (mvMatrixStack.length == 0) {
+            throw "Invalid popMatrix!";
+        }
+        mvMatrix = mvMatrixStack.pop();
+    }
+
+    function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+
+        var normalMatrix = mat3.create();
+        mat4.toInverseMat3(mvMatrix, normalMatrix);
+        mat3.transpose(normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+    }
+
+
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+
+    function TexturedSphere(latitude_bands, longitude_bands){
+
+        this.latitudeBands = latitude_bands;
+        this.longitudeBands = longitude_bands;
+        
+        this.position_buffer = null;
+        this.normal_buffer = null;
+        this.texture_coord_buffer = null;
+        this.index_buffer = null;
+
+        this.webgl_position_buffer = null;
+        this.webgl_normal_buffer = null;
+        this.webgl_texture_coord_buffer = null;
+        this.webgl_index_buffer = null;
+        
+        this.texture = null;
+
+        this.initTexture = function(texture_file){
+            
+            this.texture = gl.createTexture();
+            this.texture.image = new Image();
+
+            this.texture.image.onload = function () {
+                   handleLoadedTexture()
+            }
+            this.texture.image.src = texture_file;
+        }
+
+
+        // Se generan los vertices para la esfera, calculando los datos para una esfera de radio 1
+        // Y también la información de las normales y coordenadas de textura para cada vertice de la esfera
+        // La esfera se renderizara utilizando triangulos, para ello se arma un buffer de índices 
+        // a todos los triángulos de la esfera
+        this.initBuffers = function(){
+
+            this.position_buffer = [];
+            this.normal_buffer = [];
+            this.texture_coord_buffer = [];
+
+            var latNumber;
+            var longNumber;
+
+            for (latNumber=0; latNumber <= this.latitudeBands; latNumber++) {
+                var theta = latNumber * Math.PI / this.latitudeBands;
+                var sinTheta = Math.sin(theta);
+                var cosTheta = Math.cos(theta);
+
+                for (longNumber=0; longNumber <= this.longitudeBands; longNumber++) {
+                    var phi = longNumber * 2 * Math.PI / this.longitudeBands;
+                    var sinPhi = Math.sin(phi);
+                    var cosPhi = Math.cos(phi);
+
+                    var x = cosPhi * sinTheta;
+                    var y = cosTheta;
+                    var z = sinPhi * sinTheta;
+                    var u = 1.0 - (longNumber / this.longitudeBands);
+                    var v = 1.0 - (latNumber / this.latitudeBands);
+
+                    this.normal_buffer.push(x);
+                    this.normal_buffer.push(y);
+                    this.normal_buffer.push(z);
+
+                    this.texture_coord_buffer.push(u);
+                    this.texture_coord_buffer.push(v);
+                    
+                    this.position_buffer.push(x);
+                    this.position_buffer.push(y);
+                    this.position_buffer.push(z);
+                }
+            }
+
+            // Buffer de indices de los triangulos
+            this.index_buffer = [];
+          
+            for (latNumber=0; latNumber < this.latitudeBands; latNumber++) {
+                for (longNumber=0; longNumber < this.longitudeBands; longNumber++) {
+                    var first = (latNumber * (this.longitudeBands + 1)) + longNumber;
+                    var second = first + this.longitudeBands + 1;
+                    this.index_buffer.push(first);
+                    this.index_buffer.push(second);
+                    this.index_buffer.push(first + 1);
+
+                    this.index_buffer.push(second);
+                    this.index_buffer.push(second + 1);
+                    this.index_buffer.push(first + 1);
+                }
+            }
+
+            // Creación e Inicialización de los buffers a nivel de OpenGL
+            this.webgl_normal_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
+            this.webgl_normal_buffer.itemSize = 3;
+            this.webgl_normal_buffer.numItems = this.normal_buffer.length / 3;
+
+            this.webgl_texture_coord_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
+            this.webgl_texture_coord_buffer.itemSize = 2;
+            this.webgl_texture_coord_buffer.numItems = this.texture_coord_buffer.length / 2;
+
+            this.webgl_position_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), gl.STATIC_DRAW);
+            this.webgl_position_buffer.itemSize = 3;
+            this.webgl_position_buffer.numItems = this.position_buffer.length / 3;
+
+            this.webgl_index_buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
+            this.webgl_index_buffer.itemSize = 1;
+            this.webgl_index_buffer.numItems = this.index_buffer.length;
+        }
+
+        this.draw = function(){
+
+            // Se configuran los buffers que alimentarán el pipeline
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.webgl_position_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, this.webgl_texture_coord_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+            gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.webgl_normal_buffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.uniform1i(shaderProgram.samplerUniform, 0);
+            
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+            //gl.drawElements(gl.LINE_LOOP, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+            gl.drawElements(gl.TRIANGLES, this.webgl_index_buffer.numItems, gl.UNSIGNED_SHORT, 0);
+            /////////////////////////////////
+        }
+        
+    }
+
+
+    function drawScene() {
+	
+		// Se configura el vierport dentro de área ¨canvas¨. en este caso se utiliza toda 
+		// el área disponible
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		
+		// Se habilita el color de borrado para la pantalla (Color Buffer) y otros buffers
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		// Se configura la matriz de proyección
+        mat4.perspective(30, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+        // Se inicializan las variables asociadas con la Iluminación
+		var lighting;
+		gl.uniform1f(shaderProgram.frameUniformm, frame/10.0 );
+       	gl.uniform3f(shaderProgram.ambientColorUniform, 0.7, 0.7, 0.7 );
+		gl.uniform3f(shaderProgram.directionalColorUniform, 0.2, 0.2, 0.2);
+        
+		
+		// Definimos la ubicación de la camara
+		// Pensamos por el momento solamente la posición de la cámara, la cual siempre mira al sol.
+		var matriz_camara = mat4.create();
+		mat4.identity(matriz_camara);
+		mat4.translate(matriz_camara, [0, 0, -6]);
+		
+		/////////////////////////////////
+		// Dibujamos el SOL
+		lighting = true;
+		gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+		
+		// Siempre aplicamos la matriz de la camara
+		mat4.identity(mvMatrix);		
+		
+		// Matriz de modelado del Sol
+		var matriz_posicion_sol = mat4.create();
+		mat4.identity(matriz_posicion_sol);
+		
+		// Aplico la matriz de modelo del Sol
+		mat4.multiply(mvMatrix, matriz_camara);
+        mat4.multiply(mvMatrix, matriz_posicion_sol);
+		mat4.multiply(mvMatrix, earthRotationMatrix);
+		
+		var lightPosition = [10.0,0.0, -3.0];
+		mat4.multiplyVec3(matriz_camara, lightPosition);
+		gl.uniform3fv(shaderProgram.lightingDirectionUniform, lightPosition);
+		
+		setMatrixUniforms();
+
+        earth.draw();
+		
+		/////////////////////////////////		
+    }
+
+
+    function tick() {
+        requestAnimFrame(tick);
+		frame++;
+		
+		var newRotationMatrix = mat4.create();
+        mat4.identity(newRotationMatrix);
+        mat4.rotate(newRotationMatrix, 0.005, [0, 1, 0]);
+		mat4.multiply(newRotationMatrix, earthRotationMatrix, earthRotationMatrix);
+        drawScene();
+    }
+
+
+
+    function webGLStart() {
+        var canvas = document.getElementById("clase03-vertex shader");
+        initGL(canvas);
+        initShaders();
+
+        earth = new TexturedSphere(64, 64);
+        earth.initBuffers();
+        earth.initTexture("earth.jpg");
+        
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+
+        tick();
+    }
+
+</script>
+
+
+</head>
+
+
+<body onload="webGLStart();">
+    <center>
+            <h1>Sistemas Gráficos - 66.71</h1>
+            <h2>WebGL - Grilla de vértices</h2>
+            <canvas id="clase03-vertex shader" style="border: none;" width="1000" height="700">
+            Your browser does not support the HTML5 canvas element.
+            </scanvas>
+            
+        </center>
+    <br/>
+    Las texturas son cortesía de <a href="http://maps.jpl.nasa.gov/">Jet Propulsion Laboratory</a>.
+    <br/>
+    <br/>
+
+ </body>
+
+</html>
