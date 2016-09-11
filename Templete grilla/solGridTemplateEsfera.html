@@ -161,27 +161,40 @@
                     this.index_buffer = [];
                     var tita = 12.0;
                     var fi = 12.0;
-                    for (var i = 0.0; i < (tita); i++) {
-                    	if (i < (tita - 1)){
-	                        for (var j = 0.0; j < fi; j++) {
-	                        	this.index_buffer.push(j + (tita * i));
-	                        	this.index_buffer.push(j + (tita * i) + tita);
-	                        	if ((j == (fi - 1)) && (i < tita)){
-		                        	this.index_buffer.push((tita * i));
-		                        	this.index_buffer.push((tita * i) + tita);
 
-		                        	this.index_buffer.push((tita * i));
-		                        	this.index_buffer.push((tita * i) + tita);
-	                        	}
-	                        }
-                    	} else {
-/*
-*/
-                        	this.index_buffer.push(j + (tita * i));
-                        	this.index_buffer.push(j + (tita * i) + tita);                 		
-                    	}
+                    this.index_buffer = [];
+                    for(i = 0; i< tita; ++i){
+                        for(j=0;j<fi;++j){
+                            this.index_buffer.push((i*fi) + j);
+                            this.index_buffer.push(((i+1)*fi) + j);
+                        }
+                        this.index_buffer.push(i*fi);
+                        this.index_buffer.push((i+1)*fi);
                     }
-                    indexGlobal = this.index_buffer;
+
+                    console.log(this.index_buffer);
+
+//                     for (var i = 0.0; i < (tita); i++) {
+//                     	if (i < (tita - 1)){
+// 	                        for (var j = 0.0; j < fi; j++) {
+// 	                        	this.index_buffer.push(j + (tita * i));
+// 	                        	this.index_buffer.push(j + (tita * i) + tita);
+// 	                        	if ((j == (fi - 1)) && (i < tita)){
+// 		                        	this.index_buffer.push((tita * i));
+// 		                        	this.index_buffer.push((tita * i) + tita);
+
+// 		                        	this.index_buffer.push((tita * i));
+// 		                        	this.index_buffer.push((tita * i) + tita);
+// 	                        	}
+// 	                        }
+//                     	} else {
+// /*
+// */
+//                         	this.index_buffer.push(j + (tita * i));
+//                         	this.index_buffer.push(j + (tita * i) + tita);                 		
+//                     	}
+//                     }
+//                     indexGlobal = this.index_buffer;
                 }
 
                 // Esta función inicializa el position_buffer y el color buffer de forma de 
