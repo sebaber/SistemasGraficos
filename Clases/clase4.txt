@@ -1,0 +1,16 @@
+matriz de vista es una transfomacion que se le hace a todos los objetos del mundo (nuestra simulacion)
+
+
+matriz de proyeccion , paso la camara al espacio de pantalla 
+
+la vista es otro sistemas de coordenadas 
+
+Mmup 
+
+
+superficie de barrido ,
+
+idea mover una forma por un reccorido (una linea imaginaria)
+
+voy generando formas a lo largo del recorrido (voy generando niveles)
+
