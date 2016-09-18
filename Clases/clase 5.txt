@@ -1,0 +1,26 @@
+* Los vectores normales no deberian ser escalados ni trasladados.
+* Si se los puede rotar
+
+Normal Matrix: matriz que solo aplica las rotaciones
+
+A normales, binormales y tangente se les aplica normal matrix
+
+Quad: cada triangulo de la grilla.
+
+Siempre hay dos propiedades que te permiten mapear el u,v de la textura pintando toda la figura.
+
+Caso esfera: los dos angulos.
+
+Clamp: repite los ultimos pixel infinitamente de los costados de la imagen(se usa por lo general para bordes con color constante)
+Repeat: repite la textura
+
+Textels: pixels de textura
+
+Minificacion: n texel x pixel n>1 (n texel en un pixel de pantalla)
+
+Magnificacion: 1 texel x pixel
+
+
+Neighbours: se usa mas para pixel art, no promedia toma color fijo mas cercano.
+Linear filter: promedia con los pixel de textura mas cercanos, suavizando el color.
+Mipmaping: distintas muestras de distintas resoluciones de la misma textura
