@@ -1,0 +1,35 @@
+Bases de Bersntein Cubicas:
+
+Para hacerla R3:
+
+x(t)= ... B0*P0x + ... B1*P1x + ...B2*P2x +...B3*P3x
+y(t)= ... P0y + ... P1y + ...P2y
+z(t)= ... P0z + ... P1z + ...P2z
+
+Pesos de las bases son:
+
+B0, B1, B2, B3
+
+Los pesos para un valor de t suman 1:
+
+EJ t=1, B0=0.3 B1=0.2 B2=0.4(mas cerca al punto P2, mas "peso") B4=.1
+
+Derivando la ecuacion de bernstel y tomando un t0:
+-> Nos da el vector tangente en el punto t0
+
+Para obtener el vector normal: 
+-> puedo girar 90° el vector tangente
+-> puedo realizar el producto vectorial con la BiNormal (es la perpendicular al plano)
+
+Para conectar dos curvas:
+
+- P3=V0
+- (P3-P2)=(V0-V1)
+
+BSPline no empieza ni termina en los puntos iniciales, sino en la mitad de los tramso de estos 3 puntos.
+
+- Cilindro para las cuerdas
+- Sup de barrido para las sogas, armadas ad-hock
+- Torres: tiene 6 elementos(jerarquia de transformaciones)
+- Puente: contenedor de todas las piezas
+- Ruta: dos superficies de ruta + el arco
