@@ -11,8 +11,8 @@ function Modelo(_rows, _cols) {
   this.webgl_color_buffer = null;
   this.webgl_index_buffer = null;
 
-  this._initBuffers();
 
+  this._initBuffers();
 }
 
 inheritPrototype(Modelo, Transformable);
@@ -24,8 +24,10 @@ Modelo.prototype._initBuffers = function(){
 };
 
 Modelo.prototype._createIndexBuffer = function(){
+  // console.log("rows: "+this.rows);
+  // console.log("cols: "+this.cols);
   this.index_buffer = [];
-  for(i = 0; i< (this.rows-1); ++i){
+  for(i = 0; i< this.rows-1; ++i){
       for(j=0;j<this.cols;++j){
           this.index_buffer.push((i*this.cols) + j);
           this.index_buffer.push(((i+1)*this.cols) + j);
@@ -33,6 +35,9 @@ Modelo.prototype._createIndexBuffer = function(){
       this.index_buffer.push(i*this.cols);
       this.index_buffer.push((i+1)*this.cols);
   }
+  // console.log(this.index_buffer);
+  // console.log("INDEX BUFFER");
+  // console.log(this.index_buffer);
 };
 
 Modelo.prototype._setupWebGLBuffers = function(){
@@ -57,7 +62,13 @@ Modelo.prototype._setupWebGLBuffers = function(){
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
 };
 
-Modelo.prototype.draw = function(){
+Modelo.prototype.draw = function(mvMatrix){
+
+  this.applyTransformationMatrix(mvMatrix,false);
+
+  var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
+  gl.uniformMatrix4fv(u_model_view_matrix, false, this.getObjectMatrix());
+
   var vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
   gl.enableVertexAttribArray(vertexPositionAttribute);
   gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);

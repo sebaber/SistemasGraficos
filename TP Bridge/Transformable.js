@@ -65,6 +65,7 @@ Transformable.prototype.applyTransformationMatrix = function (matrix, reset) {
 		this.resetTransformations();
 	}
 	// Siempre multiplica a izquierda
+	if(reset) this.resetTransformations();
 	mat4.multiply(this.objectMatrix, this.objectMatrix, matrix);
 };
 

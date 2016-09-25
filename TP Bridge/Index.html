@@ -2,238 +2,257 @@
 <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
 <meta content="ISO-8859-1" http-equiv="encoding">
 <html>
-    <head>
-        <title>66.71 WebGL FrameWork</title>
-        <style>
-            body{ background-color: grey; }
-            canvas{ background-color: white; }
-			textarea{ background-color: black; foreground-color: white;}
-        </style>
+<head>
+  <title>66.71 WebGL FrameWork</title>
+  <style>
+  body{ background-color: grey; }
+  canvas{ background-color: white; }
+  textarea{ background-color: black; foreground-color: white;}
+  </style>
 
-        <script type="text/javascript" src="gl-matrix.js"></script>
+  <script type="text/javascript" src="gl-matrix.js"></script>
+  <script type="text/javascript" src="Utils.js"></script>
+  <script type="text/javascript" src="PrototypalInheritance.js"></script>
+  <script type="text/javascript" src="Transformable.js"></script>
+  <script type="text/javascript" src="modelos/Modelo.js"></script>
+  <script type="text/javascript" src="recorridos/ExtrusionCerrada.js"></script>
 
-        <script type="text/javascript" src="PrototypalInheritance.js"></script>
-        <script type="text/javascript" src="Transformable.js"></script>
-        <script type="text/javascript" src="Modelo.js"></script>
-        <script type="text/javascript" src="CilindroCerrado.js"></script>
-        <script type="text/javascript" src="CilindroAbierto.js"></script>
-        <script type="text/javascript" src="ConoCerrado.js"></script>
-        <script type="text/javascript" src="ConoAbierto.js"></script>
-        <script type="text/javascript" src="Esfera.js"></script>
+  <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
+  <script type="text/javascript" src="geometrias/Prueba.js"></script>
 
-        <!--
-        Vertex shader
+  <script type="text/javascript" src="geometrias/Circulo.js"></script>
+  <script type="text/javascript" src="geometrias/CilindroCerrado.js"></script>
+  <script type="text/javascript" src="geometrias/CilindroAbierto.js"></script>
+  <script type="text/javascript" src="geometrias/ConoCerrado.js"></script>
+  <script type="text/javascript" src="geometrias/ConoAbierto.js"></script>
+  <script type="text/javascript" src="geometrias/Esfera.js"></script>
 
-        El vertex shader define la posici�n y forma de cada vertice de cada pol�gono.
-        -->
-        <script id="shader-vs" type="x-shader/x-vertex">
-            // Los atributos son caracter�sticas propias de cada vertice.
-            attribute vec3 aVertexPosition;
-            attribute vec3 aVertexColor;
+  <!--
+  Vertex shader
 
-            // Los uniforms son caracter�sticas propias de una etapa de dibujado completa.
-            // Son comunes a todos los vertices involucrados en el dibujado.
-            uniform mat4 uMVMatrix;
-            uniform mat4 uPMatrix;
+  El vertex shader define la posici�n y forma de cada vertice de cada pol�gono.
+-->
+<script id="shader-vs" type="x-shader/x-vertex">
+// Los atributos son caracter�sticas propias de cada vertice.
+attribute vec3 aVertexPosition;
+attribute vec3 aVertexColor;
 
-            // Los varying son propiedades que toman valor para cada fragmento a partir
-            // de interpolar linealmente entre los valores que se les asigna en cada
-            // v�rtice del pol�gono al cual pertenecen.
-            varying highp vec4 vColor;
+// Los uniforms son caracter�sticas propias de una etapa de dibujado completa.
+// Son comunes a todos los vertices involucrados en el dibujado.
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
 
-            void main(void) {
-                // gl_Position es una variable "built-in" de GLSL que es usada para
-                // almacenar la posici�n resultante del fragmento.
-                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-                vColor = vec4(aVertexColor,1.0);
-            }
-        </script>
+// Los varying son propiedades que toman valor para cada fragmento a partir
+// de interpolar linealmente entre los valores que se les asigna en cada
+// v�rtice del pol�gono al cual pertenecen.
+varying highp vec4 vColor;
 
-        <!--
-        Fragment shader
+void main(void) {
+  // gl_Position es una variable "built-in" de GLSL que es usada para
+  // almacenar la posici�n resultante del fragmento.
+  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+  vColor = vec4(aVertexColor,1.0);
+}
+</script>
 
-        Cada pixel en un pol�gono se llama fragmento. El fragment shader se encarga de
-        establecer el color de cada pixel. En este caso, asignamos el color blanco a
-        cada pixel.
-        -->
-        <script id="shader-fs" type="x-shader/x-fragment">
-        varying highp vec4 vColor;
+<!--
+Fragment shader
 
-        void main(void) {
-          // gl_FragColor es una variable "built-in" de GLSL que es usada para
-          // almacenar el color resultante del fragmento.
-          gl_FragColor = vColor;
-        }
-        </script>
+Cada pixel en un pol�gono se llama fragmento. El fragment shader se encarga de
+establecer el color de cada pixel. En este caso, asignamos el color blanco a
+cada pixel.
+-->
+<script id="shader-fs" type="x-shader/x-fragment">
+varying highp vec4 vColor;
 
-        <script>
-            var gl = null,
-                canvas = null,
-                glProgram = null,
-                fragmentShader = null,
-                vertexShader = null,
-                t = 0.0;
-				my_grid = null;
+void main(void) {
+  // gl_FragColor es una variable "built-in" de GLSL que es usada para
+  // almacenar el color resultante del fragmento.
+  gl_FragColor = vColor;
+}
+</script>
 
-            var mvMatrix = mat4.create();
-            var pMatrix = mat4.create();
+<script>
+var gl = null,
+canvas = null,
+glProgram = null,
+fragmentShader = null,
+vertexShader = null,
+t = 0.0,
+i=0;
+cilindro = null;
+prueba = null;
+
+var mvMatrix = mat4.create();
+var pMatrix = mat4.create();
 
 
-             // SHADERS FUNCTION
-            function getShader(gl, id) {
-                var shaderScript, src, currentChild, shader;
+// SHADERS FUNCTION
+function getShader(gl, id) {
+  var shaderScript, src, currentChild, shader;
 
-                // Obtenemos el elemento <script> que contiene el c�digo fuente del shader.
-                shaderScript = document.getElementById(id);
-                if (!shaderScript) {
-                    return null;
-                }
+  // Obtenemos el elemento <script> que contiene el c�digo fuente del shader.
+  shaderScript = document.getElementById(id);
+  if (!shaderScript) {
+    return null;
+  }
 
-                // Extraemos el contenido de texto del <script>.
-                src = "";
-                currentChild = shaderScript.firstChild;
-                while(currentChild) {
-                    if (currentChild.nodeType == currentChild.TEXT_NODE) {
-                        src += currentChild.textContent;
-                    }
-                    currentChild = currentChild.nextSibling;
-                }
+  // Extraemos el contenido de texto del <script>.
+  src = "";
+  currentChild = shaderScript.firstChild;
+  while(currentChild) {
+    if (currentChild.nodeType == currentChild.TEXT_NODE) {
+      src += currentChild.textContent;
+    }
+    currentChild = currentChild.nextSibling;
+  }
 
-                // Creamos un shader WebGL seg�n el atributo type del <script>.
-                if (shaderScript.type == "x-shader/x-fragment") {
-                    shader = gl.createShader(gl.FRAGMENT_SHADER);
-                } else if (shaderScript.type == "x-shader/x-vertex") {
-                    shader = gl.createShader(gl.VERTEX_SHADER);
-                } else {
-                    return null;
-                }
+  // Creamos un shader WebGL seg�n el atributo type del <script>.
+  if (shaderScript.type == "x-shader/x-fragment") {
+    shader = gl.createShader(gl.FRAGMENT_SHADER);
+  } else if (shaderScript.type == "x-shader/x-vertex") {
+    shader = gl.createShader(gl.VERTEX_SHADER);
+  } else {
+    return null;
+  }
 
-                // Le decimos a WebGL que vamos a usar el texto como fuente para el shader.
-                gl.shaderSource(shader, src);
+  // Le decimos a WebGL que vamos a usar el texto como fuente para el shader.
+  gl.shaderSource(shader, src);
 
-                // Compilamos el shader.
-                gl.compileShader(shader);
+  // Compilamos el shader.
+  gl.compileShader(shader);
 
-                // Chequeamos y reportamos si hubo alg�n error.
-                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                  alert("An error occurred compiling the shaders: " +
-                        gl.getShaderInfoLog(shader));
-                  return null;
-                }
+  // Chequeamos y reportamos si hubo alg�n error.
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert("An error occurred compiling the shaders: " +
+    gl.getShaderInfoLog(shader));
+    return null;
+  }
 
-                return shader;
-            }
+  return shader;
+}
 
-            function initWebGL()
-            {
-                canvas = document.getElementById("my-canvas");
-                try{
-                    gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-                }catch(e){
-                }
+function initWebGL()
+{
+  canvas = document.getElementById("my-canvas");
+  try{
+    gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+  }catch(e){
+  }
 
-                if(gl)
-                {
-                    setupWebGL();
-                    initShaders();
-                    setupBuffers();
-                    setInterval(drawScene, 10);
-                }else{
-                    alert(  "Error: Your browser does not appear to support WebGL.");
-                }
-            }
+  if(gl)
+  {
+    setupWebGL();
+    initShaders();
+    setupBuffers();
+    setInterval(drawScene, 10);
+  }else{
+    alert(  "Error: Your browser does not appear to support WebGL.");
+  }
+}
 
-            function setupWebGL()
-            {
-                //set the clear color
-                gl.clearColor(0.1, 0.1, 0.2, 1.0);
-                gl.enable(gl.DEPTH_TEST);
-                gl.depthFunc(gl.LEQUAL);
-                gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+function setupWebGL()
+{
+  //set the clear color
+  gl.clearColor(0.1, 0.1, 0.2, 1.0);
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 
-                gl.viewport(0, 0, canvas.width, canvas.height);
-            }
+  gl.viewport(0, 0, canvas.width, canvas.height);
+}
 
-            function initShaders()
-            {
-                // Obtenemos los shaders ya compilados
-                var fragmentShader = getShader(gl, "shader-fs");
-                var vertexShader = getShader(gl, "shader-vs");
+function initShaders()
+{
+  // Obtenemos los shaders ya compilados
+  var fragmentShader = getShader(gl, "shader-fs");
+  var vertexShader = getShader(gl, "shader-vs");
 
-                // Creamos un programa de shaders de WebGL.
-                glProgram = gl.createProgram();
+  // Creamos un programa de shaders de WebGL.
+  glProgram = gl.createProgram();
 
-                // Asociamos cada shader compilado al programa.
-                gl.attachShader(glProgram, vertexShader);
-                gl.attachShader(glProgram, fragmentShader);
+  // Asociamos cada shader compilado al programa.
+  gl.attachShader(glProgram, vertexShader);
+  gl.attachShader(glProgram, fragmentShader);
 
-                // Linkeamos los shaders para generar el programa ejecutable.
-                gl.linkProgram(glProgram);
+  // Linkeamos los shaders para generar el programa ejecutable.
+  gl.linkProgram(glProgram);
 
-                // Chequeamos y reportamos si hubo alg�n error.
-                if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
-                  alert("Unable to initialize the shader program: " +
-                        gl.getProgramInfoLog(glProgram));
-                  return null;
-                }
+  // Chequeamos y reportamos si hubo alg�n error.
+  if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+    alert("Unable to initialize the shader program: " +
+    gl.getProgramInfoLog(glProgram));
+    return null;
+  }
 
-                // Le decimos a WebGL que de aqu� en adelante use el programa generado.
-                gl.useProgram(glProgram);
-            }
+  // Le decimos a WebGL que de aqu� en adelante use el programa generado.
+  gl.useProgram(glProgram);
+}
 
-            function makeShader(src, type)
-            {
-                //compile the vertex shader
-                var shader = gl.createShader(type);
-                gl.shaderSource(shader, src);
-                gl.compileShader(shader);
+function makeShader(src, type)
+{
+  //compile the vertex shader
+  var shader = gl.createShader(type);
+  gl.shaderSource(shader, src);
+  gl.compileShader(shader);
 
-                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                    alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
-                }
-                return shader;
-            }
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+  }
+  return shader;
+}
 
-            function setupBuffers()
-            {
-                // my_grid = new CilindroCerrado(4,12,0.5);
-                // my_grid = new CilindroAbierto(2,12,0.5);
-                // my_grid = new ConoCerrado(3,12,0.5);
-                my_grid = new ConoAbierto(2,12,0.5);
-                // my_grid = new Esfera(12,12,0.5);
+function setupBuffers()
+{
+  // prueba = new Prueba();
+  // prueba.setPosition(0,0,-10);
+  // prueba.rotateX(-0.5);
+  cilindro = new CilindroCerrado(2,4,12,2);
+  cilindro.setPosition(0,0,-5);
+  // my_grid = new CilindroAbierto(2,12,0.5);
+  // my_grid = new ConoCerrado(3,12,0.5);
+  // my_grid = new ConoAbierto(2,12,0.5);
+  // my_grid = new Esfera(12,12,0.5);
 
-            }
+}
 
-            function drawScene()
-            {
-                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
-                // Preparamos una matriz de perspectiva.
-                mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
-                gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+function drawScene()
+{
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
+  // Preparamos una matriz de perspectiva.
+  mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
+  gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
 
-                var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
-                // Preparamos una matriz de modelo+vista.
-                mat4.identity(mvMatrix);
-                mat4.translate(mvMatrix, mvMatrix, [0.0, 0.0, -5.0]);
-                mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
-                t = t + 0.01;
+  // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
+  // Preparamos una matriz de modelo+vista.
+  mat4.identity(mvMatrix);
+  // if(i<=10){
+  //   mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
+  // }else{
+  //   mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
+  //   if(i==20) i=0;
+  // }
+  // i++;
+  // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
+  // t = t + 0.01;
 
-                gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
-                // console.log(my_grid);
-                my_grid.draw();
-            }
+  // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
+  // console.log(my_grid);
+  cilindro.draw(mvMatrix);
+  // prueba.draw(mvMatrix);
+}
 
-        </script>
-    </head>
-    <body onload="initWebGL()">
-		<center>
-			<h1>Sistemas Gr�ficos - 66.71</h1>
-			<h2>WebGL - Modelo de v�rtices</h2>
-			<canvas id="my-canvas" width="900" height="500">
-			Your browser does not support the HTML5 canvas element.
-			</scanvas>
+</script>
+</head>
+<body onload="initWebGL()">
+  <center>
+    <h1>Sistemas Gr�ficos - 66.71</h1>
+    <h2>WebGL - Modelo de v�rtices</h2>
+    <canvas id="my-canvas" width="900" height="500">
+      Your browser does not support the HTML5 canvas element.
+    </scanvas>
 
-		</center>
-    </body>
+  </center>
+</body>
 </html>

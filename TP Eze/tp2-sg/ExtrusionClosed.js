@@ -40,7 +40,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.binormal_buffer.push(-1.0);
 		this.binormal_buffer.push(0.0);
 		this.binormal_buffer.push(0.0);
-		
+
 		this.normal_buffer.push(0.0);
 		this.normal_buffer.push(0.0);
 		this.normal_buffer.push(-1.0);
@@ -80,7 +80,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.binormal_buffer.push(-1.0);
 		this.binormal_buffer.push(0.0);
 		this.binormal_buffer.push(0.0);
-		
+
 		this.normal_buffer.push(0.0);
 		this.normal_buffer.push(0.0);
 		this.normal_buffer.push(-1.0);
@@ -103,7 +103,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 	for(i=0; i < this.numberOfVerticesInBase*2; ++i){
 		lastX = x;
 		lastY = y;
-		
+
 		x = this.baseVerticesList[i];
 		y = this.baseVerticesList[++i];
 		z = -this.height/2.0;
@@ -149,14 +149,14 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 	for(i=0; i < this.numberOfVerticesInBase*2; ++i){
 		lastX = x;
 		lastY = y;
-		
+
 		x = this.baseVerticesList[i];
 		y = this.baseVerticesList[++i];
 		z = this.height/2.0;
 
 		deltaX = x - lastX;
 		deltaY = y - lastY;
-		
+
 		this.normal_buffer.push(deltaY);
 		this.normal_buffer.push(-deltaX);
 		this.normal_buffer.push(0.0);
@@ -177,7 +177,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.tangent_buffer.push(0.0);
 		this.tangent_buffer.push(0.0);
 		this.tangent_buffer.push(1.0);
-		
+
 		this.texture_coord_buffer.push(i/this.numberOfVerticesInBase);
 		this.texture_coord_buffer.push(1.0/3.0);
 		this.texture_coord_buffer.push(i/this.numberOfVerticesInBase);
@@ -191,11 +191,11 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.position_buffer.push(z);
 	}
 //	add first
-	
+
 	for(i=0; i < this.numberOfVerticesInBase*2; ++i){
 		lastX = x;
 		lastY = y;
-		
+
 		x = this.baseVerticesList[i];
 		y = this.baseVerticesList[++i];
 		z = this.height/2.0;
@@ -213,7 +213,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.binormal_buffer.push(0.0);
 		this.binormal_buffer.push(1.0);
 		this.binormal_buffer.push(0.0);
-		
+
 		this.normal_buffer.push(0.0);
 		this.normal_buffer.push(0.0);
 		this.normal_buffer.push(1.0);
@@ -232,7 +232,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.position_buffer.push(x);
 		this.position_buffer.push(y);
 		this.position_buffer.push(z);
-	}	
+	}
 
 	// Tapa de arriba:
 	for(i=0; i < this.numberOfVerticesInBase; ++i){
@@ -253,7 +253,7 @@ ExtrusionClosed.prototype.createPositionBuffer = function(){
 		this.binormal_buffer.push(-1.0);
 		this.binormal_buffer.push(0.0);
 		this.binormal_buffer.push(0.0);
-		
+
 		this.normal_buffer.push(x);
 		this.normal_buffer.push(y);
 		this.normal_buffer.push(1.0);
