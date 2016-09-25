@@ -18,7 +18,7 @@
   <script type="text/javascript" src="recorridos/ExtrusionCerrada.js"></script>
 
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
-  <script type="text/javascript" src="geometrias/Prueba.js"></script>
+  <script type="text/javascript" src="geometrias/Arbol.js"></script>
 
   <script type="text/javascript" src="geometrias/Circulo.js"></script>
   <script type="text/javascript" src="geometrias/CilindroCerrado.js"></script>
@@ -81,7 +81,7 @@ vertexShader = null,
 t = 0.0,
 i=0;
 cilindro = null;
-prueba = null;
+arbol = null;
 
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
@@ -204,11 +204,12 @@ function makeShader(src, type)
 
 function setupBuffers()
 {
-  // prueba = new Prueba();
-  // prueba.setPosition(0,0,-10);
-  // prueba.rotateX(-0.5);
-  cilindro = new CilindroCerrado(2,4,12,2);
-  cilindro.setPosition(0,0,-5);
+  arbol = new Arbol();
+  arbol.setPosition(0,0,-10);
+  arbol.rotateX(-1.5);
+  arbol.scaleNonUniform(1,1,1.5);
+  // cilindro = new CilindroCerrado(2,4,12,2);
+  // cilindro.setPosition(0,0,-5);
   // my_grid = new CilindroAbierto(2,12,0.5);
   // my_grid = new ConoCerrado(3,12,0.5);
   // my_grid = new ConoAbierto(2,12,0.5);
@@ -239,8 +240,8 @@ function drawScene()
 
   // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
   // console.log(my_grid);
-  cilindro.draw(mvMatrix);
-  // prueba.draw(mvMatrix);
+  // cilindro.draw(mvMatrix);
+  arbol.draw(mvMatrix);
 }
 
 </script>
