@@ -10,6 +10,7 @@
   textarea{ background-color: black; foreground-color: white;}
   </style>
 
+  <script type="text/javascript" src="Camara.js"></script>
   <script type="text/javascript" src="gl-matrix.js"></script>
   <script type="text/javascript" src="Utils.js"></script>
   <script type="text/javascript" src="PrototypalInheritance.js"></script>
@@ -86,6 +87,7 @@ arbol = null;
 modelo = null;
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
+mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
 
 
 // SHADERS FUNCTION
@@ -227,20 +229,22 @@ function drawScene()
 {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
+  
   // Preparamos una matriz de perspectiva.
-  mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
+  pMatrix = actualizarMovimientosDeCamara(pMatrix);
   gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
 
   // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
   // Preparamos una matriz de modelo+vista.
   mat4.identity(mvMatrix);
   if(i<=100){
-    mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
+    //mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
   }else{
-    mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
+    //mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
     if(i==200) i=0;
   }
   i++;
+
   // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
   // t = t + 0.01;
 
@@ -253,7 +257,7 @@ function drawScene()
 
 </script>
 </head>
-<body onload="initWebGL()">
+<body onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)">
   <center>
     <h1>Sistemas Gr�ficos - 66.71</h1>
     <h2>WebGL - Modelo de v�rtices</h2>
