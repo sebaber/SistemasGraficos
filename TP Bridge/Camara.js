@@ -126,6 +126,25 @@ function actualizarMovimientosDeCamara(pMatrix){
 	var yPos = 0.0;
 	var xRot = 0.0;
 	var yRot = 0.0;
+
+	if (teclaRotarIzquierdaActiva){
+		yRot -= 0.01;
+	}
+	if (teclaRotarDerechaActiva){
+		yRot += 0.01;
+	}
+	if (teclaRotarArribaActiva){
+		xRot -= 0.01;
+	}
+	if (teclaRotarAbajoActiva){
+		xRot += 0.01;
+	}
+
+	yRotGlobal -= yRot;
+
+	//Aplico la rotacion
+	mat4.rotate(pMatrix, pMatrix, 0.005, [xRot, yRot, 0]);
+
 	if (teclaArribaActiva){
 		yPos += 0.01;
 	}
@@ -146,23 +165,7 @@ function actualizarMovimientosDeCamara(pMatrix){
 	//Aplico la traslacion
 	mat4.translate(pMatrix, pMatrix, [dyRespectoDeX + dyRespectoDeY, 0.0 , dxRespectoDeX + dxRespectoDeY]);
 
-	if (teclaRotarIzquierdaActiva){
-		yRot -= 0.01;
-	}
-	if (teclaRotarDerechaActiva){
-		yRot += 0.01;
-	}
-	if (teclaRotarArribaActiva){
-		xRot -= 0.01;
-	}
-	if (teclaRotarAbajoActiva){
-		xRot += 0.01;
-	}
 
-	yRotGlobal -= yRot;
-
-	//Aplico la rotacion
-	mat4.rotate(pMatrix, pMatrix, 0.005, [xRot, yRot, 0]);
 
 	return pMatrix;
 }
