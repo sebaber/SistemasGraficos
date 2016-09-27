@@ -20,6 +20,7 @@
 
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
   <script type="text/javascript" src="geometrias/Arbol.js"></script>
+  <script type="text/javascript" src="geometrias/ArbolRandom.js"></script>
 
   <script type="text/javascript" src="geometrias/Circulo.js"></script>
   <script type="text/javascript" src="geometrias/CilindroCerrado.js"></script>
@@ -206,7 +207,7 @@ function makeShader(src, type)
 function setupBuffers()
 {
   modelo = new ModeloComplejo();
-  arbol = new Arbol();
+  arbol = new ArbolRandom();
   arbol.setPosition(-5,0,-10);
   arbol.rotateX(-1.5);
   arbol.scaleNonUniform(1,1,1.5);
