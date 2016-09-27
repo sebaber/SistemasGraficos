@@ -86,8 +86,6 @@ modelo = null;
 viga = null;
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
-mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
-
 
 // SHADERS FUNCTION
 function getShader(gl, id) {
@@ -231,6 +229,7 @@ function drawScene()
   var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
   
   // Preparamos una matriz de perspectiva.
+  mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
   pMatrix = actualizarMovimientosDeCamara(pMatrix);
   gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
 

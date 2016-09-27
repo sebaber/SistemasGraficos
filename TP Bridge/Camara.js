@@ -60,6 +60,8 @@ var teclaRotarAbajoActiva = false;
 var teclaRotarArribaActiva = false;
 var xRotGlobal = 0.0;
 var yRotGlobal = 0.0;
+var xPosGlobal = 0.0;
+var yPosGlobal = 0.0;
 
 function keyPressDownEvent(event){
   // if ( event.which == 13 ) {
@@ -123,7 +125,7 @@ function keyPressUpEvent(event){
 
 function actualizarMovimientosDeCamara(pMatrix){
 	var xPos = 0.0;
-	var yPos = 0.0;
+	var yPos = 0.0;	
 	var xRot = 0.0;
 	var yRot = 0.0;
 
@@ -141,9 +143,10 @@ function actualizarMovimientosDeCamara(pMatrix){
 	}
 
 	yRotGlobal -= yRot;
+	xRotGlobal -= xRot;
 
 	//Aplico la rotacion
-	mat4.rotate(pMatrix, pMatrix, 0.005, [xRot, yRot, 0]);
+	mat4.rotate(pMatrix, pMatrix, 0.005, [xRotGlobal, yRotGlobal, 0]);
 
 	if (teclaArribaActiva){
 		yPos += 0.01;
@@ -162,10 +165,11 @@ function actualizarMovimientosDeCamara(pMatrix){
 	var dyRespectoDeX = yPos * Math.sin(yRotGlobal);
 	var dxRespectoDeY = xPos * Math.cos(yRotGlobal - 1.57079632679);
 	var dyRespectoDeY = xPos * Math.sin(yRotGlobal - 1.57079632679);
+
+	xPosGlobal += (dyRespectoDeX + dyRespectoDeY);
+	yPosGlobal += (dxRespectoDeX + dxRespectoDeY);
 	//Aplico la traslacion
-	mat4.translate(pMatrix, pMatrix, [dyRespectoDeX + dyRespectoDeY, 0.0 , dxRespectoDeX + dxRespectoDeY]);
-
-
+	mat4.translate(pMatrix, pMatrix, [xPosGlobal, 0.0 , yPosGlobal]);
 
 	return pMatrix;
 }
