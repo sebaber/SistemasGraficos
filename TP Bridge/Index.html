@@ -20,6 +20,7 @@
   <script type="text/javascript" src="recorridos/BezierCubica.js"></script>
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
   <script type="text/javascript" src="geometrias/Arbol.js"></script>
+  <script type="text/javascript" src="geometrias/ArbolRandom.js"></script>
 
   <script type="text/javascript" src="geometrias/ExtrusionViga.js"></script>
   <script type="text/javascript" src="geometrias/Circulo.js"></script>
@@ -207,13 +208,13 @@ function setupBuffers()
   modelo = new ModeloComplejo();
   viga.setPosition(0,0,-10);
   viga.rotateY(Math.PI/2);
-  // arbol = new Arbol();
-  // arbol.setPosition(-5,0,-10);
-  // arbol.rotateX(-1.5);
-  // arbol.scaleNonUniform(1,1,1.5);
-  // cilindro = new CilindroCerrado(2,4,12,2);
-  // cilindro.setPosition(5,0,-10);
-  // cilindro.rotateX(-1.5);
+  arbol = new ArbolRandom();
+  arbol.setPosition(-5,0,-10);
+  arbol.rotateX(-1.5);
+  arbol.scaleNonUniform(1,1,1.5);
+  cilindro = new CilindroCerrado(2,4,12,2);
+  cilindro.setPosition(5,0,-10);
+  cilindro.rotateX(-1.5);
   // cilindro.rotateY(-1.5);
   modelo.agregarModelo(viga);
   // modelo.agregarModelo(arbol);
