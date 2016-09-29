@@ -8,6 +8,12 @@ function Circulo(radio, x0, y0, z) {
 	this.z = z;
 }
 
+Circulo.prototype.setCenter = function(x,y,z){
+	this.x0 = x;
+	this.y0=y;
+	this.z0=z;
+};
+
 Circulo.prototype.getPosition = function(t) {
 	return [ this.radio * Math.cos(2 * Math.PI * t) + this.x0,
 			this.radio * Math.sin(2 * Math.PI * t) + this.y0, this.z ];

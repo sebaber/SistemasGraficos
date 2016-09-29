@@ -33,5 +33,5 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
 
     }
   }
-  
+
 };
