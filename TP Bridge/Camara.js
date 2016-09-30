@@ -147,7 +147,7 @@ function actualizarMovimientosDeCamara(pMatrix){
 
 	//Aplico la rotacion
 	mat4.rotate(pMatrix, pMatrix, yRotGlobal, [0, 1, 0]);
-	mat4.rotate(pMatrix, pMatrix, xRotGlobal, [1, 0, 0]);
+	mat4.rotate(pMatrix, pMatrix, xRotGlobal, [Math.cos(yRotGlobal), 0, Math.sin(yRotGlobal)]);
 
 	if (teclaArribaActiva){
 		yPos += 0.025;
