@@ -34,12 +34,20 @@ function ArbolRandom() {
 				,0.0, 2.975];
 	}
 	Arbol.call(this,lista);
-	var randomXZ = 0.3;//Math.random();
-	var randomY = 0.5;//Math.random();
-	var x = randomXZ;
-	var y = randomY;
-	var z = randomXZ;	
-	this.scaleNonUniform(x,y,z);
+	this.init();
 }
 
 inheritPrototype(ArbolRandom, Arbol);
+
+ArbolRandom.prototype.init = function () {
+	var randomXZ = Math.random() / 2 + 0.5;
+	var randomY = Math.random() / 2 + 0.5;
+	var x = randomXZ;
+	var y = randomY;
+	var z = randomXZ;	
+	
+	this.setPosition(-5,0,-10);
+  	this.rotateX(-1.5);
+  	this.scaleNonUniform(1,1,1.5);
+	this.scaleNonUniform(x,y,z);
+};
