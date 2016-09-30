@@ -146,25 +146,28 @@ function actualizarMovimientosDeCamara(pMatrix){
 	xRotGlobal -= xRot;
 
 	//Aplico la rotacion
-	mat4.rotate(pMatrix, pMatrix, 0.005, [xRotGlobal, yRotGlobal, 0]);
+	mat4.rotate(pMatrix, pMatrix, yRotGlobal, [0, 1, 0]);
+	mat4.rotate(pMatrix, pMatrix, xRotGlobal, [1, 0, 0]);
 
 	if (teclaArribaActiva){
-		yPos += 0.01;
+		yPos += 0.025;
 	}
 	if (teclaAbajoActiva) {
-		yPos -= 0.01;
+		yPos -= 0.025;
 	}
 	if (teclaDerechaActiva){
-		xPos += 0.01;
+		xPos += 0.025;
 	}
 	if (teclaIzquierdaActiva){
-		xPos -= 0.01;
+		xPos -= 0.025;
 	}
 	
-	var dxRespectoDeX = yPos * Math.cos(yRotGlobal);
-	var dyRespectoDeX = yPos * Math.sin(yRotGlobal);
-	var dxRespectoDeY = xPos * Math.cos(yRotGlobal - 1.57079632679);
-	var dyRespectoDeY = xPos * Math.sin(yRotGlobal - 1.57079632679);
+	var angulo = yRotGlobal * -1;
+
+	var dxRespectoDeX = yPos * Math.cos(angulo);
+	var dyRespectoDeX = yPos * Math.sin(angulo);
+	var dxRespectoDeY = xPos * Math.cos(angulo - 1.57079632679);
+	var dyRespectoDeY = xPos * Math.sin(angulo - 1.57079632679);
 
 	xPosGlobal += (dyRespectoDeX + dyRespectoDeY);
 	yPosGlobal += (dxRespectoDeX + dxRespectoDeY);
