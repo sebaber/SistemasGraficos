@@ -43,7 +43,7 @@ ExtrusionViga.prototype._setPositionAndColorVertex = function(){
 };
 
 ExtrusionViga.prototype.getVerticesOfPosition = function(x,y,z){
-  console.log("x: "+x+" y: "+y+" z: "+z);
+  //console.log("x: "+x+" y: "+y+" z: "+z);
   var vertices = [];
   this.circulo.setCenter(x,y,z);
   var d = 1.0 / this.npoints;
@@ -51,7 +51,7 @@ ExtrusionViga.prototype.getVerticesOfPosition = function(x,y,z){
   for (var i = 0; i < this.npoints; i++) {
 		var t = d * i;
 		pos = this.circulo.getPosition(t);
-    console.log(pos);
+    //console.log(pos);
 		vertices.push([ x, pos[1], pos[0] ]);
 	}
   pos = this.circulo.getPosition(0.0);

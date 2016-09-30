@@ -11,6 +11,7 @@
   </style>
 
   <script type="text/javascript" src="Camara.js"></script>
+  <script type="text/javascript" src="PerfilDelRio.js"></script>
   <script type="text/javascript" src="gl-matrix.js"></script>
   <script type="text/javascript" src="Utils.js"></script>
   <script type="text/javascript" src="PrototypalInheritance.js"></script>
@@ -134,6 +135,7 @@ function getShader(gl, id) {
 
 function initWebGL()
 {
+  cargarSegundoCanvas();
   canvas = document.getElementById("my-canvas");
   try{
     gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
@@ -262,8 +264,10 @@ function drawScene()
     <h2>Trabajo pr&aacute;ctico puente</h2>
     <canvas id="my-canvas" width="900" height="500">
       Your browser does not support the HTML5 canvas element.
-    </scanvas>
-
+    </canvas>
+    <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
+      Your browser does not support the HTML5 canvas element.
+    </canvas>
   </center>
 </body>
 </html>
