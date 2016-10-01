@@ -19,16 +19,20 @@ function SplineCubica (v0,v1,v2,v3) {
 
 SplineCubica.prototype.p = function(u) {
     /* Devuelve el vector tangente a la curva en el punto.*/
-    var x=Base0(u)*this.v0+Base1(u)*this.v1+Base2(u)*this.v2+Base3(u)*this.v3;
-    var y=Base0(u)*this.v0+Base1(u)*this.v1+Base2(u)*this.v2+Base3(u)*this.v3;
+    var x=this.Base0(u)*this.v0[0]+this.Base1(u)*this.v1[0]
+        +this.Base2(u)*this.v2[0]+this.Base3(u)*this.v3[0];
+    var y=this.Base0(u)*this.v0[1]+this.Base1(u)*this.v1[1]
+        +this.Base2(u)*this.v2[1]+this.Base3(u)*this.v3[1];
 
     return [x,y];
 }
 
 SplineCubica.prototype.t = function (u){
     /* Devuelve el vector tangente a la curva en el punto.*/
-    var x=Base0der(u)*this.v0+Base1der(u)*this.v1+Base2der(u)*this.v2+Base3der(u)*this.v3;
-    var y=Base0der(u)*this.v0+Base1der(u)*this.v1+Base2der(u)*this.v2+Base3der(u)*this.v3;
+    var x=this.Base0der(u)*this.v0[0]+this.Base1der(u)*this.v1[0]
+        +this.Base2der(u)*this.v2[0]+this.Base3der(u)*this.v3[0];
+    var y=this.Base0der(u)*this.v0[1]+this.Base1der(u)*this.v1[1]
+        +this.Base2der(u)*this.v2[1]+this.Base3der(u)*this.v3[1];
 
     return [x,y];
 }

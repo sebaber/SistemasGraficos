@@ -1,4 +1,4 @@
-var perfilDelRioObject = PerfilDelRio();
+var perfilDelRioObject = new PerfilDelRio();
 
 function cargarSegundoCanvas(){
 	var canvasPerfil=document.getElementById("perfilDelRioCanvas");
@@ -23,11 +23,11 @@ function cargarSegundoCanvas(){
 	//Resto del camino que deberia ser con BsSpline 2d
 	var puntos = perfilDelRioObject.obtenerPuntosSpline();
 	ctx.beginPath();
-	ctx.lineWidth = 1;
+	ctx.lineWidth = 2;
 	var punto = puntos[0];
 	ctx.moveTo(punto[0],punto[1]);
-	for(u=1; u < puntos.length; ++u ){
-		punto = puntos[u];
+	for(var i= 1; i < puntos.length; ++i ){
+		punto = puntos[i];
 		ctx.lineTo(punto[0],punto[1]);
 	}		
 	ctx.stroke();
@@ -46,7 +46,7 @@ function calcularPuntoSiguienteSpline(anteultimo,ultimo){
 
 function PerfilDelRio () {
 	this.inicio = [100,0];
-	this.puntos = [];
+	this.puntos = [[25,50],[175,75]];
 	this.final  = [100,200];
     //Paso con que recorre la curva
     this.paso = 0.1;
@@ -71,7 +71,7 @@ PerfilDelRio.prototype.agregarPunto =function (punto){
 	this.puntos.push(punto);
 }
 
-PerfilDelRio.prototype.obtenerPuntosSpline =function (u, indice){
+PerfilDelRio.prototype.obtenerPuntosSpline =function (){
 	var puntosDelCamino = [];
 	var puntosCurvaSuave = [];
 
@@ -86,11 +86,9 @@ PerfilDelRio.prototype.obtenerPuntosSpline =function (u, indice){
 	puntosDelCamino.push(this.final);
 
 	for(k=0; k < (puntosDelCamino.length-3); ++k){
-		var splineTramo = SplineCubica(this.puntos[k],this.puntos[k+1],
-			this.puntos[k+2],this.puntos[k+3]);
-		for(u=0; u < 1; u + this.paso){
-			var splineTramo = SplineCubica(this.puntos[k],this.puntos[k+1],
-				this.puntos[k+2],this.puntos[k+3]);
+		var splineTramo = new SplineCubica(puntosDelCamino[k],puntosDelCamino[k+1],
+			puntosDelCamino[k+2],puntosDelCamino[k+3]);
+		for(u=0.0; u < 1.0; u += this.paso){
 			var puntoNuevo  = splineTramo.p(u);
 			puntosCurvaSuave.push(puntoNuevo);
 		}		
