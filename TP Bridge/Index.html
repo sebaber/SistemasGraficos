@@ -37,6 +37,10 @@
   <script type="text/javascript" src="formas/Circulo.js"></script>
   <script type="text/javascript" src="formas/PerfilTorre.js"></script>
 
+  <!-- Codigo para la consola -->
+  <script type="text/javascript" src="datgui/dat.gui.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="datgui/dat-gui-swec.css">
+  <script type="text/javascript" src="datgui/panelDeComandos.js"></script>
   <!--
   Vertex shader
 
@@ -274,12 +278,13 @@ function drawScene()
   <center>
     <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
     <h2>Trabajo pr&aacute;ctico puente</h2>
-    <canvas id="my-canvas" width="900" height="500">
-      Your browser does not support the HTML5 canvas element.
-    </canvas>
-    <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
-      Your browser does not support the HTML5 canvas element.
-    </canvas>
+      <canvas id="my-canvas" width="900" height="500">
+        Your browser does not support the HTML5 canvas element.
+      </canvas>      
+      <script type="text/javascript"> GUI(); </script>
+      <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas element.
+      </canvas>
   </center>
 </body>
 </html>
