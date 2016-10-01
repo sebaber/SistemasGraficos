@@ -19,15 +19,32 @@ Circulo.prototype.getPosition = function(t) {
 			this.radio * Math.sin(2 * Math.PI * t) + this.y0, this.z ];
 };
 
+Circulo.prototype.getPositionXZ = function(t) {
+	return [
+		this.x0,
+		this.radio * Math.sin(2 * Math.PI * t) + this.y0,
+		this.radio * Math.cos(2 * Math.PI * t) + this.x0
+	];
+};
+
 Circulo.prototype.getTangente = function(t) {
 	var nt = [ -2 * Math.PI * this.radio * Math.sin(2 * Math.PI * t),
 			2 * Math.PI * this.radio * Math.cos(2 * Math.PI * t), this.z ];
-	var vect = vec3.create(nt);
-	vec3.normalize(vect, vect);
+	vec3.normalize(nt, nt);
 	return [ vect[0], vect[1], vect[2] ];
 };
 
 Circulo.prototype.getNormal = function(t) {
-	var tan = this.t(t);
+	var tan = this.getTangente(t);
 	return [ tan[1], -tan[0], tan[2] ];
+};
+
+Circulo.prototype.getBiNormal = function(t) {
+	var tan = this.getTangente(t);
+	var nor = this.getNormal(t);
+	return [
+		tan[1]*nor[2] - tan[2]*nor[1],
+	 	tan[2]*nor[0] - tan[0]*nor[2],
+		tan[0]*nor[1] - tan[1]*nor[0]
+	];
 };

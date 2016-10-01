@@ -14,25 +14,36 @@ ExtrusionViga.prototype._setPositionAndColorVertex = function(){
   var vertices = [];
   this.position_buffer = [];
   this.color_buffer = [];
+  var t;
+  vertices = this.getVertices();
 
+  console.log("vertices: "+vertices);
   for (var i = 0.0; i < this.nlevels; i++) {
-    pos = this.bezier.p(i/(this.nlevels-1));
-    vertices = this.getVerticesOfPosition(pos[0],pos[1],pos[2]);
+    t = i/(this.nlevels-1);
+
+    pos = this.bezier.getPosition(t);
+
+    matrizRotacion = Utils.getMatrizRotacion(this.bezier.getTangente(t),this.bezier.getNormal(t),this.bezier.getBiNormal(t));
+    var pos4 = vec4.create();
+    vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
+
+    var matrizTraslacion = mat4.create();
+    mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
+    var matFinal = mat4.create();
+    mat4.multiply(matFinal,matrizTraslacion,matrizRotacion);
+
+    console.log("matriz");
+    console.log(matrizRotacion);
+
     for (var j = 0.0; j < vertices.length; j++) {
-      // var m = mat4.create();
-      // // mat4.identity(m);
-      // mat4.translate(m, m, vec3.fromValues(vertices[j][0],vertices[j][1],vertices[j][2]));
-      // mat4.rotate(m, m, Math.PI/2,vec3.fromValues(0,1,0));
-      //
-      // var v = vec3.create();
-    	// var inverse = mat4.create();
-    	// mat4.invert(inverse, m);
-    	// vec3.transformMat4(v, v, inverse);
-    	// vec3.negate(v, v);
-      // var vertice = v;
-      this.position_buffer.push(vertices[j][0]);
-      this.position_buffer.push(vertices[j][1]);
-      this.position_buffer.push(vertices[j][2]);
+
+      var vertice = vec4.create();
+      vec4.set(vertice,vertices[j][0],vertices[j][1],vertices[j][2],1.0);
+      vec4.transformMat4(vertice,vertice,matFinal);
+
+      this.position_buffer.push(vertice[0]);
+      this.position_buffer.push(vertice[1]);
+      this.position_buffer.push(vertice[2]);
 
       this.color_buffer.push(1.0/this.rows * i);
       this.color_buffer.push(0.2);
@@ -42,20 +53,19 @@ ExtrusionViga.prototype._setPositionAndColorVertex = function(){
   }
 };
 
-ExtrusionViga.prototype.getVerticesOfPosition = function(x,y,z){
-  console.log("x: "+x+" y: "+y+" z: "+z);
+ExtrusionViga.prototype.getVertices = function(){
+  // console.log("x: "+x+" y: "+y+" z: "+z);
   var vertices = [];
-  this.circulo.setCenter(x,y,z);
+  // this.circulo.setCenter(x,y,z);
   var d = 1.0 / this.npoints;
   var pos;
   for (var i = 0; i < this.npoints; i++) {
 		var t = d * i;
 		pos = this.circulo.getPosition(t);
-    console.log(pos);
-		vertices.push([ x, pos[1], pos[0] ]);
+    vertices.push(pos);
 	}
   pos = this.circulo.getPosition(0.0);
-	vertices.push([ x, pos[1], pos[0] ]);
+	vertices.push(pos);
 
   return vertices;
 };

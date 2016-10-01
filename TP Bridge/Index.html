@@ -204,10 +204,10 @@ function makeShader(src, type)
 
 function setupBuffers()
 {
-  viga = new ExtrusionViga(new BezierCubica([-1,0,0],[0,1,0],[1,1,0],[2,0,0]),0.5,12,10);
+  viga = new ExtrusionViga(new BezierCubica([-1,0,0],[0,2,0],[1,2,0],[2,0,0]),0.5,12,10);
   modelo = new ModeloComplejo();
   viga.setPosition(0,0,-10);
-  viga.rotateY(Math.PI/2);
+  // viga.rotateY(Math.PI/2);
   arbol = new ArbolRandom();
   cilindro = new CilindroCerrado(2,4,12,2);
   cilindro.setPosition(5,0,-10);
@@ -227,7 +227,7 @@ function drawScene()
 {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
-  
+
   // Preparamos una matriz de perspectiva.
   mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
   pMatrix = actualizarMovimientosDeCamara(pMatrix);

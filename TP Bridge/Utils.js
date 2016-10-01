@@ -14,6 +14,20 @@ Utils.randomBetween = function (a, b) {
 	return a + Math.floor((Math.random() * b) + 1);
 };
 
+Utils.getMatrizRotacion = function(t,n,bn){
+	var matrizRotacion = mat4.create();
+	matrizRotacion[0] = n[0];
+  matrizRotacion[1] = n[1];
+  matrizRotacion[2] = n[2];
+  matrizRotacion[4] = bn[0];
+  matrizRotacion[5] = bn[1];
+  matrizRotacion[6] = bn[2];
+  matrizRotacion[8] = t[0];
+  matrizRotacion[9] = t[1];
+  matrizRotacion[10] = t[2];
+	return matrizRotacion;
+};
+
 /**
  * Verifica si el valor es potencia de 2.
  *
