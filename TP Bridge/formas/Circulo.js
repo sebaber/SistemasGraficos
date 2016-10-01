@@ -30,25 +30,6 @@ Circulo.prototype.getVertices = function() {
 	return vertices;
 };
 
-Circulo.prototype.getVerticesXZ = function() {
-	var vertices = [];
-  var d = 1.0 / this.npoints;
-  var pos;
-  for (var i = 0; i < this.npoints; i++) {
-		var t = d * i;
-    vertices.push(this.getPositionXZ(t));
-	}
-	vertices.push(this.getPositionXZ(0.0));
-	return vertices;
-};
-Circulo.prototype.getPositionXZ = function(t) {
-	return [
-		this.z,
-		this.radio * Math.sin(2 * Math.PI * t) + this.y0,
-		this.radio * Math.cos(2 * Math.PI * t) + this.x0
-	];
-};
-
 Circulo.prototype.getTangente = function(t) {
 	var nt = [ -2 * Math.PI * this.radio * Math.sin(2 * Math.PI * t),
 			2 * Math.PI * this.radio * Math.cos(2 * Math.PI * t), this.z ];
