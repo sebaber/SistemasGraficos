@@ -1,5 +1,5 @@
 function Torre(curva,nlevels){
-	Extrusion.call(this,curva, new PerfilTorre(),nlevels);
+	ExtrusionCerrada.call(this,curva, new PerfilTorre(),nlevels);
 }
 
-inheritPrototype(Torre, Extrusion);
+inheritPrototype(Torre, ExtrusionCerrada);
