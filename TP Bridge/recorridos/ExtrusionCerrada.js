@@ -8,15 +8,9 @@ function ExtrusionCerrada(curva,forma,nlevels){
 
 inheritPrototype(ExtrusionCerrada, Modelo);
 
-ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
-  var pos = [];
-  var vertices = [];
-  this.position_buffer = [];
-  this.color_buffer = [];
-  vertices = this.forma.getVertices();
+ExtrusionCerrada.prototype.addTapaInferior = function(){
 
-  pos = this.curva.getPosition(0);
-  // matrizRotacion = Utils.getMatrizRotacion(this.curva.getTangente(0),this.curva.getNormal(0),this.curva.getBiNormal(0));
+  var pos = this.curva.getPosition(0);
 
   var pos4 = vec4.create();
   vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
@@ -24,15 +18,12 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
   var matrizTraslacion = mat4.create();
   mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
 
-  // var matFinal = mat4.create();
-  // mat4.multiply(matFinal,matrizTraslacion,matrizRotacion);
-
   var vertice = vec4.create();
   vec4.set(vertice,0.0,0.0,0.0,1.0);
 
   vec4.transformMat4(vertice,vertice,matrizTraslacion);
 
-  for(var j= 0.0;j<vertices.length;j++){
+  for(var j= 0.0;j<(this.forma.getPoints()+1);j++){
     this.position_buffer.push(vertice[0]);
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
@@ -40,8 +31,44 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
     this.color_buffer.push(0.2);
     this.color_buffer.push(1.0/this.cols * j);
   }
+};
 
-  console.log("vertices: "+vertices);
+ExtrusionCerrada.prototype.addTapaSuperior = function(){
+
+  var pos = this.curva.getPosition(1);
+
+  var pos4 = vec4.create();
+  vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
+
+  var matrizTraslacion = mat4.create();
+  mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
+
+  var vertice = vec4.create();
+  vec4.set(vertice,0.0,0.0,0.0,1.0);
+
+  vec4.transformMat4(vertice,vertice,matrizTraslacion);
+
+  for(var j= 0.0;j<(this.forma.getPoints()+1);j++){
+    this.position_buffer.push(vertice[0]);
+    this.position_buffer.push(vertice[1]);
+    this.position_buffer.push(vertice[2]);
+    this.color_buffer.push(1.0/this.rows * i);
+    this.color_buffer.push(0.2);
+    this.color_buffer.push(1.0/this.cols * j);
+  }
+};
+
+
+ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
+  var pos = [];
+  var vertices = [];
+  this.position_buffer = [];
+  this.color_buffer = [];
+
+  vertices = this.forma.getVertices();
+
+  this.addTapaInferior();
+
   for (var i = 0.0; i < this.nlevels; i++) {
     var t = i/(this.nlevels-1);
 
@@ -75,31 +102,5 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
     }
   }
 
-    pos = this.curva.getPosition(1);
-    matrizRotacion = Utils.getMatrizRotacion(this.curva.getTangente(1),this.curva.getNormal(1),this.curva.getBiNormal(1));
-
-    var pos4 = vec4.create();
-    vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
-
-    var matrizTraslacion = mat4.create();
-    mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
-    //
-    // var matFinal = mat4.create();
-    // mat4.multiply(matFinal,matrizTraslacion,matrizRotacion);
-
-    var vertice = vec4.create();
-    vec4.set(vertice,0.0,0.0,0.0,1.0);
-
-    vec4.transformMat4(vertice,vertice,matrizTraslacion);
-
-    for(var j= 0.0;j<vertices.length;j++){
-      this.position_buffer.push(vertice[0]);
-      this.position_buffer.push(vertice[1]);
-      this.position_buffer.push(vertice[2]);
-      this.color_buffer.push(1.0/this.rows * i);
-      this.color_buffer.push(0.2);
-      this.color_buffer.push(1.0/this.cols * j);
-    }
-
-
+  this.addTapaSuperior();
 };
