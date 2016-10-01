@@ -1,0 +1,5 @@
+- SetupShaders: setea el pograma de shader a utilizar.
+
+- setupLighting: me permite jugar con las luces. Vectores de 3: RGB
+
+- 

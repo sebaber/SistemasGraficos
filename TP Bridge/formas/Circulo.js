@@ -1,27 +1,49 @@
 /**
  * Created by chris on 07/10/15.
  */
-function Circulo(radio, x0, y0, z) {
+function Circulo(npoints,radio, x0, y0, z) {
+	this.npoints = npoints;
 	this.radio = radio;
 	this.x0 = x0;
 	this.y0 = y0;
 	this.z = z;
 }
 
-Circulo.prototype.setCenter = function(x,y,z){
-	this.x0 = x;
-	this.y0=y;
-	this.z0=z;
-};
-
 Circulo.prototype.getPosition = function(t) {
 	return [ this.radio * Math.cos(2 * Math.PI * t) + this.x0,
 			this.radio * Math.sin(2 * Math.PI * t) + this.y0, this.z ];
 };
 
+Circulo.prototype.getPoints = function(){
+	return this.npoints;
+};
+
+Circulo.prototype.getVertices = function() {
+	var vertices = [];
+  var d = 1.0 / this.npoints;
+  var pos;
+  for (var i = 0; i < this.npoints; i++) {
+		var t = d * i;
+    vertices.push(this.getPosition(t));
+	}
+	vertices.push(this.getPosition(0.0));
+	return vertices;
+};
+
+Circulo.prototype.getVerticesXZ = function() {
+	var vertices = [];
+  var d = 1.0 / this.npoints;
+  var pos;
+  for (var i = 0; i < this.npoints; i++) {
+		var t = d * i;
+    vertices.push(this.getPositionXZ(t));
+	}
+	vertices.push(this.getPositionXZ(0.0));
+	return vertices;
+};
 Circulo.prototype.getPositionXZ = function(t) {
 	return [
-		this.x0,
+		this.z,
 		this.radio * Math.sin(2 * Math.PI * t) + this.y0,
 		this.radio * Math.cos(2 * Math.PI * t) + this.x0
 	];

@@ -1,39 +1,35 @@
-function ExtrusionViga(bezier,radio,nlevels,npoints){
-  this.bezier = bezier;
+function Extrusion(curva,forma,nlevels){
+  this.curva = curva;
   this.nlevels = nlevels;
-  this.radio = radio;
-  this.npoints = npoints;
-	this.circulo = new Circulo(radio, 0.0, 0.0, 0.0);
-  Modelo.call(this, this.nlevels, this.npoints+1);
+  this.forma = forma;
+  Modelo.call(this,this.nlevels,this.forma.getPoints()+1);
 }
 
-inheritPrototype(ExtrusionViga, Modelo);
+inheritPrototype(Extrusion, Modelo);
 
-ExtrusionViga.prototype._setPositionAndColorVertex = function(){
+Extrusion.prototype._setPositionAndColorVertex = function(){
   var pos = [];
   var vertices = [];
   this.position_buffer = [];
   this.color_buffer = [];
   var t;
-  vertices = this.getVertices();
+  vertices = this.forma.getVertices();
 
   console.log("vertices: "+vertices);
   for (var i = 0.0; i < this.nlevels; i++) {
     t = i/(this.nlevels-1);
 
-    pos = this.bezier.getPosition(t);
+    pos = this.curva.getPosition(t);
+    matrizRotacion = Utils.getMatrizRotacion(this.curva.getTangente(t),this.curva.getNormal(t),this.curva.getBiNormal(t));
 
-    matrizRotacion = Utils.getMatrizRotacion(this.bezier.getTangente(t),this.bezier.getNormal(t),this.bezier.getBiNormal(t));
     var pos4 = vec4.create();
     vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
 
     var matrizTraslacion = mat4.create();
     mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
+
     var matFinal = mat4.create();
     mat4.multiply(matFinal,matrizTraslacion,matrizRotacion);
-
-    console.log("matriz");
-    console.log(matrizRotacion);
 
     for (var j = 0.0; j < vertices.length; j++) {
 
@@ -51,21 +47,4 @@ ExtrusionViga.prototype._setPositionAndColorVertex = function(){
 
     }
   }
-};
-
-ExtrusionViga.prototype.getVertices = function(){
-  // console.log("x: "+x+" y: "+y+" z: "+z);
-  var vertices = [];
-  // this.circulo.setCenter(x,y,z);
-  var d = 1.0 / this.npoints;
-  var pos;
-  for (var i = 0; i < this.npoints; i++) {
-		var t = d * i;
-		pos = this.circulo.getPosition(t);
-    vertices.push(pos);
-	}
-  pos = this.circulo.getPosition(0.0);
-	vertices.push(pos);
-
-  return vertices;
 };
