@@ -21,7 +21,7 @@ function cargarSegundoCanvas(){
 	ctx.closePath();
 
 	//Resto del camino que deberia ser con BsSpline 2d
-	var puntos = perfilDelRioObject.obtenerPuntosSpline();
+	var puntos = perfilDelRioObject.obtenerPuntosSpline(0.1);
 	ctx.beginPath();
 	ctx.lineWidth = 2;
 	var punto = puntos[0];
@@ -49,7 +49,7 @@ function PerfilDelRio () {
 	this.puntos = [];
 	this.final  = [100,200];
     //Paso con que recorre la curva
-    this.paso = 0.1;
+    //this.paso = 0.1;
 }
 
 PerfilDelRio.prototype.eliminarPuntos=function (){
@@ -76,7 +76,7 @@ PerfilDelRio.prototype.agregarPunto =function (punto){
 	this.puntos.sort(function(a, b){return a[1]-b[1]});
 }
 
-PerfilDelRio.prototype.obtenerPuntosSpline =function (){
+PerfilDelRio.prototype.obtenerPuntosSpline =function (pasoDeCalculo){
 	var puntosDelCamino = [];
 	var puntosCurvaSuave = [];
 
@@ -93,10 +93,28 @@ PerfilDelRio.prototype.obtenerPuntosSpline =function (){
 	for(k=0; k < (puntosDelCamino.length-3); ++k){
 		var splineTramo = new SplineCubica(puntosDelCamino[k],puntosDelCamino[k+1],
 			puntosDelCamino[k+2],puntosDelCamino[k+3]);
-		for(u=0.0; u < 1.0; u += this.paso){
+		for(u=0.0; u < 1.0; u += pasoDeCalculo){
 			var puntoNuevo  = splineTramo.p(u);
 			puntosCurvaSuave.push(puntoNuevo);
 		}		
 	}
 	return puntosCurvaSuave;
+}
+
+//Una forma de sacar los puntos es darme el largo del rio y el paso de calculo que 
+//queres para cada calculo
+// 	var puntos = perfilDelRioObject.obtenerPuntosSplineTransformados(100,0.1);
+PerfilDelRio.prototype.obtenerPuntosSplineTransformados =function (largoDelRio,pasoDeCalculo){
+	var puntosCurvaSuave = this.obtenerPuntosSpline(pasoDeCalculo);
+	var puntosCurvaSuaveTransformado = [];
+	var largoDelCanvas = 200.0;
+	var factor = largoDelRio / largoDelCanvas; 
+	for(k=0; k < puntosCurvaSuave.length; ++k){
+		var punto = puntosCurvaSuave[k];
+		punto[0] *= factor;
+		punto[1] *= factor;
+		// seteo en la nueva curva x, y , z=0
+		puntosCurvaSuaveTransformado.push([punto[0], punto[1],0]); 
+	} 
+	return puntosCurvaSuaveTransformado;
 }
