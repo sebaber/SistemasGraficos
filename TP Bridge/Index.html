@@ -19,15 +19,18 @@
   <script type="text/javascript" src="Transformable.js"></script>
 
   <script type="text/javascript" src="modelos/ModeloComplejo.js"></script>
+  <script type="text/javascript" src="modelos/Terreno.js"></script>
   <script type="text/javascript" src="modelos/Modelo.js"></script>
 
   <script type="text/javascript" src="curvas/BezierCubica.js"></script>
   <script type="text/javascript" src="curvas/Segmento.js"></script>
 
+  <script type="text/javascript" src="recorridos/Superficie.js"></script>
   <script type="text/javascript" src="recorridos/Extrusion.js"></script>
   <script type="text/javascript" src="recorridos/ExtrusionCerrada.js"></script>
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
 
+  <script type="text/javascript" src="geometrias/Lamina.js"></script>
   <script type="text/javascript" src="geometrias/Torre.js"></script>
   <script type="text/javascript" src="geometrias/Arbol.js"></script>
   <script type="text/javascript" src="geometrias/ArbolRandom.js"></script>
@@ -99,6 +102,9 @@ cilindro = null;
 arbol = null;
 modelo = null;
 viga = null;
+terreno = null;
+costaIzq = null;
+costaDer = null;
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 
@@ -229,12 +235,16 @@ function setupBuffers()
   cilindro.setPosition(7,0,-10);
   torre = new Torre(new Segmento([0,0,0],[3,2,0]),10);
   torre.setPosition(3,0,-10);
+  terreno = new Terreno(10,10,4)
+  // terreno = new Lamina(new BezierCubica([-1,2,0],[0,1,0],[1,1,0],[2,2,0]),new Segmento([-1,-2,0],[2,-2,0]),6);
   // cilindro.rotateX(-1.5);
   // cilindro.rotateY(-1.5);
-  modelo.agregarModelo(viga);
-  modelo.agregarModelo(arbol);
+  // terreno.setPosition(0,0,-10);
+  modelo.agregarModelo(terreno);
+  // modelo.agregarModelo(viga);
+  // modelo.agregarModelo(arbol);
   modelo.agregarModelo(cilindro);
-  modelo.agregarModelo(torre);
+  // modelo.agregarModelo(torre);
   // my_grid = new CilindroAbierto(2,12,0.5);
   // my_grid = new ConoCerrado(3,12,0.5);
   // my_grid = new ConoAbierto(2,12,0.5);
@@ -281,7 +291,7 @@ function drawScene()
     <h2>Trabajo pr&aacute;ctico puente</h2>
       <canvas id="my-canvas" width="900" height="500">
         Your browser does not support the HTML5 canvas element.
-      </canvas>      
+      </canvas>
       <script type="text/javascript"> GUI(); </script>
       <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
         Your browser does not support the HTML5 canvas element.
