@@ -10,7 +10,14 @@ var app={
 	modo:"random",
 	ancho:0,
 	umbral:100,
-	agregarPuntos:true,	
+	agregarPuntos:true,
+	eliminarTodosLosPuntos:function(){
+		perfilDelRioObject.eliminarPuntos();
+		cargarSegundoCanvas();
+	},
+	dibujarTodosLosPuntos:function(){
+		cargarSegundoCanvas();
+	}
 };
 
 function GUI (){
@@ -32,6 +39,8 @@ function GUI (){
 		var f3 = gui.addFolder('Parametros Rio');				
 		f3.add(app,'umbral',0.0,100).name("umbral");
 		f3.add(app,'agregarPuntos').name("Agregar Puntos");
+		f3.add(app,'dibujarTodosLosPuntos').name("Dibujar Puntos");
+		f3.add(app,'eliminarTodosLosPuntos').name("Eliminar Puntos");
 /*
 		f1.close();
 		f2.close();
@@ -41,3 +50,37 @@ function GUI (){
 		f2.open();
 		f3.open();
 };
+
+//Parte de escucha de datos de mouse para el canvas
+$( document ).ready(function() {// esto es para esperar que carge la libreria Jquery
+
+
+	function updateCoordinates(e){
+		if (app.agregarPuntos){
+			//var pos=$("#perfilDelRioCanvas").position();
+			var posX = e.offsetX;
+			var posY = e.offsetY; 
+			perfilDelRioObject.agregarPunto([posX,posY]);
+			cargarSegundoCanvas(); 
+		}
+	}
+
+    var mouseIsPressed=false;
+
+/*
+     $("#perfilDelRioCanvas").bind('mousemove',function(e){ 
+        if (mouseIsPressed) updateCoordinates(e);
+    }); 
+*/
+
+     $("#perfilDelRioCanvas").bind('mousedown',function(e){ 
+            mouseIsPressed=true;
+            updateCoordinates(e);
+    }); 
+
+     $("#perfilDelRioCanvas").bind('mouseup',function(e){ 
+           mouseIsPressed=false;
+    }); 
+
+
+});

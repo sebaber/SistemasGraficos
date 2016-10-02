@@ -46,10 +46,14 @@ function calcularPuntoSiguienteSpline(anteultimo,ultimo){
 
 function PerfilDelRio () {
 	this.inicio = [100,0];
-	this.puntos = [[25,50],[175,75]];
+	this.puntos = [];
 	this.final  = [100,200];
     //Paso con que recorre la curva
     this.paso = 0.1;
+}
+
+PerfilDelRio.prototype.eliminarPuntos=function (){
+	this.puntos = [];
 }
 
 PerfilDelRio.prototype.obtenerPunto=function (u, indice){
@@ -69,6 +73,7 @@ PerfilDelRio.prototype.obtenerPunto=function (u, indice){
 
 PerfilDelRio.prototype.agregarPunto =function (punto){
 	this.puntos.push(punto);
+	this.puntos.sort(function(a, b){return a[1]-b[1]});
 }
 
 PerfilDelRio.prototype.obtenerPuntosSpline =function (){
