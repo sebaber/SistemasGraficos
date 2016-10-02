@@ -50,6 +50,8 @@ function mouseWheel(event) {
 }
 */
 
+var teclaBajarActiva = false;
+var teclaSubirActiva = false;
 var teclaArribaActiva = false;
 var teclaAbajoActiva = false;
 var teclaDerechaActiva = false;
@@ -58,8 +60,10 @@ var teclaRotarIzquierdaActiva = false;
 var teclaRotarDerechaActiva = false;
 var teclaRotarAbajoActiva = false;
 var teclaRotarArribaActiva = false;
+
 var xRotGlobal = 0.0;
 var yRotGlobal = 0.0;
+var zPosGlobal = 0.0;
 var xPosGlobal = 0.0;
 var yPosGlobal = 0.0;
 
@@ -78,6 +82,12 @@ function keyPressDownEvent(event){
   }
   else if (event.key == 's'){
   	teclaAbajoActiva = true;
+  }
+  else if (event.key == 'e'){
+  	teclaSubirActiva = true;
+  }
+  else if (event.key == 'q'){
+  	teclaBajarActiva = true;
   }
   else if (event.key == 'l'){
   	teclaRotarIzquierdaActiva = true;
@@ -109,6 +119,12 @@ function keyPressUpEvent(event){
   else if (event.key == 's'){
   	teclaAbajoActiva = false;
   }
+  else if (event.key == 'e'){
+  	teclaSubirActiva = false;
+  }
+  else if (event.key == 'q'){
+  	teclaBajarActiva = false;
+  }
   else if (event.key == 'l'){
   	teclaRotarIzquierdaActiva = false;
   }
@@ -128,6 +144,7 @@ function actualizarMovimientosDeCamara(pMatrix){
 	var yPos = 0.0;	
 	var xRot = 0.0;
 	var yRot = 0.0;
+	var zPos = 0.0;
 
 	if (teclaRotarIzquierdaActiva){
 		yRot -= 0.01;
@@ -161,6 +178,12 @@ function actualizarMovimientosDeCamara(pMatrix){
 	if (teclaIzquierdaActiva){
 		xPos -= 0.025;
 	}
+	if (teclaSubirActiva){
+		zPos -= 0.025;
+	}
+	if (teclaBajarActiva){
+		zPos += 0.025;
+	}
 	
 	var angulo = yRotGlobal * -1;
 
@@ -171,8 +194,9 @@ function actualizarMovimientosDeCamara(pMatrix){
 
 	xPosGlobal += (dyRespectoDeX + dyRespectoDeY);
 	yPosGlobal += (dxRespectoDeX + dxRespectoDeY);
+	zPosGlobal += (zPos);
 	//Aplico la traslacion
-	mat4.translate(pMatrix, pMatrix, [xPosGlobal, 0.0 , yPosGlobal]);
+	mat4.translate(pMatrix, pMatrix, [xPosGlobal, zPosGlobal , yPosGlobal]);
 
 	return pMatrix;
 }
