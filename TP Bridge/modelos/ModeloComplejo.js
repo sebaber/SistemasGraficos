@@ -29,3 +29,16 @@ ModeloComplejo.prototype.translate = function(x,y,z){
     this.modelos[i].translate(x,y,z);
   }
 };
+
+ModeloComplejo.prototype.scaleNonUniform = function(x,y,z){
+  for(var i = 0;i<this.modelos.length;++i){
+    this.modelos[i].scaleNonUniform(x,y,z);
+  }
+};
+
+ModeloComplejo.prototype.init = function(x,y,z){
+  for(var i = 0;i<this.modelos.length;++i){
+    this.modelos[i].translate(x,y,z);
+    this.modelos[i].postInit();
+  }
+};

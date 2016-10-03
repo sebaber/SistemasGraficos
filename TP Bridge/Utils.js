@@ -11,7 +11,7 @@ Utils.isDefined = function (val) {
 };
 
 Utils.getRandomBetweenMaxMin = function(min,max){
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return (Math.random() * (max - min + 1)) + min;
 };
 
 Utils.getMatrizRotacion = function(t,n,bn){
