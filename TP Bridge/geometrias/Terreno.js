@@ -30,7 +30,14 @@ function Terreno(anchoCosta,largoCosta,anchoRio,nroTorres) {
     torre.init(anchoCosta-1.5+(i*anchoRio/(nroTorres-1)),0,-largoCosta/2+1);
     this.agregarModelo(torre);
   }
-
+  var puente = new Puente(new BezierCubica([anchoCosta-1.25,0,-largoCosta/2],//-largoCosta/2
+    [anchoCosta-1.25+(anchoRio/3),1,-largoCosta/2],//-largoCosta/2
+    [anchoCosta-1.25+(2*anchoRio/3),1,-largoCosta/2],//-largoCosta/2
+    [anchoCosta-1.25+anchoRio,0,-largoCosta/2]),//-largoCosta/2
+    10
+  );
+  // puente.translate(0,0,-3);
+  this.agregarModelo(puente);
   this.agregarArboles();
 }
 
