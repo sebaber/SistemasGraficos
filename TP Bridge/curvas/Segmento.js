@@ -6,7 +6,7 @@ Segmento.prototype.getPosition = function(t) {
     var pos = vec3.create();
     pos[0] = this.vf[0]*t + this.vi[0]*(1-t);
     pos[1] = this.vf[1]*t + this.vi[1]*(1-t);
-    pos[2] = 0;
+    pos[2] = this.vf[2]*t + this.vi[2]*(1-t);
     return pos;
 };
 
@@ -15,7 +15,7 @@ Segmento.prototype.getTangente = function (u){
     var pos = vec3.create();
     pos[0] = this.vf[0] - this.vi[0];
     pos[1] = this.vf[1] - this.vi[1];
-    pos[2] = 0;
+    pos[2] = this.vf[2] - this.vi[2];
 
     vec3.normalize(pos,pos);
     return pos;

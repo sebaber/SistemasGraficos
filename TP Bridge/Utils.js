@@ -10,8 +10,8 @@ Utils.isDefined = function (val) {
 	return typeof val !== 'undefined' && val !== null;
 };
 
-Utils.randomBetween = function (a, b) {
-	return a + Math.floor((Math.random() * b) + 1);
+Utils.getRandomBetweenMaxMin = function(min,max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 Utils.getMatrizRotacion = function(t,n,bn){
