@@ -50,6 +50,62 @@ function mouseWheel(event) {
 }
 */
 
+<<<<<<< Updated upstream
+=======
+// manejo de mouse y teclado
+
+var previousClientX = 0, previousClientY = 0, radio = 5, alfa = 0, beta = 0, factorVelocidad = 0.01;
+
+var isMouseDown = false;
+var actualEvent;
+
+var mouse = {x: 0, y: 0};
+
+$("#my-canvas").mousemove(function(e){ 
+	mouse.x = e.clientX || e.pageX; 
+	mouse.y = e.clientY || e.pageY 
+});
+
+$('#my-canvas').mousedown(function(event){		
+    isMouseDown = true;        
+});
+
+$('body').mouseup(function(event){
+	isMouseDown = false;		
+});
+  
+var render = function () {
+
+    if(isMouseDown) rotarCuboAzul();
+
+    requestAnimationFrame(render);
+    renderer.render(scene, camera,false,false);
+};
+
+function moverCamaraOrbital(pMatrix)
+{
+    var deltaX = mouse.x - previousClientX;
+    var deltaY = mouse.y - previousClientY;
+
+    previousClientX = mouse.x;
+    previousClientY = mouse.y;
+
+    alfa = alfa + deltaX * factorVelocidad;
+    beta = beta + deltaY * factorVelocidad;
+
+	if (beta<0) beta=0;
+	if (beta>Math.PI) beta=Math.PI;
+
+	mat4.rotate(pMatrix, pMatrix, beta, [0, 1, 0]);
+	mat4.rotate(pMatrix, pMatrix, alfa, [Math.cos(beta), 0, Math.sin(beta)]);
+
+	return pMatrix;
+}
+
+var camaraOrbitalActiva = false;
+var teclaBajarActiva = false;
+var teclaSubirActiva = false;
+>>>>>>> Stashed changes
 var teclaArribaActiva = false;
 var teclaAbajoActiva = false;
 var teclaDerechaActiva = false;
@@ -91,6 +147,9 @@ function keyPressDownEvent(event){
   else if (event.key == 'k'){
   	teclaRotarAbajoActiva = true;
   }
+  else if (event.key == 'c'){
+  	camaraOrbitalActiva = !camaraOrbitalActiva;
+  }
 }
 
 function keyPressUpEvent(event){
@@ -124,6 +183,14 @@ function keyPressUpEvent(event){
 }
 
 function actualizarMovimientosDeCamara(pMatrix){
+	if(camaraOrbitalActiva){
+		return moverCamaraOrbital(pMatrix);
+	}else{
+		return moverCamaraHombre(pMatrix);
+	}
+}
+
+function moverCamaraHombre(pMatrix){
 	var xPos = 0.0;
 	var yPos = 0.0;	
 	var xRot = 0.0;
