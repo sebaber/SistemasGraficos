@@ -50,8 +50,6 @@ function mouseWheel(event) {
 }
 */
 
-<<<<<<< Updated upstream
-=======
 // manejo de mouse y teclado
 
 var previousClientX = 0, previousClientY = 0, radio = 5, alfa = 0, beta = 0, factorVelocidad = 0.01;
@@ -105,7 +103,6 @@ function moverCamaraOrbital(pMatrix)
 var camaraOrbitalActiva = false;
 var teclaBajarActiva = false;
 var teclaSubirActiva = false;
->>>>>>> Stashed changes
 var teclaArribaActiva = false;
 var teclaAbajoActiva = false;
 var teclaDerechaActiva = false;
