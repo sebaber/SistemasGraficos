@@ -1,4 +1,4 @@
-function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
+function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) {
   ModeloComplejo.call(this);
   this.anchoCosta = anchoCosta;
   this.largoCosta = largoCosta;
@@ -25,17 +25,32 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
   // this.setPosition(0,0,-10);
   this.rotateX(-(3.14/2.0));
 
+  var offsetTorrePuente = (anchoRio/6);
+  var distTorres = (anchoRio-(2*offsetTorrePuente))/(nroTorres-1);
+  var h1=1.5;
+  var h2=1;
+  var h3=0.5;
+  var hmax=h1+h1/4+h2+h2/4+h3+h3/4;
+  var offsetPuente=1.5;
+
+
   for(var i = 0;i<nroTorres;++i){
-    var torre = new Torre(1.5,1,0.5);
-    torre.init(anchoCosta+(anchoRio/6)-1.5+(i*(anchoRio-((2*anchoRio)/6))/(nroTorres-1)),0,-largoCosta/2-anchoCalle/2);
+
+    var torre = new Torre(h1,h2,h3);
+    torre.init(
+      anchoCosta + offsetTorrePuente - offsetPuente + i*distTorres,
+      0,
+      -largoCosta/2 - anchoCalle/2
+    );
     this.agregarModelo(torre);
+    
     if(i==0){
       var viga = new Viga(
         new BezierCubica(
-          [anchoCosta-1.5, 0.5,-largoCosta/2-anchoCalle/2],
-          [anchoCosta+(anchoRio/6)/3-1.5, 1,-largoCosta/2-anchoCalle/2],
-          [anchoCosta+(anchoRio/6)/1.5-1.5, 1.5,-largoCosta/2-anchoCalle/2],
-          [anchoCosta+(anchoRio/6)-1.5,1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2-anchoCalle/2]
+          [anchoCosta - offsetPuente, h3, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta + offsetTorrePuente/3 - offsetPuente, h2, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta + offsetTorrePuente/1.5 - offsetPuente, h1, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente, hmax, -largoCosta/2 - anchoCalle/2]
          ),
          0.03,
          12,
@@ -43,13 +58,14 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
        );
      this.agregarModelo(viga);
     }
+    
     if(i>0){
       var viga = new Viga(
         new BezierCubica(
-          [anchoCosta+(anchoRio/6)-1.5+((i-1)*(anchoRio-(2*anchoRio/6))/(nroTorres-1)),1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2-anchoCalle/2],
-          [anchoCosta+(anchoRio/6)-1.5+((i-1)*(anchoRio-(2*anchoRio/6))/(nroTorres-1))+((anchoRio-(2*anchoRio/6))/(nroTorres-1))/3,1.5+0.5,-largoCosta/2-anchoCalle/2],
-          [anchoCosta+(anchoRio/6)-1.5+((i-1)*(anchoRio-(2*anchoRio/6))/(nroTorres-1))+((anchoRio-(2*anchoRio/6))/(nroTorres-1))/1.5,1.5+0.5,-largoCosta/2-anchoCalle/2],
-          [anchoCosta+(anchoRio/6)-1.5+(i*(anchoRio-(2*anchoRio/6))/(nroTorres-1)),1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2-anchoCalle/2]
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) ,hmax, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/3, h1 + h3, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/1.5, h1 + h3, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente + (i*distTorres), hmax, -largoCosta/2 - anchoCalle/2]
          ),
          0.03,
          12,
@@ -60,10 +76,10 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
   }
   var viga = new Viga(
         new BezierCubica(
-          [anchoCosta+anchoRio-1.5, 0.5,-largoCosta/2-anchoCalle/2],
-          [anchoCosta-(anchoRio/6)/3+anchoRio-1.5, 1,-largoCosta/2-anchoCalle/2],
-          [anchoCosta-(anchoRio/6)/1.5+anchoRio-1.5, 1.5,-largoCosta/2-anchoCalle/2],
-          [anchoCosta-(anchoRio/6)+anchoRio-1.5,1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2-anchoCalle/2]
+          [anchoCosta + anchoRio - offsetPuente, h3, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta - offsetTorrePuente/3 + anchoRio - offsetPuente, h2, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta - offsetTorrePuente/1.5 + anchoRio - offsetPuente, h1, -largoCosta/2 - anchoCalle/2],
+          [anchoCosta - offsetTorrePuente + anchoRio - offsetPuente, hmax, -largoCosta/2 - anchoCalle/2]
          ),
          0.03,
          12,
@@ -71,16 +87,21 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
        );
      this.agregarModelo(viga);
   for(var i = 0;i<nroTorres;++i){
+    
     var torre = new Torre(1.5,1,0.5);
-    torre.init(anchoCosta+(anchoRio/6)-1.5+(i*(anchoRio-((2*anchoRio)/6))/(nroTorres-1)),0,-largoCosta/2+anchoCalle/2+anchoCalle/8);
+    torre.init(
+      anchoCosta + offsetTorrePuente - offsetPuente + (i*distTorres),
+      0,
+      -largoCosta/2 + anchoCalle/2 + anchoCalle/8);
     this.agregarModelo(torre);
+
     if(i==0){
       var viga = new Viga(
         new BezierCubica(
-          [anchoCosta-1.5, 0.5,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta+(anchoRio/6)/3-1.5, 1,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta+(anchoRio/6)/1.5-1.5, 1.5,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta+(anchoRio/6)-1.5,1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2+anchoCalle/2+anchoCalle/8]
+          [anchoCosta - offsetPuente, h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta + offsetTorrePuente/3 - offsetPuente, h2, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta + offsetTorrePuente/1.5 - offsetPuente, h1, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta + offsetTorrePuente - offsetPuente, hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8]
          ),
          0.03,
          12,
@@ -88,13 +109,14 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
        );
      this.agregarModelo(viga);
     }
+
     else if(i>0){
       var viga = new Viga(
         new BezierCubica(
-          [anchoCosta+(anchoRio/6)-1.5+((i-1)*(anchoRio-(2*anchoRio/6))/(nroTorres-1)),1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta+(anchoRio/6)-1.5+((i-1)*(anchoRio-(2*anchoRio/6))/(nroTorres-1))+((anchoRio-(2*anchoRio/6))/(nroTorres-1))/3,1.5+0.5,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta+(anchoRio/6)-1.5+((i-1)*(anchoRio-(2*anchoRio/6))/(nroTorres-1))+((anchoRio-(2*anchoRio/6))/(nroTorres-1))/1.5,1.5+0.5,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta+(anchoRio/6)-1.5+(i*(anchoRio-(2*anchoRio/6))/(nroTorres-1)),1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2+anchoCalle/2+anchoCalle/8]
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) ,hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/3, h1 + h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/1.5, h1 + h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta + offsetTorrePuente - offsetPuente + (i*distTorres), hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8]
          ),
          0.03,
          12,
@@ -106,10 +128,10 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
 
   var viga = new Viga(
         new BezierCubica(
-          [anchoCosta+anchoRio-1.5, 0.5,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta-(anchoRio/6)/3+anchoRio-1.5, 1,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta-(anchoRio/6)/1.5+anchoRio-1.5, 1.5,-largoCosta/2+anchoCalle/2+anchoCalle/8],
-          [anchoCosta-(anchoRio/6)+anchoRio-1.5,1.5+1+0.5+1.5/4+1/4+0.5/4,-largoCosta/2+anchoCalle/2+anchoCalle/8]
+          [anchoCosta + anchoRio - offsetPuente, h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta - offsetTorrePuente/3 + anchoRio - offsetPuente, h2, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta - offsetTorrePuente/1.5 + anchoRio - offsetPuente, h1, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
+          [anchoCosta - offsetTorrePuente + anchoRio - offsetPuente, hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8]
          ),
          0.03,
          12,
@@ -117,18 +139,19 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
        );
      this.agregarModelo(viga);
   
-  var puente = new Puente(new BezierCubica([anchoCosta-1.5,0,-largoCosta/2],//-largoCosta/2
-    [anchoCosta-1.5+(anchoRio/3),1,-largoCosta/2],//-largoCosta/2
-    [anchoCosta-1.5+(2*anchoRio/3),1,-largoCosta/2],//-largoCosta/2
-    [anchoCosta+anchoRio-1.5,0,-largoCosta/2]),//-largoCosta/2
+  var puente = new Puente(
+  new BezierCubica([anchoCosta - offsetPuente, 0, -largoCosta/2],//-largoCosta/2
+    [anchoCosta - offsetPuente + (anchoRio/3), 1, -largoCosta/2],//-largoCosta/2
+    [anchoCosta - offsetPuente + (2*anchoRio/3), 1, -largoCosta/2],//-largoCosta/2
+    [anchoCosta - offsetPuente + anchoRio, 0, -largoCosta/2]),//-largoCosta/2
     anchoCalle,
     10
   );
-  var calleIzq = new Calle(new Segmento([0,0,-largoCosta/2],[anchoCosta-1.5,0,-largoCosta/2]),
+  var calleIzq = new Calle(new Segmento([0,0,-largoCosta/2],[anchoCosta-offsetPuente,0,-largoCosta/2]),
     anchoCalle,
     10
   );
-  var calleDer = new Calle(new Segmento([anchoCosta+anchoRio-1.5,0,-largoCosta/2],[anchoCosta+anchoRio+anchoCosta,0,-largoCosta/2]),
+  var calleDer = new Calle(new Segmento([anchoCosta+anchoRio-offsetPuente,0,-largoCosta/2],[anchoCosta+anchoRio+anchoCosta,0,-largoCosta/2]),
     anchoCalle,
     10
   );
