@@ -1,4 +1,4 @@
-function Terreno(anchoCosta,largoCosta,anchoRio,nroTorres) {
+function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres) {
   ModeloComplejo.call(this);
   this.anchoCosta = anchoCosta;
   this.largoCosta = largoCosta;
@@ -21,25 +21,28 @@ function Terreno(anchoCosta,largoCosta,anchoRio,nroTorres) {
 
   for(var i = 0;i<nroTorres;++i){
     var torre = new Torre(1.5,1,0.5);
-    torre.init(anchoCosta-1.5+(i*anchoRio/(nroTorres-1)),0,-largoCosta/2-1);
+    torre.init(anchoCosta+(anchoRio/6)-1.5+(i*(anchoRio-(anchoRio/6))/(nroTorres-1)),0,-largoCosta/2-anchoCalle/2);
     this.agregarModelo(torre);
   }
 
   for(var i = 0;i<nroTorres;++i){
     var torre = new Torre(1.5,1,0.5);
-    torre.init(anchoCosta-1.5+(i*anchoRio/(nroTorres-1)),0,-largoCosta/2+1);
+    torre.init(anchoCosta+(anchoRio/6)-1.5+(i*(anchoRio-(anchoRio/6))/(nroTorres-1)),0,-largoCosta/2+anchoCalle/2+anchoCalle/8);
     this.agregarModelo(torre);
   }
   var puente = new Puente(new BezierCubica([anchoCosta-1.5,0,-largoCosta/2],//-largoCosta/2
     [anchoCosta-1.5+(anchoRio/3),1,-largoCosta/2],//-largoCosta/2
     [anchoCosta-1.5+(2*anchoRio/3),1,-largoCosta/2],//-largoCosta/2
     [anchoCosta+anchoRio,0,-largoCosta/2]),//-largoCosta/2
+    anchoCalle,
     10
   );
-  var calleIzq = new Calle(new Segmento([0,0,-largoCosta/2],[anchoCosta-1.25,0,-largoCosta/2]),
+  var calleIzq = new Calle(new Segmento([0,0,-largoCosta/2],[anchoCosta-1.5,0,-largoCosta/2]),
+    anchoCalle,
     10
   );
   var calleDer = new Calle(new Segmento([anchoCosta+anchoRio,0,-largoCosta/2],[anchoCosta+anchoRio+anchoCosta,0,-largoCosta/2]),
+    anchoCalle,
     10
   );
   // puente.translate(0,0,-3);
