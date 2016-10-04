@@ -10,6 +10,8 @@
   textarea{ background-color: black; foreground-color: white;}
   </style>
 
+  <script type="text/javascript" src="datgui/jquery-2.1.4.min.js"></script>
+
   <script type="text/javascript" src="Camara.js"></script>
   <script type="text/javascript" src="gl-matrix.js"></script>
   <script type="text/javascript" src="Utils.js"></script>
@@ -18,17 +20,19 @@
   <script type="text/javascript" src="modelos/ModeloComplejo.js"></script>
   <script type="text/javascript" src="modelos/Modelo.js"></script>
   <script type="text/javascript" src="recorridos/ExtrusionCerrada.js"></script>
-
+  <script type="text/javascript" src="recorridos/BezierCubica.js"></script>
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
   <script type="text/javascript" src="geometrias/Arbol.js"></script>
+  <script type="text/javascript" src="geometrias/ArbolRandom.js"></script>
 
+  <script type="text/javascript" src="geometrias/ExtrusionViga.js"></script>
   <script type="text/javascript" src="geometrias/Circulo.js"></script>
   <script type="text/javascript" src="geometrias/CilindroCerrado.js"></script>
-  <script type="text/javascript" src="geometrias/CilindroAbierto.js"></script>
-  <script type="text/javascript" src="geometrias/ConoCerrado.js"></script>
-  <script type="text/javascript" src="geometrias/ConoAbierto.js"></script>
-  <script type="text/javascript" src="geometrias/Esfera.js"></script>
 
+  <!-- Codigo para la consola -->
+  <script type="text/javascript" src="datgui/dat.gui.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="datgui/dat-gui-swec.css">
+  <script type="text/javascript" src="datgui/panelDeComandos.js"></script>
   <!--
   Vertex shader
 
@@ -85,10 +89,10 @@ i=0;
 cilindro = null;
 arbol = null;
 modelo = null;
+viga = null;
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
-
 
 // SHADERS FUNCTION
 function getShader(gl, id) {
@@ -207,15 +211,16 @@ function makeShader(src, type)
 
 function setupBuffers()
 {
+  viga = new ExtrusionViga(new BezierCubica([-1,0,0],[0,1,0],[1,1,0],[2,0,0]),0.5,12,10);
   modelo = new ModeloComplejo();
-  arbol = new Arbol();
-  arbol.setPosition(-5,0,-10);
-  arbol.rotateX(-1.5);
-  arbol.scaleNonUniform(1,1,1.5);
+  viga.setPosition(0,0,-10);
+  viga.rotateY(Math.PI/2);
+  arbol = new ArbolRandom();
   cilindro = new CilindroCerrado(2,4,12,2);
   cilindro.setPosition(5,0,-10);
   cilindro.rotateX(-1.5);
   // cilindro.rotateY(-1.5);
+  modelo.agregarModelo(viga);
   modelo.agregarModelo(arbol);
   modelo.agregarModelo(cilindro);
   // my_grid = new CilindroAbierto(2,12,0.5);
@@ -231,6 +236,7 @@ function drawScene()
   var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
   
   // Preparamos una matriz de perspectiva.
+  mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
   pMatrix = actualizarMovimientosDeCamara(pMatrix);
   gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
 
@@ -259,8 +265,8 @@ function drawScene()
 </head>
 <body onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)">
   <center>
-    <h1>Sistemas Gr�ficos - 66.71</h1>
-    <h2>WebGL - Modelo de v�rtices</h2>
+    <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
+    <h2>Trabajo pr&aacute;ctico puente</h2>
     <canvas id="my-canvas" width="900" height="500">
       Your browser does not support the HTML5 canvas element.
     </scanvas>

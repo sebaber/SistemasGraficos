@@ -50,6 +50,59 @@ function mouseWheel(event) {
 }
 */
 
+// manejo de mouse y teclado
+
+var previousClientX = 0, previousClientY = 0, radio = 5, alfa = 0, beta = 0, factorVelocidad = 0.01;
+
+var isMouseDown = false;
+var actualEvent;
+
+var mouse = {x: 0, y: 0};
+
+$("#my-canvas").mousemove(function(e){ 
+	mouse.x = e.clientX || e.pageX; 
+	mouse.y = e.clientY || e.pageY 
+});
+
+$('#my-canvas').mousedown(function(event){		
+    isMouseDown = true;        
+});
+
+$('body').mouseup(function(event){
+	isMouseDown = false;		
+});
+  
+var render = function () {
+
+    if(isMouseDown) rotarCuboAzul();
+
+    requestAnimationFrame(render);
+    renderer.render(scene, camera,false,false);
+};
+
+function moverCamaraOrbital(pMatrix)
+{
+    var deltaX = mouse.x - previousClientX;
+    var deltaY = mouse.y - previousClientY;
+
+    previousClientX = mouse.x;
+    previousClientY = mouse.y;
+
+    alfa = alfa + deltaX * factorVelocidad;
+    beta = beta + deltaY * factorVelocidad;
+
+	if (beta<0) beta=0;
+	if (beta>Math.PI) beta=Math.PI;
+
+	mat4.rotate(pMatrix, pMatrix, beta, [0, 1, 0]);
+	mat4.rotate(pMatrix, pMatrix, alfa, [Math.cos(beta), 0, Math.sin(beta)]);
+
+	return pMatrix;
+}
+
+var camaraOrbitalActiva = false;
+var teclaBajarActiva = false;
+var teclaSubirActiva = false;
 var teclaArribaActiva = false;
 var teclaAbajoActiva = false;
 var teclaDerechaActiva = false;
@@ -60,6 +113,8 @@ var teclaRotarAbajoActiva = false;
 var teclaRotarArribaActiva = false;
 var xRotGlobal = 0.0;
 var yRotGlobal = 0.0;
+var xPosGlobal = 0.0;
+var yPosGlobal = 0.0;
 
 function keyPressDownEvent(event){
   // if ( event.which == 13 ) {
@@ -89,6 +144,12 @@ function keyPressDownEvent(event){
   else if (event.key == 'k'){
   	teclaRotarAbajoActiva = true;
   }
+<<<<<<< HEAD
+=======
+  else if (event.key == 'c'){
+  	camaraOrbitalActiva = !camaraOrbitalActiva;
+  }
+>>>>>>> f383810a9e70bcf456960dc543e392080db0e65f
 }
 
 function keyPressUpEvent(event){
@@ -122,8 +183,21 @@ function keyPressUpEvent(event){
 }
 
 function actualizarMovimientosDeCamara(pMatrix){
+<<<<<<< HEAD
 	var xPos = 0.0;
 	var yPos = 0.0;
+=======
+	if(camaraOrbitalActiva){
+		return moverCamaraOrbital(pMatrix);
+	}else{
+		return moverCamaraHombre(pMatrix);
+	}
+}
+
+function moverCamaraHombre(pMatrix){
+	var xPos = 0.0;
+	var yPos = 0.0;	
+>>>>>>> f383810a9e70bcf456960dc543e392080db0e65f
 	var xRot = 0.0;
 	var yRot = 0.0;
 
@@ -141,6 +215,7 @@ function actualizarMovimientosDeCamara(pMatrix){
 	}
 
 	yRotGlobal -= yRot;
+<<<<<<< HEAD
 
 	//Aplico la rotacion
 	mat4.rotate(pMatrix, pMatrix, 0.005, [xRot, yRot, 0]);
@@ -166,6 +241,38 @@ function actualizarMovimientosDeCamara(pMatrix){
 	mat4.translate(pMatrix, pMatrix, [dyRespectoDeX + dyRespectoDeY, 0.0 , dxRespectoDeX + dxRespectoDeY]);
 
 
+=======
+	xRotGlobal -= xRot;
+
+	//Aplico la rotacion
+	mat4.rotate(pMatrix, pMatrix, yRotGlobal, [0, 1, 0]);
+	mat4.rotate(pMatrix, pMatrix, xRotGlobal, [Math.cos(yRotGlobal), 0, Math.sin(yRotGlobal)]);
+
+	if (teclaArribaActiva){
+		yPos += 0.025;
+	}
+	if (teclaAbajoActiva) {
+		yPos -= 0.025;
+	}
+	if (teclaDerechaActiva){
+		xPos += 0.025;
+	}
+	if (teclaIzquierdaActiva){
+		xPos -= 0.025;
+	}
+	
+	var angulo = yRotGlobal * -1;
+
+	var dxRespectoDeX = yPos * Math.cos(angulo);
+	var dyRespectoDeX = yPos * Math.sin(angulo);
+	var dxRespectoDeY = xPos * Math.cos(angulo - 1.57079632679);
+	var dyRespectoDeY = xPos * Math.sin(angulo - 1.57079632679);
+
+	xPosGlobal += (dyRespectoDeX + dyRespectoDeY);
+	yPosGlobal += (dxRespectoDeX + dxRespectoDeY);
+	//Aplico la traslacion
+	mat4.translate(pMatrix, pMatrix, [xPosGlobal, 0.0 , yPosGlobal]);
+>>>>>>> f383810a9e70bcf456960dc543e392080db0e65f
 
 	return pMatrix;
 }
