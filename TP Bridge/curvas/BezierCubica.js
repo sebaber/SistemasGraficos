@@ -40,7 +40,6 @@ BezierCubica.prototype.getTangente = function (u){
     pos[2] = b0*(this.v1[2]-this.v0[2]) + b1*(this.v2[2]-this.v1[2]) + b2*(this.v3[2]-this.v2[2]);
 
     vec3.normalize(pos,pos);
-    console.log("pos: "+pos);
     return pos;
 };
 

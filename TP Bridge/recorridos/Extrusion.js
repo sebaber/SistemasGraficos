@@ -15,7 +15,6 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
   var t;
   vertices = this.forma.getVertices();
 
-  console.log("vertices: "+vertices);
   for (var i = 0.0; i < this.nlevels; i++) {
     t = i/(this.nlevels-1);
 
@@ -47,4 +46,9 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
 
     }
   }
+};
+
+
+Extrusion.prototype.getPosition = function(t){
+  return this.curva.getPosition(t);
 };

@@ -104,3 +104,8 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
 
   this.addTapaSuperior();
 };
+
+
+ExtrusionCerrada.prototype.getPosition = function(t){
+  return this.curva.getPosition(t);
+};
