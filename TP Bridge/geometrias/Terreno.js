@@ -75,6 +75,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
         posPuente=puente.getPosition(distPuente/anchoRio);
         posViga = viga.getPosition(distViga/distTorres);
         posPuente[0]=posViga[0];
+        posPuente[1]+= 0.2-0.08;
         posPuente[2]-=anchoCalle/2;
         tensor = new CilindroCerrado(new Segmento(posPuente,posViga),0.01,12,3);
         this.agregarModelo(tensor);
@@ -101,6 +102,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
         posPuente=puente.getPosition(distPuente/anchoRio);
         posViga = viga.getPosition(distViga/distTorres);
         posPuente[0]=posViga[0];
+        posPuente[1]+= 0.2-0.01;
         posPuente[2]-=anchoCalle/2;
         tensor = new CilindroCerrado(new Segmento(posPuente,posViga),0.01,12,3);
         this.agregarModelo(tensor);
@@ -128,6 +130,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
     posPuente=puente.getPosition(distPuente/anchoRio);
     posViga = viga.getPosition(distViga/distTorres);
     posPuente[0]=posViga[0];
+    posPuente[1]+= 0.2-0.08;
     posPuente[2]-=anchoCalle/2;
     tensor = new CilindroCerrado(new Segmento(posPuente,posViga),0.01,12,3);
     this.agregarModelo(tensor);
@@ -142,17 +145,17 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
     torre.init(
       anchoCosta + offsetTorrePuente - offsetPuente + (i*distTorres),
       0,
-      -largoCosta/2 + anchoCalle/2 + anchoCalle/8
+      -largoCosta/2 + anchoCalle/2
     );
     this.agregarModelo(torre);
 
     if(i===0){
       viga = new Viga(
         new BezierCubica(
-          [anchoCosta - offsetPuente, h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-          [anchoCosta + offsetTorrePuente/3 - offsetPuente, h2, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-          [anchoCosta + offsetTorrePuente/1.5 - offsetPuente, h1, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-          [anchoCosta + offsetTorrePuente - offsetPuente, hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8]
+          [anchoCosta - offsetPuente, h3, -largoCosta/2 + anchoCalle/2],
+          [anchoCosta + offsetTorrePuente/3 - offsetPuente, h2, -largoCosta/2 + anchoCalle/2],
+          [anchoCosta + offsetTorrePuente/1.5 - offsetPuente, h1, -largoCosta/2 + anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente, hmax, -largoCosta/2 + anchoCalle/2]
         ),
         0.03,
         12,
@@ -165,7 +168,8 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
         posPuente=puente.getPosition(distPuente/anchoRio);
         posViga = viga.getPosition(distViga/distTorres);
         posPuente[0]=posViga[0];
-        posPuente[2]+=anchoCalle/2+ anchoCalle/8;
+        posPuente[1]+= 0.2-0.08;
+        posPuente[2]+=anchoCalle/2;
         tensor = new CilindroCerrado(new Segmento(posPuente,posViga),0.01,12,3);
         this.agregarModelo(tensor);
         distViga+=sepTensor;
@@ -176,10 +180,10 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
     else if(i>0){
       viga = new Viga(
         new BezierCubica(
-          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) ,hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/3, h1 + h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/1.5, h1 + h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-          [anchoCosta + offsetTorrePuente - offsetPuente + (i*distTorres), hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8]
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) ,hmax, -largoCosta/2 + anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/3, h1 + h3, -largoCosta/2 + anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente + ((i-1)*distTorres) + distTorres/1.5, h1 + h3, -largoCosta/2 + anchoCalle/2],
+          [anchoCosta + offsetTorrePuente - offsetPuente + (i*distTorres), hmax, -largoCosta/2 + anchoCalle/2]
         ),
         0.03,
         12,
@@ -191,7 +195,8 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
         posPuente=puente.getPosition(distPuente/anchoRio);
         posViga = viga.getPosition(distViga/distTorres);
         posPuente[0]=posViga[0];
-        posPuente[2]+=anchoCalle/2+ anchoCalle/8;
+        posPuente[1]+= 0.2-0.01;
+        posPuente[2]+=anchoCalle/2;
         tensor = new CilindroCerrado(new Segmento(posPuente,posViga),0.01,12,3);
         this.agregarModelo(tensor);
         distViga+=sepTensor;
@@ -203,10 +208,10 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
 
   viga = new Viga(
     new BezierCubica(
-      [anchoCosta + anchoRio - offsetPuente, h3, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-      [anchoCosta - offsetTorrePuente/3 + anchoRio - offsetPuente, h2, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-      [anchoCosta - offsetTorrePuente/1.5 + anchoRio - offsetPuente, h1, -largoCosta/2 + anchoCalle/2 + anchoCalle/8],
-      [anchoCosta - offsetTorrePuente + anchoRio - offsetPuente, hmax, -largoCosta/2 + anchoCalle/2 + anchoCalle/8]
+      [anchoCosta + anchoRio - offsetPuente, h3, -largoCosta/2 + anchoCalle/2],
+      [anchoCosta - offsetTorrePuente/3 + anchoRio - offsetPuente, h2, -largoCosta/2 + anchoCalle/2],
+      [anchoCosta - offsetTorrePuente/1.5 + anchoRio - offsetPuente, h1, -largoCosta/2 + anchoCalle/2],
+      [anchoCosta - offsetTorrePuente + anchoRio - offsetPuente, hmax, -largoCosta/2 + anchoCalle/2]
     ),
     0.03,
     12,
@@ -220,7 +225,8 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
     posPuente=puente.getPosition(distPuente/anchoRio);
     posViga = viga.getPosition(distViga/distTorres);
     posPuente[0]=posViga[0];
-    posPuente[2]+=anchoCalle/2+ anchoCalle/8;
+    posPuente[1]+= 0.2-0.08;
+    posPuente[2]+=anchoCalle/2;
     tensor = new CilindroCerrado(new Segmento(posPuente,posViga),0.01,12,3);
     this.agregarModelo(tensor);
     distViga+=sepTensor;
