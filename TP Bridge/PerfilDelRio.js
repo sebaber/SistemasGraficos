@@ -1,4 +1,4 @@
-var perfilDelRioObject = new PerfilDelRio();
+var perfilDelRioObject = new Perfil();
 
 function cargarSegundoCanvas(){
 	var canvasPerfil=document.getElementById("perfilDelRioCanvas");
@@ -69,7 +69,7 @@ function calcularPuntoSiguienteSpline(anteultimo,ultimo){
     return sig;
 }
 
-function PerfilDelRio () {
+function Perfil () {
 	this.inicio = [100,0];
 	this.puntos = [];
 	this.final  = [100,200];
@@ -77,15 +77,15 @@ function PerfilDelRio () {
     //this.paso = 0.1;
 }
 
-PerfilDelRio.prototype.eliminarPuntos=function (){
+Perfil.prototype.eliminarPuntos=function (){
 	this.puntos = [];
 }
 
-PerfilDelRio.prototype.obtenerPuntosDelUsuario=function (){
+Perfil.prototype.obtenerPuntosDelUsuario=function (){
 	return this.puntos;
 }
 
-PerfilDelRio.prototype.obtenerPunto=function (u, indice){
+Perfil.prototype.obtenerPunto=function (u, indice){
 
 	var p0=puntosDeControl[indice];
 	var p1=puntosDeControl[indice + 1];
@@ -100,12 +100,12 @@ PerfilDelRio.prototype.obtenerPunto=function (u, indice){
 	return punto;
 }
 
-PerfilDelRio.prototype.agregarPunto =function (punto){
+Perfil.prototype.agregarPunto =function (punto){
 	this.puntos.push(punto);
 	this.puntos.sort(function(a, b){return a[1]-b[1]});
 }
 
-PerfilDelRio.prototype.obtenerPuntosSpline =function (pasoDeCalculo){
+Perfil.prototype.obtenerPuntosSpline =function (pasoDeCalculo){
 	var puntosDelCamino = [];
 	var puntosCurvaSuave = [];
 
@@ -133,7 +133,7 @@ PerfilDelRio.prototype.obtenerPuntosSpline =function (pasoDeCalculo){
 //Una forma de sacar los puntos es darme el largo del rio y el paso de calculo que 
 //queres para cada calculo
 // 	var puntos = perfilDelRioObject.obtenerPuntosSplineTransformados(100,0.1);
-PerfilDelRio.prototype.obtenerPuntosSplineTransformados =function (largoDelRio,pasoDeCalculo){
+Perfil.prototype.obtenerPuntosSplineTransformados =function (largoDelRio,pasoDeCalculo){
 	var puntosCurvaSuave = this.obtenerPuntosSpline(pasoDeCalculo);
 	var puntosCurvaSuaveTransformado = [];
 	var largoDelCanvas = 200.0;
@@ -148,7 +148,7 @@ PerfilDelRio.prototype.obtenerPuntosSplineTransformados =function (largoDelRio,p
 	return puntosCurvaSuaveTransformado;
 }
 
-PerfilDelRio.prototype.obtenerFuncionSpline =function (largoDelRio,largoDelCanvas){
+Perfil.prototype.obtenerFuncionSpline =function (largoDelRio,largoDelCanvas){
 	var puntosDelCamino = [];
 
 	puntosDelCamino.push(this.inicio);
