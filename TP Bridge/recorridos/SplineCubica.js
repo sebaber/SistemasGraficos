@@ -27,6 +27,16 @@ SplineCubica.prototype.p = function(u) {
     return [x,y];
 }
 
+SplineCubica.prototype.inicio = function(){
+    var p = this.p(0);
+    return p[1];
+}
+
+SplineCubica.prototype.fin = function(){
+    var p = this.p(1);
+    return p[1];
+}
+
 SplineCubica.prototype.t = function (u){
     /* Devuelve el vector tangente a la curva en el punto.*/
     var x=this.Base0der(u)*this.v0[0]+this.Base1der(u)*this.v1[0]

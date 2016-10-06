@@ -21,15 +21,28 @@ function cargarSegundoCanvas(){
 	ctx.closePath();
 
 	//Resto del camino que deberia ser con BsSpline 2d
-	var puntos = perfilDelRioObject.obtenerPuntosSpline(0.1);
 	ctx.beginPath();
 	ctx.lineWidth = 2;
+	/*
+	var puntos = perfilDelRioObject.obtenerPuntosSpline(0.1);
 	var punto = puntos[0];
 	ctx.moveTo(punto[0],punto[1]);
 	for(var i= 1; i < puntos.length; ++i ){
 		punto = puntos[i];
 		ctx.lineTo(punto[0],punto[1]);
-	}		
+	}
+	*/
+
+	//otra forma de graficar
+
+	var fs = perfilDelRioObject.obtenerFuncionSpline(200,200);
+	var punto = fs.p(0);
+	ctx.moveTo(punto[0],punto[1]);
+	for(var i= 0; i < 1; i += 0.01 ){
+		punto = fs.p(i);
+		ctx.lineTo(punto[0],punto[1]);
+	}
+
 	ctx.stroke();
 	ctx.closePath();
 }
@@ -117,4 +130,26 @@ PerfilDelRio.prototype.obtenerPuntosSplineTransformados =function (largoDelRio,p
 		puntosCurvaSuaveTransformado.push([punto[0], punto[1],0]); 
 	} 
 	return puntosCurvaSuaveTransformado;
+}
+
+PerfilDelRio.prototype.obtenerFuncionSpline =function (largoDelRio,largoDelCanvas){
+	var puntosDelCamino = [];
+
+	puntosDelCamino.push(this.inicio);
+	puntosDelCamino.push(this.inicio);
+	puntosDelCamino.push(this.inicio);
+	for(k=0; k < this.puntos.length; ++k){
+		puntosDelCamino.push(this.puntos[k]);
+	}
+	puntosDelCamino.push(this.final);
+	puntosDelCamino.push(this.final);
+	puntosDelCamino.push(this.final);
+
+	var splineCompleja = new SplineCubicaCompleja(largoDelRio,largoDelCanvas);
+	for(k=0; k < (puntosDelCamino.length-3); ++k){
+		var splineTramo = new SplineCubica(puntosDelCamino[k],puntosDelCamino[k+1],
+			puntosDelCamino[k+2],puntosDelCamino[k+3]);
+		splineCompleja.agregarSpline(splineTramo);
+	}
+	return splineCompleja;
 }
