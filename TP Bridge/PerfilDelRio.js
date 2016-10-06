@@ -5,6 +5,7 @@ function cargarSegundoCanvas(){
 	var ctx=canvasPerfil.getContext("2d");
 	ctx.fillStyle="#326464";
 	ctx.fillRect(0,0,200,200);
+	ctx.strokeStyle = "#000000";
 
 	//Punto de comienzo y fin
  	//ctx.strokeStyle = "rgba(50, 0, 255, 0.5)";
@@ -43,7 +44,18 @@ function cargarSegundoCanvas(){
 		ctx.lineTo(punto[0],punto[1]);
 	}
 
+	var puntos = perfilDelRioObject.obtenerPuntosDelUsuario();
 	ctx.stroke();
+	ctx.closePath();
+	ctx.beginPath();
+	ctx.lineWidth = 4;
+	ctx.strokeStyle = "#1111aa";
+	for(var i= 0; i < puntos.length; ++i ){
+		var punto = puntos[i];
+		ctx.moveTo(punto[0],punto[1]-2);
+		ctx.lineTo(punto[0],punto[1]+2);
+		ctx.stroke();
+	}		
 	ctx.closePath();
 }
 
@@ -67,6 +79,10 @@ function PerfilDelRio () {
 
 PerfilDelRio.prototype.eliminarPuntos=function (){
 	this.puntos = [];
+}
+
+PerfilDelRio.prototype.obtenerPuntosDelUsuario=function (){
+	return this.puntos;
 }
 
 PerfilDelRio.prototype.obtenerPunto=function (u, indice){
