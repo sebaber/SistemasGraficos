@@ -75,6 +75,7 @@ uniform mat4 uPMatrix;
 // v�rtice del pol�gono al cual pertenecen.
 varying highp vec4 vColor;
 
+
 void main(void) {
   // gl_Position es una variable "built-in" de GLSL que es usada para
   // almacenar la posici�n resultante del fragmento.
@@ -245,7 +246,13 @@ function setupBuffers()
   // cilindro.setPosition(7,0,-10);
   // torre = new Torre(new Segmento([0,0,0],[3,2,0]),10);
   // torre.setPosition(3,0,-10);
-  terreno = new Terreno(12,12,5,4,4,0.2)
+  var anchoCosta = app.anchoCosta;
+  var largoCosta = app.largoCosta;
+  var anchoRio = app.anchoRio;
+  var anchoCalle = app.anchoCalle;
+  var nroTorres = app.nroTorres;
+  var sepTensor = app.sepTensor;
+  terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor);
   // terreno = new Lamina(new BezierCubica([-1,2,0],[0,1,0],[1,1,0],[2,2,0]),new Segmento([-1,-2,0],[2,-2,0]),6);
   // cilindro.rotateX(-1.5);
   // cilindro.rotateY(-1.5);
@@ -307,8 +314,8 @@ function drawScene()
 <body id="body" onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)" onmousemove="mouseMove(event)"
     onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)" >
   <center>
-    <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
-    <h2>Trabajo pr&aacute;ctico puente</h2>
+    <h1 style="margin-top: 0px;margin-bottom: 0px">Sistemas Gr&aacute;ficos - 66.71</h1>
+    <h2 style="margin-top: 0px;margin-bottom: 0px">Trabajo pr&aacute;ctico puente - Araya - Vicario</h2>
       <canvas id="myCanvas" name="myCanvas" width="900" height="500">
         Your browser does not support the HTML5 canvas element.
       </canvas>

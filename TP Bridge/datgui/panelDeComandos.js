@@ -1,11 +1,8 @@
 //Variable global de la aplicacion de consola
 var app={
-	alturaMaxima:10,
 	reiniciar:function(){
-		alert("apreto reiniciar");
-	},
-	detener:function(){
-		alert("apreto detener");
+		//Aca deberia hacer todas las funciones para liberar todos los buffers
+    	setupBuffers();
 	},
 	modo:"random",
 	ancho:0,
@@ -17,8 +14,19 @@ var app={
 	},
 	dibujarTodosLosPuntos:function(){
 		cargarSegundoCanvas();
-	}
+	},
+
+//terreno = new Terreno(12,12,5,4,4,0.2)
+//Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
+	anchoCosta: 12,
+	largoCosta: 12,
+	anchoRio: 5,
+	anchoCalle: 4,
+	nroTorres: 4,
+	sepTensor: 0.2
 };
+
+
 
 function GUI (){
 
@@ -27,17 +35,21 @@ function GUI (){
 		
 		var f1 = gui.addFolder('Comandos');		
 			f1.add(app, 'reiniciar').name("Reiniciar");
-			f1.add(app, 'detener').name("detener");			
+		//	f1.add(app, 'cargarDatos').name("Cargar Datos");			
 
 		var f2 = gui.addFolder('Parametros generales');		
-		
-		f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
-		f2.add(app, 'ancho',4,25).name("Ancho");
+		f2.add(app,'anchoCosta',5,50).name("Ancho Costa");
+		f2.add(app,'largoCosta',5,50).name("Largo Costa");
+		f2.add(app,'anchoCalle',2,8).name("Ancho Calles");		
+		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);		
+		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);	
 
-		f2.add(app, 'modo',["random","secuencial"]).name("modo");
+		//f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
+		//f2.add(app, 'ancho',4,25).name("Ancho");
+
+		//f2.add(app, 'modo',["random","secuencial"]).name("modo");
 
 		var f3 = gui.addFolder('Parametros Rio');				
-		f3.add(app,'umbral',0.0,100).name("umbral");
 		f3.add(app,'agregarPuntos').name("Agregar Puntos");
 		f3.add(app,'dibujarTodosLosPuntos').name("Dibujar Puntos");
 		f3.add(app,'eliminarTodosLosPuntos').name("Eliminar Puntos");
