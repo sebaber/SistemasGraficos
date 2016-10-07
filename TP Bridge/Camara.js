@@ -1,18 +1,19 @@
-/*cameraRad = 50.0;
-cameraPos = [ 0.0, cameraRad, 0.0 ];
-cameraUp = [ 0.0, 0.0, 1.0 ];
-cameraTarget = [ 0.0, 0.0, 0.0 ];
+var cameraRad = 1.0;
+var cameraPos = [ 0.0, 1.0, 0.0 ];
+var cameraUp = [ 0.0, 1.0, 0.0 ];
+var cameraTarget = [ 0.0, 0.0, 0.0 ];
 var lastpos = [ 0.0, 0.0 ];
+var skyRad = 80;
 var mx;
 var my;
 var mouseIsDown = false;
-phi = Math.PI * 0.35;
-theta = Math.PI * 1.25;
+var phi = Math.PI * 0.35;
+var theta = Math.PI * 1.25;
 
-function mouseMove(event) {
+function mouseMove(event){ 
 	mx = event.clientX;
 	my = event.clientY;
-	if (mouseIsDown && cameraOrbital) {
+	if (mouseIsDown && camaraOrbitalActiva) {
 		phi += -(my - lastpos[1]) * 0.005;
 		theta += -(mx - lastpos[0]) * 0.005;
 		if (phi > Math.PI * 0.499)
@@ -20,35 +21,42 @@ function mouseMove(event) {
 		if (phi < Math.PI * 0.001)
 			phi = Math.PI * 0.001;
 	}
-	if (camaraCarro) {
-		rotUp = my;
-		rotObj = mx;
-	}
 	lastpos[0] = mx;
 	lastpos[1] = my;
 }
 
-function mouseDown(event) {
-	mouseIsDown = true;
+function mouseDown(event){		
+	mouseIsDown = true;       
 }
 
-function mouseUp(event) {
-	mouseIsDown = false;
+function mouseUp(event){
+	mouseIsDown = false;		
 }
 
 function mouseWheel(event) {
-	if (cameraOrbital) {
+	if (camaraOrbitalActiva) {
 		if (event.deltaY > 0)
 			scale = 1.1;
 		else
 			scale = 0.9;
-		if (cameraRad * scale < skyRad && cameraRad * scale > 5.0) {
+		if (cameraRad * scale < skyRad && cameraRad * scale > 0.0) {
 			vec3.scale(cameraPos, scale);
 			cameraRad = vec3.length(cameraPos);
 		}
 	}
 }
-*/
+
+// manejo de mouse y teclado
+
+var previousClientX = 0, previousClientY = 0, radio = 5, alfa = 0, beta = 0, factorVelocidad = 0.01;
+
+var isMouseDown = false;
+var actualEvent;
+
+var mouse = {x: 0, y: 0};
+
+
+var camaraOrbitalActiva = false;
 
 var teclaBajarActiva = false;
 var teclaSubirActiva = false;
@@ -137,9 +145,20 @@ function keyPressUpEvent(event){
   else if (event.key == 'k'){
   	teclaRotarAbajoActiva = false;
   }
+  else if (event.key == 'c'){
+  	camaraOrbitalActiva = !camaraOrbitalActiva;
+  }
 }
 
 function actualizarMovimientosDeCamara(pMatrix){
+	if(camaraOrbitalActiva){
+		return moverCamaraOrbital(pMatrix);
+	}else{
+		return moverCamaraHombre(pMatrix);
+	}
+}
+
+function moverCamaraHombre(pMatrix){
 	var xPos = 0.0;
 	var yPos = 0.0;	
 	var xRot = 0.0;
@@ -199,4 +218,57 @@ function actualizarMovimientosDeCamara(pMatrix){
 	mat4.translate(pMatrix, pMatrix, [xPosGlobal, zPosGlobal , yPosGlobal]);
 
 	return pMatrix;
+}
+
+function moverCamaraOrbital(pMatrix)
+{	
+	var CameraMatrix = mat4.create();
+	cameraPos[0] = cameraRad * Math.cos(theta) * Math.sin(phi);
+	cameraPos[1] = cameraRad * Math.sin(theta) * Math.sin(phi);
+	cameraPos[2] = cameraRad * Math.cos(phi);
+	mat4.identity(CameraMatrix);
+	//CameraMatrix = mat4.lookAt(CameraMatrix,cameraPos, cameraTarget, cameraUp);
+    CameraMatrix = makeLookAt(cameraPos, cameraTarget, cameraUp)
+    //pMatrix = mat4.multiply(pMatrix, pMatrix, CameraMatrix);
+    //var cameraPositionUniform = gl.getUniformLocation(glProgram,"uCameraPos");
+	//gl.uniform3f(cameraPositionUniform, cameraPos[0],
+	//	cameraPos[1], cameraPos[2]);
+
+	return CameraMatrix;
+}
+
+function makeLookAt(cameraPosition, target, up) {
+  var zAxis = normalize(
+      subtractVectors(cameraPosition, target));
+  var xAxis = cross(up, zAxis);
+  var yAxis = cross(zAxis, xAxis);
+ 
+  return [
+     xAxis[0], xAxis[1], xAxis[2], 0,
+     yAxis[0], yAxis[1], yAxis[2], 0,
+     zAxis[0], zAxis[1], zAxis[2], 0,
+     cameraPosition[0],
+     cameraPosition[1],
+     cameraPosition[2],
+     1];
+}
+
+function normalize(v) {
+  var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  // make sure we don't divide by 0.
+  if (length > 0.00001) {
+    return [v[0] / length, v[1] / length, v[2] / length];
+  } else {
+    return [0, 0, 0];
+  }
+}
+
+function subtractVectors(a, b) {
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+}
+
+function cross(a, b) {
+  return [a[1] * b[2] - a[2] * b[1],
+          a[2] * b[0] - a[0] * b[2],
+          a[0] * b[1] - a[1] * b[0]];
 }

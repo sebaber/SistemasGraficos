@@ -8,6 +8,6 @@ function ParteTorre(piezaTorre,empalmeTorre,scale){
 inheritPrototype(ParteTorre, ModeloComplejo);
 
 ParteTorre.prototype.postInit = function(){
-  console.log("entro");
+  //console.log("entro");
   this.scaleNonUniform(this.scale,1,this.scale);
 };

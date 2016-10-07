@@ -10,6 +10,9 @@
   textarea{ background-color: black; foreground-color: white;}
   </style>
 
+  <!-- Libreria jquery utilizada -->
+  <script type="text/javascript" src="datgui/jquery-2.1.4.min.js"></script>
+
   <script type="text/javascript" src="Camara.js"></script>
   <script type="text/javascript" src="PerfilDelRio.js"></script>
   <script type="text/javascript" src="gl-matrix.js"></script>
@@ -50,7 +53,6 @@
 
   <!-- Codigo para la consola -->
   <script type="text/javascript" src="datgui/dat.gui.min.js"></script>
-  <script type="text/javascript" src="datgui/jquery-2.1.4.min.js"></script>
   <link type="text/css" rel="stylesheet" href="datgui/dat-gui-swec.css">
   <script type="text/javascript" src="datgui/panelDeComandos.js"></script>
   <!--
@@ -164,7 +166,7 @@ function getShader(gl, id) {
 function initWebGL()
 {
   cargarSegundoCanvas();
-  canvas = document.getElementById("my-canvas");
+  canvas = document.getElementById("myCanvas");
   try{
     gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
   }catch(e){
@@ -266,37 +268,48 @@ function drawScene()
 
   // Preparamos una matriz de perspectiva.
   mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
-  pMatrix = actualizarMovimientosDeCamara(pMatrix);
-  gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+  if (camaraOrbitalActiva){
+    pMatrix = actualizarMovimientosDeCamara(pMatrix);
+    /*var pMatrixUniform = gl.getUniformLocation(glProgram,
+      "uPMatrix");
+    var ViewMatrixUniform = gl.getUniformLocation(glProgram,
+      "uViewMatrix");
+    gl.uniformMatrix4fv(pMatrixUniform, false, pMatrix);
+    gl.uniformMatrix4fv(ViewMatrixUniform, false, CameraMatrix);*/
+    //mat4.multiply(pMatrix, pMatrix, CameraMatrix);
+    gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+
+  } else{
+    pMatrix = actualizarMovimientosDeCamara(pMatrix);
+    gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+  } 
 
   // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
   // Preparamos una matriz de modelo+vista.
   mat4.identity(mvMatrix);
-  if(i<=100){
+/*  if(i<=100){
     //mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
   }else{
     //mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
     if(i==200) i=0;
   }
   i++;
-
+*/
   // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
   // t = t + 0.01;
 
   // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
-  // console.log(my_grid);
-  // cilindro.draw(mvMatrix);
-  // arbol.draw(mvMatrix);
   modelo.draw(mvMatrix);
 }
 
 </script>
 </head>
-<body onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)">
+<body id="body" onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)" onmousemove="mouseMove(event)"
+    onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)" >
   <center>
     <h1>Sistemas Gr&aacute;ficos - 66.71</h1>
     <h2>Trabajo pr&aacute;ctico puente</h2>
-      <canvas id="my-canvas" width="900" height="500">
+      <canvas id="myCanvas" name="myCanvas" width="900" height="500">
         Your browser does not support the HTML5 canvas element.
       </canvas>
       <script type="text/javascript"> GUI(); </script>
