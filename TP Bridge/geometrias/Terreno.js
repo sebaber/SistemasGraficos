@@ -1,4 +1,5 @@
-function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) {
+function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
+  alturaTorre1,alturaTorre2,alturaTorre3) {
   ModeloComplejo.call(this);
   this.anchoCosta = anchoCosta;
   this.largoCosta = largoCosta;
@@ -28,9 +29,9 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor) 
 
   var offsetTorrePuente = (anchoRio/6);
   var distTorres = (anchoRio-(2*offsetTorrePuente))/(nroTorres-1);
-  var h1=1.5;
-  var h2=1;
-  var h3=0.5;
+  var h1=alturaTorre1;
+  var h2=alturaTorre2;
+  var h3=alturaTorre3;
   var hmax=h1+h1/4+h2+h2/4+h3+h3/4;
   var offsetPuente=1.5;
 

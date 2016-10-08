@@ -1,10 +1,11 @@
 .dg .c input[type="checkbox"] {
-    margin-top: 4px;
+      margin-top: 4px;
 }
 
 .dg .c select {
-    margin-top: 0px;
+      margin-top: 0px;
 }
+
 /*.dg {
        color: black;
        font: 400 20px Verdana, Arial, sans-serif;

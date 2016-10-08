@@ -1,7 +1,6 @@
-var cameraRad = 1.0;
-var cameraPos = [ 0.0, 1.0, 0.0 ];
-var cameraUp = [ 0.0, 1.0, 0.0 ];
-var cameraTarget = [ 0.0, 0.0, 0.0 ];
+var cameraRad = 40.0;
+var cameraPos = [ 12, cameraRad, 0.0 ];
+var cameraUp = [ 0.0, 0.0, 1.0 ];
 var lastpos = [ 0.0, 0.0 ];
 var skyRad = 80;
 var mx;
@@ -70,10 +69,10 @@ var teclaRotarAbajoActiva = false;
 var teclaRotarArribaActiva = false;
 
 var xRotGlobal = 0.0;
-var yRotGlobal = 0.0;
-var zPosGlobal = 0.0;
+var yRotGlobal = Math.PI * 0.5;
+var zPosGlobal = -0.75;
 var xPosGlobal = 0.0;
-var yPosGlobal = 0.0;
+var yPosGlobal = app.largoCosta/2;
 
 function keyPressDownEvent(event){
   // if ( event.which == 13 ) {
@@ -147,6 +146,9 @@ function keyPressUpEvent(event){
   }
   else if (event.key == 'c'){
   	camaraOrbitalActiva = !camaraOrbitalActiva;
+  }
+  else if (event.key == 'r'){
+  	app.reiniciar();
   }
 }
 

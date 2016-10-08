@@ -2,12 +2,9 @@
 var app={
 	reiniciar:function(){
 		//Aca deberia hacer todas las funciones para liberar todos los buffers
+		configCamaraTargets();
     	setupBuffers();
 	},
-	modo:"random",
-	ancho:0,
-	umbral:100,
-	agregarPuntos:true,
 	eliminarTodosLosPuntos:function(){
 		perfilDelRioObject.eliminarPuntos();
 		cargarSegundoCanvas();
@@ -16,6 +13,7 @@ var app={
 		cargarSegundoCanvas();
 	},
 
+	agregarPuntos:true,
 //terreno = new Terreno(12,12,5,4,4,0.2)
 //Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
 	anchoCosta: 12,
@@ -23,18 +21,34 @@ var app={
 	anchoRio: 5,
 	anchoCalle: 4,
 	nroTorres: 4,
-	sepTensor: 0.2
+	sepTensor: 0.2,
+//Inicializacion del target de la camara
+	targetX: 0,
+	targetY: 0,
+//  var h1=1.5;
+//  var h2=1;
+//  var h3=0.5;	
+	alturaTorre1: 1.5,
+  	alturaTorre2: 1.0,
+  	alturaTorre3: 0.5
 };
 
+configCamaraTargets();
 
+function configCamaraTargets (){
+	//x = anchoCosta * 2 + anchoDelRio
+	//y = largoCosta
+	app.targetX = (app.anchoCosta * 2 + app.anchoRio ) / 2;
+	app.targetY = (app.largoCosta) / 2;
+	cameraTarget = [app.targetX, 0 , app.targetY];
+}
 
 function GUI (){
-
-		var gui = new dat.GUI();
 		//gui.remember(gof);
+		var gui = new dat.GUI();
 		
 		var f1 = gui.addFolder('Comandos');		
-			f1.add(app, 'reiniciar').name("Reiniciar");
+			f1.add(app, 'reiniciar').name("Reiniciar (Tecla R)");
 		//	f1.add(app, 'cargarDatos').name("Cargar Datos");			
 
 		var f2 = gui.addFolder('Parametros generales');		
@@ -43,6 +57,9 @@ function GUI (){
 		f2.add(app,'anchoCalle',2,8).name("Ancho Calles");		
 		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);		
 		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);	
+		f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);	
+		f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);	
+		f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);	
 
 		//f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
 		//f2.add(app, 'ancho',4,25).name("Ancho");
@@ -61,6 +78,8 @@ function GUI (){
 		f1.open();
 		f2.open();
 		f3.open();
+
+		gui.width = 289;
 };
 
 //Parte de escucha de datos de mouse para el canvas
