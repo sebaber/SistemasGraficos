@@ -42,6 +42,7 @@
   <script type="text/javascript" src="recorridos/ExtrusionCerrada.js"></script>
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
 
+  <script type="text/javascript" src="geometrias/Rio.js"></script>
   <script type="text/javascript" src="geometrias/Terreno.js"></script>
   <script type="text/javascript" src="geometrias/Calle.js"></script>
   <script type="text/javascript" src="geometrias/Puente.js"></script>
@@ -60,6 +61,7 @@
   <script type="text/javascript" src="formas/PerfilTerreno.js"></script>
   <script type="text/javascript" src="formas/PerfilCalle.js"></script>
   <script type="text/javascript" src="formas/PerfilTorre.js"></script>
+  <script type="text/javascript" src="formas/PerfilRio.js"></script>
 
   <!--
   Vertex shader
@@ -264,8 +266,12 @@ function setupBuffers()
   var alturaTorre2 = app.alturaTorre2;
   var alturaTorre3 = app.alturaTorre3;
   var yCalle = app.yCalle;
+  var ph1 = app.ph1;
+  var ph2 = app.ph2;
+  var ph3 = app.ph3;
+
   terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
-    alturaTorre1,alturaTorre2,alturaTorre3,yCalle);
+    alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3);
   // terreno = new Lamina(new BezierCubica([-1,2,0],[0,1,0],[1,1,0],[2,2,0]),new Segmento([-1,-2,0],[2,-2,0]),6);
   // cilindro.rotateX(-1.5);
   // cilindro.rotateY(-1.5);

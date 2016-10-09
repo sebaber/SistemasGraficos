@@ -20,6 +20,9 @@ var app={
 	largoCosta: 12.0,
 	anchoRio: 3.0,
 	anchoCalle: 4,
+	ph1:0.5,
+	ph2:1,
+	ph3:3,
 	yCalle: 6,
 	nroTorres: 4,
 	sepTensor: 0.2,
@@ -59,9 +62,12 @@ function GUI (){
 		f2.add(app,'yCalle',2,10).name("Posicion Calle").step(1.0);
 		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);
 		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);
-		f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
-		f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);
-		f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);
+		// f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
+		// f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);
+		// f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);
+		f2.add(app,'ph1',0.1,2.0).name("Alturta Ph 1").step(0.1);
+		f2.add(app,'ph2',0.1,2.0).name("Alturta Ph 2").step(0.1);
+		f2.add(app,'ph3',0.1,3.0).name("Alturta ph3 3").step(0.1);
 
 		//f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
 		//f2.add(app, 'ancho',4,25).name("Ancho");

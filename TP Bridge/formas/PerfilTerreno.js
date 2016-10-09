@@ -1,5 +1,5 @@
-function PerfilTerreno(anchoCosta,anchoRio,u) {
-  profundidad = 0.5;
+function PerfilTerreno(anchoCosta,anchoRio,profundidad,u) {
+  profundidad = profundidad;
   this.u = u;
   this.splineCompleja = new SplineCompleja();
   this.puntos = [];

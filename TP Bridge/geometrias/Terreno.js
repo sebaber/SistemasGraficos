@@ -1,15 +1,19 @@
 function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
-  alturaTorre1,alturaTorre2,alturaTorre3,yCalle) {
+  alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3) {
     ModeloComplejo.call(this);
     this.anchoCosta = anchoCosta;
     this.largoCosta = largoCosta;
     this.anchoRio = anchoRio;
 
-    var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,400);
+    var profundidad = 0.5;
+
+    var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,profundidad,100);
     // var base = new Base(new Segmento([0,0,0,0],[0,10,0]),xCostaDer,anchoRio,20);
     console.log(base);
     this.agregarModelo(base);
 
+    var rio = new Rio(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,ph1,100);
+    this.agregarModelo(rio);
     this.rotateX(-(3.14/2.0));
 
     // var xCostaIzqTorre = base.getXMinimaDelRioParaY(yCalle);
@@ -20,10 +24,17 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
     console.log("xCostaDer: "+xCostaIzq);
     var offsetTorrePuente = (anchoPuente/6);
     var distTorres = (anchoPuente-(2*offsetTorrePuente))/(nroTorres-1);
-    var h1=alturaTorre1;
-    var h2=alturaTorre2;
-    var h3=alturaTorre3;
-    var hmax=h1+h1/4+h2+h2/4+h3+h3/4;
+    var alturaTotal = ph1+ph2+ph3;
+    var h1=ph2/2+ph1;
+    var h2=ph2/2+ph3/2;
+    var h3=ph3/2;
+    console.log("ph1: "+ph1);
+    console.log("ph2: "+ph2);
+    console.log("ph3: "+ph3);
+    // var h1=alturaTorre1;
+    // var h2=alturaTorre2;
+    // var h3=alturaTorre3;
+    var hmax=h1+h1/4+h2+h2/4+h3+h3/4-ph1;
     // var offsetPuente=1.5;
     var calleIzq = new Calle(
       new Segmento([0,0,-yCalle],[xCostaIzq,0,-yCalle]),
@@ -41,8 +52,8 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
       var puente = new Puente(
         new BezierCubica(
           [xCostaIzq, 0, -yCalle],//-yCalle
-          [xCostaIzq + (anchoPuente/3), 1, -yCalle],//-yCalle
-          [xCostaIzq + (2*anchoPuente/3), 1, -yCalle],//-yCalle
+          [xCostaIzq + (anchoPuente/3), ph2, -yCalle],//-yCalle
+          [xCostaIzq + (2*anchoPuente/3), ph2, -yCalle],//-yCalle
           [xCostaIzq + anchoPuente, 0, -yCalle]
         ),//-yCalle
         anchoCalle,
@@ -57,7 +68,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
         torre = new Torre(h1,h2,h3);
         torre.init(
           xCostaIzq + offsetTorrePuente + i*distTorres,
-          0,
+          -ph1,
           -yCalle - anchoCalle/2
         );
         this.agregarModelo(torre);
@@ -152,7 +163,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
         torre = new Torre(h1,h2,h3);
         torre.init(
           xCostaIzq + offsetTorrePuente + i*distTorres,
-          0,
+          -ph1,
           -yCalle + anchoCalle/2
         );
         this.agregarModelo(torre);
@@ -336,14 +347,14 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
       // }
 
 
-    this.agregarArboles();
+    // this.agregarArboles();
 
   }
 
   inheritPrototype(Terreno, ModeloComplejo);
 
 Terreno.prototype.agregarArboles = function() {
-    var posicionesAnteriores = [];      
+    var posicionesAnteriores = [];
     for(var i = 0;i<10;++i){
         var arbol = new ArbolRandom();
         var randomNumber = Math.random(); // 0 y 1
@@ -371,9 +382,9 @@ Terreno.prototype.agregarArboles = function() {
 Terreno.prototype.huboColisionArboles = function(x,z,posicionesAnteriores,arbol) {
     for(var i = 0;i<posicionesAnteriores.length;i++){
         var x2 = posicionesAnteriores[i][0];
-        var z2 = posicionesAnteriores[i][1]; 
+        var z2 = posicionesAnteriores[i][1];
         var distancia = Utils.distanceBetween(x,z,x2,z2);
-        var diametro = 2*arbol.getRadio(); 
+        var diametro = 2*arbol.getRadio();
         if (distancia <= diametro){
             return true;
         }

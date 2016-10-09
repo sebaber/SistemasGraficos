@@ -1,5 +1,5 @@
-function Base(curva,anchoCosta,anchoRio,nlevels) {
-  ExtrusionAbierta.call(this,curva, new PerfilTerreno(anchoCosta,anchoRio,0.1),nlevels);
+function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
+  ExtrusionAbierta.call(this,curva, new PerfilTerreno(anchoCosta,anchoRio,profundidad,0.1),nlevels);
 }
 
 inheritPrototype(Base, ExtrusionAbierta);
