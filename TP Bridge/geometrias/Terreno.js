@@ -5,10 +5,11 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
   this.largoCosta = largoCosta;
   this.anchoRio = anchoRio;
 
-  var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,20);
+  var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,400);
   // var base = new Base(new Segmento([0,0,0,0],[0,10,0]),anchoCosta,anchoRio,20);
   console.log(base);
   this.agregarModelo(base);
+
   // console.log(new PerfilTerreno(anchoCosta,anchoRio,0.1));
   // console.log(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200));
   // var viga,posViga,i,torre,distViga,distPuente,posPuente,tensor;
@@ -241,19 +242,28 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
 //     distPuente-=sepTensor;
 //   }
 //
-  var calleIzq = new Calle(
-    new Segmento([0,0,-largoCosta/2],[anchoCosta-offsetPuente,0,-largoCosta/2]),
-    anchoCalle,
-    10
-  );
-  var calleDer = new Calle(new Segmento([anchoCosta+anchoRio-offsetPuente,0,-largoCosta/2],[anchoCosta+anchoRio+anchoCosta,0,-largoCosta/2]),
-  anchoCalle,
+//   var calleIzq = new Calle(
+//     new Segmento([0,0,-largoCosta/2],[anchoCosta-offsetPuente,0,-largoCosta/2]),
+//     anchoCalle,
+//     10
+//   );
+//   var calleDer = new Calle(new Segmento([anchoCosta+anchoRio-offsetPuente,0,-largoCosta/2],[anchoCosta+anchoRio+anchoCosta,0,-largoCosta/2]),
+//   anchoCalle,
+//   10
+// );
+// // puente.translate(0,0,-3);
+// this.agregarModelo(calleDer);
+// this.agregarModelo(calleIzq);
+// // this.agregarArboles();
+
+var calleIzq = new Calle(
+  new Segmento([0,0,0],[anchoCosta,0,0]),
+  anchoCosta,
+  anchoRio,
   10
 );
-// puente.translate(0,0,-3);
-this.agregarModelo(calleDer);
 this.agregarModelo(calleIzq);
-// this.agregarArboles();
+
 }
 
 inheritPrototype(Terreno, ModeloComplejo);

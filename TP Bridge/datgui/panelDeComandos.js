@@ -16,10 +16,11 @@ var app={
 	agregarPuntos:true,
 //terreno = new Terreno(12,12,5,4,4,0.2)
 //Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
-	anchoCosta: 12,
-	largoCosta: 12,
-	anchoRio: 10,
+	anchoCosta: 18.0,
+	largoCosta: 12.0,
+	anchoRio: 3.0,
 	anchoCalle: 4,
+	yCalle: 6,
 	nroTorres: 4,
 	sepTensor: 0.2,
 //Inicializacion del target de la camara
@@ -52,9 +53,10 @@ function GUI (){
 		//	f1.add(app, 'cargarDatos').name("Cargar Datos");
 
 		var f2 = gui.addFolder('Parametros generales');
-		f2.add(app,'anchoCosta',5,50).name("Ancho Costa");
-		f2.add(app,'largoCosta',5,50).name("Largo Costa");
-		f2.add(app,'anchoCalle',2,8).name("Ancho Calles");
+		// f2.add(app,'anchoCosta',5,50).name("Ancho Costa");
+		// f2.add(app,'largoCosta',5,50).name("Largo Costa");
+		// f2.add(app,'anchoCalle',2,8).name("Ancho Calles");
+		f2.add(app,'yCalle',2,10).name("Posicion Calle").step(1.0);
 		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);
 		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);
 		f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
@@ -80,7 +82,7 @@ function GUI (){
 		f3.open();
 
 		gui.width = 289;
-};
+}
 
 //Parte de escucha de datos de mouse para el canvas
 $( document ).ready(function() {// esto es para esperar que carge la libreria Jquery

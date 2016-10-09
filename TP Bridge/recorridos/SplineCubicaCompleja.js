@@ -37,9 +37,16 @@ SplineCubicaCompleja.prototype.p = function(u) {
                 uReal = 0.0;
             }
             console.log("Ureal: "+uReal);
-            var punto = splineTramo.p(uReal);
+            var punto;
+            if(uReal === 0) punto = splineTramo.v0;
+            if(uReal == 1) punto = splineTramo.v3;
+            else punto = splineTramo.p(uReal);
+            // var punto = splineTramo.p(uReal);
             console.log("ANTES");
             console.log(punto);
+            //CENTRO EL X:
+            punto[0] = punto[0] - this.anchoCanvas/2;
+            
             punto[0] = punto[0]*this.factorX;
             punto[1] = punto[1]*this.factor;
             console.log("DESPUES");

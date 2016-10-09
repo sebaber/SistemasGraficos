@@ -2,14 +2,14 @@ function ExtrusionAbierta(curva,forma,nlevels){
   this.curva = curva;
   this.nlevels = nlevels;
   this.forma = forma;
-  ModeloAbierto.call(this,this.nlevels+2,this.forma.getPoints());
+  ModeloAbierto.call(this,this.nlevels,this.forma.getPoints());
 }
 
 inheritPrototype(ExtrusionAbierta, ModeloAbierto);
 
 ExtrusionAbierta.prototype.agregarPuntosIniciales = function(vertices){
 
-  var pos = [app.anchoCosta/2,0,0];
+  var pos = [app.anchoCosta/2,-2,0];
 
   var pos4 = vec4.create();
   vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
@@ -21,6 +21,8 @@ ExtrusionAbierta.prototype.agregarPuntosIniciales = function(vertices){
   // mat4.multiply(matFinal,matrizTraslacion,matrizRotacion);
 
   for (var j = 0.0; j < vertices.length; j++) {
+
+
 
     var vertice = vec4.create();
     vec4.set(vertice,vertices[j][0],vertices[j][1],vertices[j][2],1.0);
@@ -75,7 +77,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
   var t;
   vertices = this.forma.getVertices();
 
-  this.agregarPuntosIniciales(vertices);
+  // this.agregarPuntosIniciales(vertices);
 
   for (var i = 0.0; i < this.nlevels; i++) {
     t = i/(this.nlevels-1);
@@ -98,6 +100,8 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
       var vertice = vec4.create();
       vec4.set(vertice,vertices[j][0],vertices[j][1],vertices[j][2],1.0);
       vec4.transformMat4(vertice,vertice,matrizTraslacion);
+      if(j===0) vertice[0] = 0;
+      if(j==vertices.length-1) vertice[0] = app.anchoCosta;
       // console.log(vertice);
       this.position_buffer.push(vertice[0]);
       this.position_buffer.push(vertice[1]);
@@ -110,7 +114,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
     }
   }
 
-  this.agregarPuntosFinales(vertices);
+  // this.agregarPuntosFinales(vertices);
 };
 
 

@@ -5,21 +5,21 @@ function PerfilTerreno(anchoCosta,anchoRio,u) {
   this.puntos.push([0,0,0]);
   this.puntos.push([0,0,0]);
   this.puntos.push([0,0,0]);
-  this.puntos.push([anchoCosta/3,0,0]);
-  this.puntos.push([2*anchoCosta/3,0,0]);
+  this.puntos.push([anchoCosta/4,0,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2,0,0]);
+  // this.puntos.push([anchoCosta,0,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/12,-2*anchoRio/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/6,-4*anchoRio/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/3,-anchoRio,0]);
+  this.puntos.push([anchoCosta/2,-anchoRio,0]);
+  this.puntos.push([anchoCosta/2+anchoRio/3,-anchoRio,0]);
+  this.puntos.push([anchoCosta/2+(5*anchoRio/6),-4*anchoRio/5,0]);
+  this.puntos.push([anchoCosta/2+(11*anchoRio/12),-2*anchoRio/5,0]);
+  this.puntos.push([anchoCosta/2+anchoRio/2,0,0]);
+  this.puntos.push([anchoCosta*3/4,0,0]);
   this.puntos.push([anchoCosta,0,0]);
-  this.puntos.push([anchoCosta+anchoRio/12,-2*anchoRio/5,0]);
-  this.puntos.push([anchoCosta+anchoRio/6,-4*anchoRio/5,0]);
-  this.puntos.push([anchoCosta+anchoRio/3,-anchoRio,0]);
-  this.puntos.push([anchoCosta+anchoRio/2,-anchoRio,0]);
-  this.puntos.push([anchoCosta+(2*anchoRio/3),-anchoRio,0]);
-  this.puntos.push([anchoCosta+(5*anchoRio/6),-4*anchoRio/5,0]);
-  this.puntos.push([anchoCosta+(11*anchoRio/12),-2*anchoRio/5,0]);
-  this.puntos.push([anchoCosta+anchoRio+anchoCosta/3,0,0]);
-  this.puntos.push([anchoCosta+anchoRio+(2*anchoCosta/3),0,0]);
-  this.puntos.push([anchoCosta+anchoRio+anchoCosta,0,0]);
-  this.puntos.push([anchoCosta+anchoRio+anchoCosta,0,0]);
-  this.puntos.push([anchoCosta+anchoRio+anchoCosta,0,0]);
+  this.puntos.push([anchoCosta,0,0]);
+  this.puntos.push([anchoCosta,0,0]);
   for(var i=0;i<this.puntos.length-3;++i){
     this.splineCompleja.agregarSpline(new SplineCubica(this.puntos[i],this.puntos[i+1],this.puntos[i+2],this.puntos[i+3]));
   }
