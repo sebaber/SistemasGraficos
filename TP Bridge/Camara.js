@@ -1,13 +1,39 @@
-var cameraRad = 40.0;
-var cameraPos = [ 12, cameraRad, 0.0 ];
-var cameraUp = [ 0.0, 0.0, 1.0 ];
+//Camara Orbital
+var cameraRad = app.targetX;
+cameraTarget =[app.targetX, 0.0 , app.targetY]; // [0.0, 0.0 , 0.0];
+var cameraPos = [ 0.0 , 0.0, app.targetY ];
+var cameraUp = [ 0.0, 1.0, 0.0 ];
 var lastpos = [ 0.0, 0.0 ];
-var skyRad = 80;
+var zoomMax = 80.0;
 var mx;
 var my;
 var mouseIsDown = false;
-var phi = Math.PI * 0.35;
-var theta = Math.PI * 1.25;
+//var phi = Math.PI * 0.35;
+//var theta = Math.PI * 1.25;
+var phi = Math.PI * 0.5;
+var theta = Math.PI;
+
+var camaraOrbitalActiva = false;
+
+//Camara FPS
+var teclaBajarActiva = false;
+var teclaSubirActiva = false;
+var teclaArribaActiva = false;
+var teclaAbajoActiva = false;
+var teclaDerechaActiva = false;
+var teclaIzquierdaActiva = false;
+var teclaRotarIzquierdaActiva = false;
+var teclaRotarDerechaActiva = false;
+var teclaRotarAbajoActiva = false;
+var teclaRotarArribaActiva = false;
+
+var xRotGlobal = 0.0;
+var yRotGlobal = Math.PI * 0.5;
+var zPosGlobal = -0.75;
+var xPosGlobal = 0.0;
+var yPosGlobal = app.largoCosta/2;
+
+
 
 function mouseMove(event){ 
 	mx = event.clientX;
@@ -38,46 +64,16 @@ function mouseWheel(event) {
 			scale = 1.1;
 		else
 			scale = 0.9;
-		if (cameraRad * scale < skyRad && cameraRad * scale > 0.0) {
-			vec3.scale(cameraPos, scale);
-			cameraRad = vec3.length(cameraPos);
+		if ((cameraRad * scale) < zoomMax && (cameraRad * scale) > 0.0) {
+			cameraPos[0] *= scale;
+			cameraPos[1] *= scale;
+			cameraPos[2] *= scale;
+			cameraRad = norma(subtractVectors(cameraTarget,cameraPos));
 		}
 	}
 }
 
-// manejo de mouse y teclado
-
-var previousClientX = 0, previousClientY = 0, radio = 5, alfa = 0, beta = 0, factorVelocidad = 0.01;
-
-var isMouseDown = false;
-var actualEvent;
-
-var mouse = {x: 0, y: 0};
-
-
-var camaraOrbitalActiva = false;
-
-var teclaBajarActiva = false;
-var teclaSubirActiva = false;
-var teclaArribaActiva = false;
-var teclaAbajoActiva = false;
-var teclaDerechaActiva = false;
-var teclaIzquierdaActiva = false;
-var teclaRotarIzquierdaActiva = false;
-var teclaRotarDerechaActiva = false;
-var teclaRotarAbajoActiva = false;
-var teclaRotarArribaActiva = false;
-
-var xRotGlobal = 0.0;
-var yRotGlobal = Math.PI * 0.5;
-var zPosGlobal = -0.75;
-var xPosGlobal = 0.0;
-var yPosGlobal = app.largoCosta/2;
-
 function keyPressDownEvent(event){
-  // if ( event.which == 13 ) {
-  //  event.preventDefault();
-  // }
   if (event.key == 'd'){
   	teclaDerechaActiva = true;
   }
@@ -111,9 +107,6 @@ function keyPressDownEvent(event){
 }
 
 function keyPressUpEvent(event){
-//  if ( event.which == 13 ) {
-//   event.preventDefault();
-//  }
   if (event.key == 'd'){
   	teclaDerechaActiva = false;
   }
@@ -154,7 +147,7 @@ function keyPressUpEvent(event){
 
 function actualizarMovimientosDeCamara(pMatrix){
 	if(camaraOrbitalActiva){
-		return moverCamaraOrbital(pMatrix);
+		return moverCamaraOrbital();
 	}else{
 		return moverCamaraHombre(pMatrix);
 	}
@@ -222,30 +215,43 @@ function moverCamaraHombre(pMatrix){
 	return pMatrix;
 }
 
-function moverCamaraOrbital(pMatrix)
-{	
-	var CameraMatrix = mat4.create();
-	cameraPos[0] = cameraRad * Math.cos(theta) * Math.sin(phi);
-	cameraPos[1] = cameraRad * Math.sin(theta) * Math.sin(phi);
-	cameraPos[2] = cameraRad * Math.cos(phi);
-	mat4.identity(CameraMatrix);
-	//CameraMatrix = mat4.lookAt(CameraMatrix,cameraPos, cameraTarget, cameraUp);
-    CameraMatrix = makeLookAt(cameraPos, cameraTarget, cameraUp)
-    //pMatrix = mat4.multiply(pMatrix, pMatrix, CameraMatrix);
-    //var cameraPositionUniform = gl.getUniformLocation(glProgram,"uCameraPos");
-	//gl.uniform3f(cameraPositionUniform, cameraPos[0],
-	//	cameraPos[1], cameraPos[2]);
+var cameraMatrix;
+var u_proj_matrix;
+var u_view_matrix;
+var cameraPositionUniform;
 
-	return CameraMatrix;
+function moverCamaraOrbital()
+{	
+	var phi2 = phi;
+	var theta2 = theta;	
+	cameraPos[0] = cameraRad * Math.cos(theta2) * Math.sin(phi2);
+	cameraPos[2] = cameraRad * Math.sin(theta2) * Math.sin(phi2);
+	cameraPos[1] = cameraRad * Math.cos(phi2);
+
+	cameraPos[0] += cameraTarget[0];
+	cameraPos[1] += cameraTarget[1];
+	cameraPos[2] += cameraTarget[2];
+	
+	cameraMatrix = mat4.create();
+	mat4.identity(cameraMatrix);
+	mat4.lookAt(cameraMatrix, vecFrom(cameraPos), vecFrom(cameraTarget), vecFrom(normalize(cameraUp)));
+	mat4.rotate(cameraMatrix, cameraMatrix, Math.PI * 0.25, [1, 0, 0]);
+	mat4.translate(cameraMatrix, cameraMatrix, cameraPos);
+	mat4.multiply(pMatrix,pMatrix,cameraMatrix);
+    //cameraMatrix = makeLookAt(cameraPos, cameraTarget, cameraUp)
+    //pMatrix = mat4.multiply(pMatrix, pMatrix, cameraMatrix);
+	//mat4.translate(pMatrix, pMatrix, [cameraTarget[0], cameraTarget[1], cameraTarget[2]]);
+	//gl.uniform3f(cameraPositionUniform,cameraPos[0],cameraPos[1],cameraPos[2]);
+	return cameraMatrix;
 }
 
 function makeLookAt(cameraPosition, target, up) {
   var zAxis = normalize(
       subtractVectors(cameraPosition, target));
-  var xAxis = cross(up, zAxis);
-  var yAxis = cross(zAxis, xAxis);
- 
-  return [
+  var xAxis = normalize(cross(up, zAxis));
+  var yAxis = normalize(cross(zAxis, xAxis));
+ return Utils.getMatrizRotacion(xAxis,yAxis,zAxis);
+  /*return [
      xAxis[0], xAxis[1], xAxis[2], 0,
      yAxis[0], yAxis[1], yAxis[2], 0,
      zAxis[0], zAxis[1], zAxis[2], 0,
@@ -253,6 +259,7 @@ function makeLookAt(cameraPosition, target, up) {
      cameraPosition[1],
      cameraPosition[2],
      1];
+   */
 }
 
 function normalize(v) {
@@ -273,4 +280,26 @@ function cross(a, b) {
   return [a[1] * b[2] - a[2] * b[1],
           a[2] * b[0] - a[0] * b[2],
           a[0] * b[1] - a[1] * b[0]];
+}
+
+function norma(a) {
+  return Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
+}
+
+
+function vecFrom(a) {
+  return vec3.fromValues(a[0],a[1],[2]);
+}
+
+function configCamara(){
+	// Preparamos una matriz de perspectiva.
+	mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
+	if (camaraOrbitalActiva){
+		CameraMatrix = actualizarMovimientosDeCamara(pMatrix);
+		gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+		//gl.uniformMatrix4fv(u_view_matrix, false, CameraMatrix);
+	} else{
+		pMatrix = actualizarMovimientosDeCamara(pMatrix);
+		gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+	} 
 }

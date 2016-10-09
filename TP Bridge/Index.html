@@ -194,6 +194,9 @@ function initWebGL()
   }else{
     alert(  "Error: Your browser does not appear to support WebGL.");
   }
+u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
+u_view_matrix = gl.getUniformLocation(glProgram, "uViewMatrix");
+cameraPositionUniform = gl.getUniformLocation(glProgram, "uCameraPos");
 }
 
 function setupWebGL()
@@ -292,25 +295,9 @@ function setupBuffers()
 function drawScene()
 {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
+  
+  configCamara();
 
-  // Preparamos una matriz de perspectiva.
-  mat4.perspective(pMatrix, 45, 640.0/480.0, 0.1, 100.0);
-  if (camaraOrbitalActiva){
-    pMatrix = actualizarMovimientosDeCamara(pMatrix);
-    /*var pMatrixUniform = gl.getUniformLocation(glProgram,
-      "uPMatrix");
-    var ViewMatrixUniform = gl.getUniformLocation(glProgram,
-      "uViewMatrix");
-    gl.uniformMatrix4fv(pMatrixUniform, false, pMatrix);
-    gl.uniformMatrix4fv(ViewMatrixUniform, false, CameraMatrix);*/
-    //mat4.multiply(pMatrix, pMatrix, CameraMatrix);
-    gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
-
-  } else{
-    pMatrix = actualizarMovimientosDeCamara(pMatrix);
-    gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
-  }
 
   // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
   // Preparamos una matriz de modelo+vista.
