@@ -1,4 +1,4 @@
-function Modelo(_rows, _cols) {
+function ModeloAbierto(_rows, _cols) {
   Transformable.call(this);
   this.cols = _cols;
   this.rows = _rows;
@@ -15,40 +15,36 @@ function Modelo(_rows, _cols) {
   this._initBuffers();
 }
 
-inheritPrototype(Modelo, Transformable);
+inheritPrototype(ModeloAbierto, Transformable);
 
-Modelo.prototype._initBuffers = function(){
+ModeloAbierto.prototype._initBuffers = function(){
   this._createIndexBuffer();
   this._setPositionAndColorVertex();
   this._setupWebGLBuffers();
 };
 
-Modelo.prototype._createIndexBuffer = function(){
+ModeloAbierto.prototype._createIndexBuffer = function(){
   // console.log("rows: "+this.rows);
   // console.log("cols: "+this.cols);
+   //[0 4 1 5 2 6 3 7
+   //7
+   //11 6 10 5 9 4 8
+   //8
+   //12 9 13 10 14 11 15]
   this.index_buffer = [];
-  // for(i = 0; i< this.rows-1; ++i){
-  //     for(j=0;j<this.cols;++j){
-  //         this.index_buffer.push((i*this.cols) + j);
-  //         this.index_buffer.push(((i+1)*this.cols) + j);
-  //     }
-  //     this.index_buffer.push(i*this.cols);
-  //     this.index_buffer.push((i+1)*this.cols);
-  // }
-
   for(i = 0; i< this.rows-1; ++i){
     if(i%2 === 0){
       for(j=0;j<this.cols;++j){
           this.index_buffer.push((i*this.cols) + j);
           this.index_buffer.push(((i+1)*this.cols) + j);
       }
-      this.index_buffer.push((i+1)*this.cols);
+      // this.index_buffer.push((i+1)*this.cols);
     }else{
       for(j=this.cols-1;j>=0;--j){
           this.index_buffer.push((i*this.cols) + j);
           this.index_buffer.push(((i+1)*this.cols) + j);
       }
-      this.index_buffer.push((i+1)*this.cols);
+      // this.index_buffer.push((i+1)*this.cols);
     }
   }
   // console.log(this.index_buffer);
@@ -56,7 +52,7 @@ Modelo.prototype._createIndexBuffer = function(){
   // console.log(this.index_buffer);
 };
 
-Modelo.prototype._setupWebGLBuffers = function(){
+ModeloAbierto.prototype._setupWebGLBuffers = function(){
     // 1. Creamos un buffer para las posicioens dentro del pipeline.
     this.webgl_position_buffer = gl.createBuffer();
     // 2. Le decimos a WebGL que las siguientes operaciones que vamos a ser se aplican sobre el buffer que
@@ -78,7 +74,7 @@ Modelo.prototype._setupWebGLBuffers = function(){
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
 };
 
-Modelo.prototype.draw = function(mvMatrix){
+ModeloAbierto.prototype.draw = function(mvMatrix){
 
   this.applyTransformationMatrix(mvMatrix,false);
 
@@ -98,5 +94,5 @@ Modelo.prototype.draw = function(mvMatrix){
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
   // Dibujamos.
-  gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length-1, gl.UNSIGNED_SHORT, 0);
+  gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 };

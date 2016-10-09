@@ -27,15 +27,18 @@
 
   <script type="text/javascript" src="modelos/ModeloComplejo.js"></script>
   <script type="text/javascript" src="modelos/Modelo.js"></script>
+  <script type="text/javascript" src="modelos/ModeloAbierto.js"></script>
 
   <script type="text/javascript" src="curvas/BezierCubica.js"></script>
   <script type="text/javascript" src="curvas/Segmento.js"></script>
+  <script type="text/javascript" src="curvas/SplineCompleja.js"></script>
 
   <script type="text/javascript" src="recorridos/SplineCubica.js"></script>
   <script type="text/javascript" src="recorridos/SplineCubicaCompleja.js"></script>
   <script type="text/javascript" src="recorridos/Superficie.js"></script>
   <script type="text/javascript" src="recorridos/ExtrusionTapas.js"></script>
   <script type="text/javascript" src="recorridos/Extrusion.js"></script>
+  <script type="text/javascript" src="recorridos/ExtrusionAbierta.js"></script>
   <script type="text/javascript" src="recorridos/ExtrusionCerrada.js"></script>
   <script type="text/javascript" src="recorridos/SuperficieDeRevolucion.js"></script>
 
@@ -51,8 +54,10 @@
   <script type="text/javascript" src="geometrias/ArbolRandom.js"></script>
   <script type="text/javascript" src="geometrias/Viga.js"></script>
   <script type="text/javascript" src="geometrias/CilindroCerrado.js"></script>
+  <script type="text/javascript" src="geometrias/Base.js"></script>
 
   <script type="text/javascript" src="formas/Circulo.js"></script>
+  <script type="text/javascript" src="formas/PerfilTerreno.js"></script>
   <script type="text/javascript" src="formas/PerfilCalle.js"></script>
   <script type="text/javascript" src="formas/PerfilTorre.js"></script>
 
@@ -296,7 +301,7 @@ function drawScene()
   } else{
     pMatrix = actualizarMovimientosDeCamara(pMatrix);
     gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
-  } 
+  }
 
   // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
   // Preparamos una matriz de modelo+vista.

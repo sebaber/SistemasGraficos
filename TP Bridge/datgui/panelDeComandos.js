@@ -18,7 +18,7 @@ var app={
 //Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
 	anchoCosta: 12,
 	largoCosta: 12,
-	anchoRio: 5,
+	anchoRio: 10,
 	anchoCalle: 4,
 	nroTorres: 4,
 	sepTensor: 0.2,
@@ -27,7 +27,7 @@ var app={
 	targetY: 0,
 //  var h1=1.5;
 //  var h2=1;
-//  var h3=0.5;	
+//  var h3=0.5;
 	alturaTorre1: 1.5,
   	alturaTorre2: 1.0,
   	alturaTorre3: 0.5
@@ -46,27 +46,27 @@ function configCamaraTargets (){
 function GUI (){
 		//gui.remember(gof);
 		var gui = new dat.GUI();
-		
-		var f1 = gui.addFolder('Comandos');		
-			f1.add(app, 'reiniciar').name("Reiniciar (Tecla R)");
-		//	f1.add(app, 'cargarDatos').name("Cargar Datos");			
 
-		var f2 = gui.addFolder('Parametros generales');		
+		var f1 = gui.addFolder('Comandos');
+			f1.add(app, 'reiniciar').name("Reiniciar (Tecla R)");
+		//	f1.add(app, 'cargarDatos').name("Cargar Datos");
+
+		var f2 = gui.addFolder('Parametros generales');
 		f2.add(app,'anchoCosta',5,50).name("Ancho Costa");
 		f2.add(app,'largoCosta',5,50).name("Largo Costa");
-		f2.add(app,'anchoCalle',2,8).name("Ancho Calles");		
-		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);		
-		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);	
-		f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);	
-		f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);	
-		f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);	
+		f2.add(app,'anchoCalle',2,8).name("Ancho Calles");
+		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);
+		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);
+		f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
+		f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);
+		f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);
 
 		//f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
 		//f2.add(app, 'ancho',4,25).name("Ancho");
 
 		//f2.add(app, 'modo',["random","secuencial"]).name("modo");
 
-		var f3 = gui.addFolder('Parametros Rio');				
+		var f3 = gui.addFolder('Parametros Rio');
 		f3.add(app,'agregarPuntos').name("Agregar Puntos");
 		f3.add(app,'dibujarTodosLosPuntos').name("Dibujar Puntos");
 		f3.add(app,'eliminarTodosLosPuntos').name("Eliminar Puntos");
@@ -90,28 +90,28 @@ $( document ).ready(function() {// esto es para esperar que carge la libreria Jq
 		if (app.agregarPuntos){
 			//var pos=$("#perfilDelRioCanvas").position();
 			var posX = e.offsetX;
-			var posY = e.offsetY; 
+			var posY = e.offsetY;
 			perfilDelRioObject.agregarPunto([posX,posY]);
-			cargarSegundoCanvas(); 
+			cargarSegundoCanvas();
 		}
 	}
 
     var mouseIsPressed=false;
 
 /*
-     $("#perfilDelRioCanvas").bind('mousemove',function(e){ 
+     $("#perfilDelRioCanvas").bind('mousemove',function(e){
         if (mouseIsPressed) updateCoordinates(e);
-    }); 
+    });
 */
 
-     $("#perfilDelRioCanvas").bind('mousedown',function(e){ 
+     $("#perfilDelRioCanvas").bind('mousedown',function(e){
             mouseIsPressed=true;
             updateCoordinates(e);
-    }); 
+    });
 
-     $("#perfilDelRioCanvas").bind('mouseup',function(e){ 
+     $("#perfilDelRioCanvas").bind('mouseup',function(e){
            mouseIsPressed=false;
-    }); 
+    });
 
 
 });

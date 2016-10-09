@@ -15,6 +15,9 @@ Utils.getRandomBetweenMaxMin = function(min,max){
 };
 
 Utils.getMatrizRotacion = function(t,n,bn){
+	// console.log("tangente: "+t);
+	// console.log("normal: "+n);
+	// console.log("binormal: "+bn);
 	var matrizRotacion = mat4.create();
 	matrizRotacion[0] = n[0];
   matrizRotacion[1] = n[1];

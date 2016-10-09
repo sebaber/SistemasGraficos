@@ -11,7 +11,7 @@ function PerfilCalle(anchoCalle) {
     [0.2,-(anchoCalle/2),0],//[-3,-1,0],
     // [1,-3,0]//[3,-1,0]
   ];
-  this.npoints = this.vertices.length-1;
+  this.npoints = this.vertices.length;
 }
 
 PerfilCalle.prototype.getPoints = function(){
