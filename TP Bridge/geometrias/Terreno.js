@@ -265,31 +265,50 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
     //
 
     // puente.translate(0,0,-3);
-    // this.agregarArboles();
+    this.agregarArboles();
 
   }
 
   inheritPrototype(Terreno, ModeloComplejo);
 
-  Terreno.prototype.agregarArboles = function() {
+Terreno.prototype.agregarArboles = function() {
+    var posicionesAnteriores = [];      
     for(var i = 0;i<10;++i){
-      var arbol = new ArbolRandom();
-      var randomNumber = Math.random(); // 0 y 1
-      var x,z;
-      //PRIMERA COSTA
-      if (randomNumber < 0.5){
-        x = Utils.getRandomBetweenMaxMin(1,this.anchoCosta-3);
-        z = -Utils.getRandomBetweenMaxMin(1,this.largoCosta-1);
-      }
-      //SEGUNDA COSTA
-      else{
-        x = Utils.getRandomBetweenMaxMin(this.anchoCosta+this.anchoRio+1,this.anchoCosta+this.anchoRio+this.anchoCosta-1);
-        z = -Utils.getRandomBetweenMaxMin(1,this.largoCosta-1);
-      }
-      arbol.init(x,0,z);
-      this.agregarModelo(arbol);
+        var arbol = new ArbolRandom();
+        var randomNumber = Math.random(); // 0 y 1
+        var x,z;
+        var hayColisionConOtroArbol = true;
+        while (hayColisionConOtroArbol){
+            //PRIMERA COSTA
+            if (randomNumber < 0.5){
+                x = Utils.getRandomBetweenMaxMin(1,this.anchoCosta-3);
+                z = -Utils.getRandomBetweenMaxMin(1,this.largoCosta-1);
+            }
+            //SEGUNDA COSTA
+            else{
+                x = Utils.getRandomBetweenMaxMin(this.anchoCosta+this.anchoRio+1,this.anchoCosta+this.anchoRio+this.anchoCosta-1);
+                z = -Utils.getRandomBetweenMaxMin(1,this.largoCosta-1);
+            }
+            hayColisionConOtroArbol = this.huboColisionArboles(x,z,posicionesAnteriores,arbol);
+        }
+        posicionesAnteriores.push([x,z]);
+        arbol.init(x,0,z);
+        this.agregarModelo(arbol);
+        }
+    };
+
+Terreno.prototype.huboColisionArboles = function(x,z,posicionesAnteriores,arbol) {
+    for(var i = 0;i<posicionesAnteriores.length;i++){
+        var x2 = posicionesAnteriores[i][0];
+        var z2 = posicionesAnteriores[i][1]; 
+        var distancia = Utils.distanceBetween(x,z,x2,z2);
+        var diametro = 2*arbol.getRadio(); 
+        if (distancia <= diametro){
+            return true;
+        }
     }
-  };
+    return false;
+}
 
   Terreno.prototype.postInit = function(){
   };

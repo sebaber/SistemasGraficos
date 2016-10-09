@@ -63,3 +63,11 @@ Utils.angleBetweenVectors = function (a, b) {
 	var angle = Math.acos(dotProduct);
 	return angle;
 };
+
+Utils.distanceBetween = function (x1,y1,x2,y2) {
+	var distance;
+	var p1 = x1 - x2;
+	var p2 = y1 - y2;
+	distance = Math.sqrt(p1*p1 + p2*p2);
+	return distance;
+};
