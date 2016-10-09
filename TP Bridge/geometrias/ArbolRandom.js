@@ -33,6 +33,7 @@ function ArbolRandom() {
 				,0.4, 2.89
 				,0.0, 2.975];
 	}
+	this.setRadio(lista);
 	Arbol.call(this,lista);
 	// this.init();
 }
@@ -40,14 +41,28 @@ function ArbolRandom() {
 inheritPrototype(ArbolRandom, Arbol);
 
 ArbolRandom.prototype.init = function (posx,posy,posz) {
-	var randomXZ = Math.random() / 2 + 0.5;
-	var randomY = Math.random() / 2 + 0.5;
+	var randomXZ = Math.random() / 2 + 0.25;
+	var randomY = Math.random() / 2 + 0.4;
 	var x = randomXZ;
 	var y = randomY;
 	var z = randomXZ;
 
 	this.setPosition(posx,posy,posz);
-  	this.rotateX(-1.5);
-  	this.scaleNonUniform(1,1,1.5);
-	this.scaleNonUniform(x,y,z);
+  	this.rotateX(-(Math.PI/2));
+  	//this.scaleNonUniform(1,1,1);
+	this.scaleNonUniform(x,z,y);
+	this.radio *= x;
 };
+
+Arbol.prototype.setRadio = function(lista){
+	this.radio = 0; 
+	for (var i = 0; i < lista.length; i++) {
+		if (( i%2 == 1) &&(this.radio < lista[i])){
+			this.radio = lista[i];
+		}
+	}
+}
+
+Arbol.prototype.getRadio = function(){
+	return this.radio;
+}
