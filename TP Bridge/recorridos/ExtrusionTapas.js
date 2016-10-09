@@ -2,7 +2,7 @@ function ExtrusionTapas(curva,tapaInf,tapaSup){
   this.curva = curva;
   this.tapaInf = tapaInf;
   this.tapaSup = tapaSup;
-  Modelo.call(this,2,this.tapaInf.getPoints()+1);
+  Modelo.call(this,2,this.tapaInf.getPoints());
 }
 
 inheritPrototype(ExtrusionTapas, Modelo);
