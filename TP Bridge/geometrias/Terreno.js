@@ -1,13 +1,13 @@
 function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
-  alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3) {
+  alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3,profundidad) {
     ModeloComplejo.call(this);
     this.anchoCosta = anchoCosta;
     this.largoCosta = largoCosta;
     this.anchoRio = anchoRio;
 
-    var profundidad = 0.5;
+    var prof = profundidad;
 
-    var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,profundidad,100);
+    var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,prof,100);
     // var base = new Base(new Segmento([0,0,0,0],[0,10,0]),xCostaDer,anchoRio,20);
     console.log(base);
     this.agregarModelo(base);

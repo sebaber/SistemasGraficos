@@ -16,11 +16,12 @@ var app={
 	agregarPuntos:true,
 //terreno = new Terreno(12,12,5,4,4,0.2)
 //Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
+	profundidad:0.6,
 	anchoCosta: 18.0,
 	largoCosta: 12.0,
 	anchoRio: 3.0,
 	anchoCalle: 4,
-	ph1:0.5,
+	ph1:0.4,
 	ph2:1,
 	ph3:3,
 	yCalle: 6,
@@ -65,7 +66,7 @@ function GUI (){
 		// f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
 		// f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);
 		// f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);
-		f2.add(app,'ph1',0.1,2.0).name("Alturta Ph 1").step(0.1);
+		f2.add(app,'ph1',0.1,app.profundidad-0.2).name("Alturta Ph 1").step(0.1);
 		f2.add(app,'ph2',0.1,2.0).name("Alturta Ph 2").step(0.1);
 		f2.add(app,'ph3',0.1,3.0).name("Alturta ph3 3").step(0.1);
 
