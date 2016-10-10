@@ -48,8 +48,8 @@ function ArbolRandom() {
 inheritPrototype(ArbolRandom, Arbol);
 
 ArbolRandom.prototype.init = function (posx,posy,posz) {
-	var randomXZ = Math.random() / 2 + 0.25;
-	var randomY = Math.random() / 2 + 0.75;
+	var randomXZ = Math.random() / 2.0 + 0.2;
+	var randomY = Math.random() / 2.0 + 0.7;
 	var x = randomXZ;
 	var y = randomY;
 	var z = randomXZ;
