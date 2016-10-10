@@ -3,7 +3,7 @@
  */
 function PerfilTorre(vertices) {
   this.vertices = vertices;
-  this.npoints = this.vertices.length-1;
+  this.npoints = this.vertices.length;
 }
 
 PerfilTorre.prototype.getPoints = function(){

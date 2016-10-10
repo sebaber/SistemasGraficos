@@ -1,4 +1,5 @@
-function PerfilTerreno(anchoCosta,anchoRio,u) {
+function PerfilTerreno(anchoCosta,anchoRio,profundidad,u) {
+  profundidad = profundidad;
   this.u = u;
   this.splineCompleja = new SplineCompleja();
   this.puntos = [];
@@ -8,13 +9,16 @@ function PerfilTerreno(anchoCosta,anchoRio,u) {
   this.puntos.push([anchoCosta/4,0,0]);
   this.puntos.push([anchoCosta/2-anchoRio/2,0,0]);
   // this.puntos.push([anchoCosta,0,0]);
-  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/12,-2*anchoRio/5,0]);
-  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/6,-4*anchoRio/5,0]);
-  this.puntos.push([anchoCosta/2-anchoRio/3,-anchoRio,0]);
-  this.puntos.push([anchoCosta/2,-anchoRio,0]);
-  this.puntos.push([anchoCosta/2+anchoRio/3,-anchoRio,0]);
-  this.puntos.push([anchoCosta/2+(5*anchoRio/6),-4*anchoRio/5,0]);
-  this.puntos.push([anchoCosta/2+(11*anchoRio/12),-2*anchoRio/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/24,-1*profundidad/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/12,-2*profundidad/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/12,-2*profundidad/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/2+anchoRio/6,-4*profundidad/5,0]);
+  this.puntos.push([anchoCosta/2-anchoRio/3,-profundidad,0]);
+  this.puntos.push([anchoCosta/2,-profundidad,0]);
+  this.puntos.push([anchoCosta/2+anchoRio/3,-profundidad,0]);
+  this.puntos.push([anchoCosta/2+(5*anchoRio/6),-4*profundidad/5,0]);
+  this.puntos.push([anchoCosta/2+(11*anchoRio/12),-2*profundidad/5,0]);
+  this.puntos.push([anchoCosta/2+(23*anchoRio/24),-1*profundidad/5,0]);
   this.puntos.push([anchoCosta/2+anchoRio/2,0,0]);
   this.puntos.push([anchoCosta*3/4,0,0]);
   this.puntos.push([anchoCosta,0,0]);

@@ -15,7 +15,7 @@ Circulo.prototype.getPosition = function(t) {
 };
 
 Circulo.prototype.getPoints = function(){
-	return this.npoints;
+	return this.npoints+1;
 };
 
 Circulo.prototype.getVertices = function() {

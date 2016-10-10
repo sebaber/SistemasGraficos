@@ -1,5 +1,5 @@
 function PiezaTorre(curva,niveles){
-  ExtrusionCerrada.call(
+  Extrusion.call(
     this,
     curva,
     new PerfilTorre([
@@ -21,4 +21,4 @@ function PiezaTorre(curva,niveles){
   );
 }
 
-inheritPrototype(PiezaTorre, ExtrusionCerrada);
+inheritPrototype(PiezaTorre, Extrusion);

@@ -3,7 +3,7 @@ function ExtrusionCerrada(curva,forma,nlevels){
   this.nlevels = nlevels;
   this.forma = forma;
   // Modelo.call(this,this.nlevels+2,this.forma.getPoints()+1);
-  Modelo.call(this,this.nlevels+2,this.forma.getPoints()+1);
+  Modelo.call(this,this.nlevels+2,this.forma.getPoints());
 }
 
 inheritPrototype(ExtrusionCerrada, Modelo);
