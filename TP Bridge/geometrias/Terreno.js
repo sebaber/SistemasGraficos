@@ -273,7 +273,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
 
 Terreno.prototype.agregarArboles = function() {
     var posicionesAnteriores = [];      
-    for(var i = 0;i<10;++i){
+    for(var i = 0;i<2;++i){
         var arbol = new ArbolRandom();
         var randomNumber = Math.random(); // 0 y 1
         var x,z;
