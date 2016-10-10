@@ -45,8 +45,9 @@ function configCamaraTargets (){
 	//y = largoCosta
 	app.targetX = (app.anchoCosta * 2 + app.anchoRio ) / 2;
 	app.targetY = (app.largoCosta) / 2;
-	//cameraTarget = [app.targetX, 0.0 , app.targetY];
-	cameraTarget = [0.0, 0.0 , 0.0];
+	cameraTarget =[app.targetX, 0.0 , -app.targetY]; // [0.0, 0.0 , 0.0];
+	cameraPos = [ 0.0 , 0.0, -app.targetY ];
+	cameraRad = norma(subtractVectors(cameraTarget,cameraPos))*1.0;
 }
 
 function GUI (){

@@ -1,7 +1,4 @@
 //Camara Orbital
-var cameraRad = app.targetX;
-cameraTarget =[app.targetX, 0.0 , app.targetY]; // [0.0, 0.0 , 0.0];
-var cameraPos = [ 0.0 , 0.0, app.targetY ];
 var cameraUp = [ 0.0, 1.0, 0.0 ];
 var lastpos = [ 0.0, 0.0 ];
 var zoomMax = 80.0;
@@ -10,7 +7,7 @@ var my;
 var mouseIsDown = false;
 //var phi = Math.PI * 0.35;
 //var theta = Math.PI * 1.25;
-var phi = Math.PI * 0.5;
+var phi = -Math.PI * 0.45;
 var theta = Math.PI;
 
 var camaraOrbitalActiva = false;
@@ -41,10 +38,10 @@ function mouseMove(event){
 	if (mouseIsDown && camaraOrbitalActiva) {
 		phi += -(my - lastpos[1]) * 0.005;
 		theta += -(mx - lastpos[0]) * 0.005;
-		if (phi > Math.PI * 0.499)
-			phi = Math.PI * 0.499;
-		if (phi < Math.PI * 0.001)
-			phi = Math.PI * 0.001;
+		if (phi < -Math.PI * 0.499)
+			phi = -Math.PI * 0.499;
+		if (phi > -Math.PI * 0.001)
+			phi = -Math.PI * 0.001;
 	}
 	lastpos[0] = mx;
 	lastpos[1] = my;
@@ -61,14 +58,15 @@ function mouseUp(event){
 function mouseWheel(event) {
 	if (camaraOrbitalActiva) {
 		if (event.deltaY > 0)
-			scale = 1.1;
+			scale = 1.15;
 		else
-			scale = 0.9;
+			scale = 0.85;
 		if ((cameraRad * scale) < zoomMax && (cameraRad * scale) > 0.0) {
-			cameraPos[0] *= scale;
-			cameraPos[1] *= scale;
-			cameraPos[2] *= scale;
-			cameraRad = norma(subtractVectors(cameraTarget,cameraPos));
+			//cameraPos[0] *= scale;
+			//cameraPos[1] *= scale;
+			//cameraPos[2] *= scale;
+			//cameraRad = norma(subtractVectors(cameraTarget,cameraPos));
+			cameraRad *= scale;
 		}
 	}
 }
@@ -225,70 +223,21 @@ function moverCamaraOrbital()
 	var phi2 = phi;
 	var theta2 = theta;	
 	cameraPos[0] = cameraRad * Math.cos(theta2) * Math.sin(phi2);
-	cameraPos[2] = cameraRad * Math.sin(theta2) * Math.sin(phi2);
-	cameraPos[1] = cameraRad * Math.cos(phi2);
+	cameraPos[2] = -1*cameraRad * Math.sin(theta2) * Math.sin(phi2);
+	cameraPos[1] = -1*cameraRad * Math.cos(phi2);
 
-	cameraPos[0] += cameraTarget[0];
-	cameraPos[1] += cameraTarget[1];
-	cameraPos[2] += cameraTarget[2];
-	
+	cameraPos[0] -= cameraTarget[0];
+	//	cameraPos[1] += cameraTarget[1];
+	cameraPos[2] -= cameraTarget[2];
 	cameraMatrix = mat4.create();
 	mat4.identity(cameraMatrix);
-	mat4.lookAt(cameraMatrix, vecFrom(cameraPos), vecFrom(cameraTarget), vecFrom(normalize(cameraUp)));
-	mat4.rotate(cameraMatrix, cameraMatrix, Math.PI * 0.25, [1, 0, 0]);
-	mat4.translate(cameraMatrix, cameraMatrix, cameraPos);
+
+	cameraMatrix = makeLookAt([-1*cameraPos[0].toFixed(2),-1*cameraPos[1].toFixed(2),-1*cameraPos[2].toFixed(2)
+		], cameraTarget, [0.0,1.0,0.0]);
+
 	mat4.multiply(pMatrix,pMatrix,cameraMatrix);
-    //cameraMatrix = makeLookAt(cameraPos, cameraTarget, cameraUp)
-    //pMatrix = mat4.multiply(pMatrix, pMatrix, cameraMatrix);
-	//mat4.translate(pMatrix, pMatrix, [cameraTarget[0], cameraTarget[1], cameraTarget[2]]);
-	//gl.uniform3f(cameraPositionUniform,cameraPos[0],cameraPos[1],cameraPos[2]);
+	mat4.translate(pMatrix, pMatrix,[cameraPos[0],cameraPos[1],cameraPos[2]]);
 	return cameraMatrix;
-}
-
-function makeLookAt(cameraPosition, target, up) {
-  var zAxis = normalize(
-      subtractVectors(cameraPosition, target));
-  var xAxis = normalize(cross(up, zAxis));
-  var yAxis = normalize(cross(zAxis, xAxis));
- return Utils.getMatrizRotacion(xAxis,yAxis,zAxis);
-  /*return [
-     xAxis[0], xAxis[1], xAxis[2], 0,
-     yAxis[0], yAxis[1], yAxis[2], 0,
-     zAxis[0], zAxis[1], zAxis[2], 0,
-     cameraPosition[0],
-     cameraPosition[1],
-     cameraPosition[2],
-     1];
-   */
-}
-
-function normalize(v) {
-  var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-  // make sure we don't divide by 0.
-  if (length > 0.00001) {
-    return [v[0] / length, v[1] / length, v[2] / length];
-  } else {
-    return [0, 0, 0];
-  }
-}
-
-function subtractVectors(a, b) {
-  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-}
-
-function cross(a, b) {
-  return [a[1] * b[2] - a[2] * b[1],
-          a[2] * b[0] - a[0] * b[2],
-          a[0] * b[1] - a[1] * b[0]];
-}
-
-function norma(a) {
-  return Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
-}
-
-
-function vecFrom(a) {
-  return vec3.fromValues(a[0],a[1],[2]);
 }
 
 function configCamara(){

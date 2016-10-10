@@ -20,14 +20,35 @@ Utils.getMatrizRotacion = function(t,n,bn){
 	// console.log("binormal: "+bn);
 	var matrizRotacion = mat4.create();
 	matrizRotacion[0] = n[0];
-  matrizRotacion[1] = n[1];
-  matrizRotacion[2] = n[2];
-  matrizRotacion[4] = bn[0];
-  matrizRotacion[5] = bn[1];
-  matrizRotacion[6] = bn[2];
-  matrizRotacion[8] = t[0];
-  matrizRotacion[9] = t[1];
-  matrizRotacion[10] = t[2];
+	matrizRotacion[1] = n[1];
+	matrizRotacion[2] = n[2];
+	matrizRotacion[4] = bn[0];
+	matrizRotacion[5] = bn[1];
+	matrizRotacion[6] = bn[2];
+	matrizRotacion[8] = t[0];
+	matrizRotacion[9] = t[1];
+	matrizRotacion[10] = t[2];
+	return matrizRotacion;
+};
+
+Utils.getMatrizRotacionTraslacion = function(t,n,bn,pos){
+	var matrizRotacion = mat4.create();
+	matrizRotacion[0] = n[0];
+	matrizRotacion[1] = n[1];
+	matrizRotacion[2] = n[2];
+	matrizRotacion[3] = 0.0;
+	matrizRotacion[4] = bn[0];
+	matrizRotacion[5] = bn[1];
+	matrizRotacion[6] = bn[2];
+	matrizRotacion[7] = 0.0;
+	matrizRotacion[8] = -1*t[0];
+	matrizRotacion[9] = -1*t[1];
+	matrizRotacion[10] = -1*t[2];
+	matrizRotacion[11] = 0.0;
+	matrizRotacion[12] = -1*pos[0];
+	matrizRotacion[13] = -1*pos[1];
+	matrizRotacion[14] = -1*pos[2];
+	matrizRotacion[15] = 1.0;
 	return matrizRotacion;
 };
 
@@ -71,3 +92,52 @@ Utils.distanceBetween = function (x1,y1,x2,y2) {
 	distance = Math.sqrt(p1*p1 + p2*p2);
 	return distance;
 };
+
+function makeLookAt(cameraPosition, target, up) {
+	var zAxis = normalize(
+	subtractVectors(cameraPosition,target));
+	var xAxis = normalize(cross(up, zAxis));
+	var yAxis = normalize(cross(zAxis, xAxis));
+	return [				
+     xAxis[0], yAxis[0], zAxis[0], 0.0,
+     xAxis[1], yAxis[1], zAxis[1], 0.0,
+     xAxis[2], yAxis[2], zAxis[2], 0.0,
+     0.0,
+     0.0,
+     0.0,
+     1.0];
+  
+}
+
+function normalize(v) {
+  var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  // make sure we don't divide by 0.
+  if (length > 0.00001) {
+    return [v[0] / length, v[1] / length, v[2] / length];
+  } else {
+    return [0, 0, 0];
+  }
+}
+
+function subtractVectors(a, b) {
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+}
+
+function negativeVector(b) {
+  return [- b[0], - b[1], - b[2]];
+}
+
+function cross(a, b) {
+  return [a[1] * b[2] - a[2] * b[1],
+          a[2] * b[0] - a[0] * b[2],
+          a[0] * b[1] - a[1] * b[0]];
+}
+
+function norma(a) {
+  return Math.sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
+}
+
+
+function vecFrom(a) {
+  return vec3.fromValues(a[0],a[1],[2]);
+}
