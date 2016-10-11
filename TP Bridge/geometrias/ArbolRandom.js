@@ -3,8 +3,8 @@ function ArbolRandom() {
 	var lista; //Lista con coordenadas r y z
 	if (randomNumber < 0.3333){
 		//Navidad
-		lista1 = [0.0, 0.0
-				,0.5, 0.0
+		lista1 = [0.0, -1.0
+				,0.5, -1.0
 				,0.5, 0.75
 				,0.0, 0.75];
 		lista2 =[0.0, 0.75
@@ -14,8 +14,8 @@ function ArbolRandom() {
 				,0.0, 2.5];
 	} else if (randomNumber < 0.6666) {
 		//Puntiagudo
-		lista1 = [0.0, 0.0
-				,0.35, 0.0
+		lista1 = [0.0, -1.0
+				,0.35, -1.0
 				,0.35, 0.75
 				,0.0, 0.75];
 		lista2 = [0.0, 0.75
@@ -26,8 +26,8 @@ function ArbolRandom() {
 				,0.0, 2.75];
 	} else {
 		//Arbol Redondo
-		lista1 = [0.0, 0.0
-				,0.5, 0.0
+		lista1 = [0.0, -1.0
+				,0.5, -1.0
 				,0.5, 1.0
 				,0.0, 1.0];
 		lista2 = [0.0, 1.0

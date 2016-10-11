@@ -14,6 +14,15 @@ Utils.getRandomBetweenMaxMin = function(min,max){
   return (Math.random() * (max - min + 1)) + min;
 };
 
+Utils.getRandomBetweenTwoMaxMin = function(min1,max1,min2,max2){
+	var numero = Math.random();
+	if (numero < 0.5){
+		return (Math.random() * (max1 - min1 + 1)) + min1;
+	} else {
+		return (Math.random() * (max2 - min2 + 1)) + min2;
+	}
+}
+
 Utils.getMatrizRotacion = function(t,n,bn){
 	// console.log("tangente: "+t);
 	// console.log("normal: "+n);

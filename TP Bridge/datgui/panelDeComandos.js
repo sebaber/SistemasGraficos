@@ -17,8 +17,8 @@ var app={
 //terreno = new Terreno(12,12,5,4,4,0.2)
 //Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
 	profundidad:0.6,
-	anchoCosta: 18.0,
-	largoCosta: 12.0,
+	anchoCosta: 20.0,
+	largoCosta: 14.0,
 	anchoRio: 3.0,
 	anchoCalle: 4,
 	ph1:0.4,
@@ -30,6 +30,7 @@ var app={
 //Inicializacion del target de la camara
 	targetX: 0,
 	targetY: 0,
+	cantArboles: 2,
 //  var h1=1.5;
 //  var h2=1;
 //  var h3=0.5;
@@ -43,7 +44,7 @@ configCamaraTargets();
 function configCamaraTargets (){
 	//x = anchoCosta * 2 + anchoDelRio
 	//y = largoCosta
-	app.targetX = (app.anchoCosta * 2 + app.anchoRio ) / 2;
+	app.targetX = (app.anchoCosta) / 2;
 	app.targetY = (app.largoCosta) / 2;
 	cameraTarget =[app.targetX, 0.0 , -app.targetY]; // [0.0, 0.0 , 0.0];
 	cameraPos = [ 0.0 , 0.0, -app.targetY ];
@@ -63,6 +64,7 @@ function GUI (){
 		// f2.add(app,'largoCosta',5,50).name("Largo Costa");
 		// f2.add(app,'anchoCalle',2,8).name("Ancho Calles");
 		f2.add(app,'yCalle',2,10).name("Posicion Calle").step(1.0);
+		f2.add(app,'cantArboles',0,10).name("Cantidad Arboles").step(1.0);
 		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);
 		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);
 		// f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
@@ -70,7 +72,7 @@ function GUI (){
 		// f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);
 		f2.add(app,'ph1',0.1,app.profundidad-0.2).name("Alturta Ph 1").step(0.1);
 		f2.add(app,'ph2',0.1,2.0).name("Alturta Ph 2").step(0.1);
-		f2.add(app,'ph3',0.1,3.0).name("Alturta ph3 3").step(0.1);
+		f2.add(app,'ph3',0.1,3.0).name("Alturta Ph 3").step(0.1);
 
 		//f2.add(app, 'alturaMaxima', 1.0, 60.0).name("altura maxima").step(1);
 		//f2.add(app, 'ancho',4,25).name("Ancho");
