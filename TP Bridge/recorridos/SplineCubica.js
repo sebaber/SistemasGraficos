@@ -81,7 +81,7 @@ SplineCubica.prototype.Base0=function(u) { return ((1-(3*u)+(3*u*u)-(u*u*u))/6);
 
 SplineCubica.prototype.Base1=function(u) { return ((4-(6*u*u)+(3*u*u*u))/6); };  // (4  -6u2 +3u3)/6
 
-SplineCubica.prototype.Base2=function(u) { return (1+(3*u)+(3*u*u)-(3*u*u*u))/6;}; // (1 -3u +3u2 -3u3)/6
+SplineCubica.prototype.Base2=function(u) { return (1+(3*u)+(3*u*u)-(3*u*u*u))/6;}; // (1 +3u +3u2 -3u3)/6
 
 SplineCubica.prototype.Base3=function(u) { return (u*u*u)/6; };  //    u3/6
 
