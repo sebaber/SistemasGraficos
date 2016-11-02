@@ -355,36 +355,37 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
 
 Terreno.prototype.agregarArboles = function(cantArboles,anchoCalle,yCalle) {
     var posicionesAnterioresCostaIzquierda = [];
-    var posicionesAnterioresCostaDerecha = [];         
-    for(var i = 0;i<cantArboles;++i){
+    var posicionesAnterioresCostaDerecha = [];
+    var arbolesInferiores = Math.floor(0.5 * cantArboles);
+    var arbolesSuperiores = cantArboles - arbolesInferiores;          
+    for(var i = 0;i<arbolesSuperiores;++i){
         var arbol = new ArbolRandom();
-        var randomNumber = Math.random(); // 0 y 1
+        var x,z;
+        var hayColisionConOtroArbol = true;
+        while (hayColisionConOtroArbol){
+            //PRIMERA COSTA
+            x = Utils.getRandomBetweenMaxMin(2,(this.anchoCosta)/2.0-this.anchoRio);
+            z = -Utils.getRandomBetweenTwoMaxMin(2,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-1);
+            hayColisionConOtroArbol = this.huboColisionArboles(x,z
+              ,posicionesAnterioresCostaIzquierda,arbol);
+        }
+        posicionesAnterioresCostaIzquierda.push([x,z]);
+        arbol.init(x,0,z);
+        this.agregarModelo(arbol);
+        }
+    for(var i = 0;i<arbolesInferiores;++i){
+        var arbol = new ArbolRandom();
         var x,z;
         var hayColisionConOtroArbol = true;
         var costaIzq = true;
         while (hayColisionConOtroArbol){
-            //PRIMERA COSTA
-            if (randomNumber < 0.5){
-                x = Utils.getRandomBetweenMaxMin(2,(this.anchoCosta)/2.0-this.anchoRio);
-                z = -Utils.getRandomBetweenTwoMaxMin(2,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-1);
-                hayColisionConOtroArbol = this.huboColisionArboles(x,z
-                    ,posicionesAnterioresCostaIzquierda,arbol);
-                costaIzq = true;
-            }
             //SEGUNDA COSTA
-            else{
-                x = Utils.getRandomBetweenMaxMin((this.anchoCosta)/2.0+this.anchoRio,this.anchoCosta);
-                z = -Utils.getRandomBetweenTwoMaxMin(2,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-1);
-                hayColisionConOtroArbol = this.huboColisionArboles(x,z
-                    ,posicionesAnterioresCostaDerecha,arbol);
-                costaIzq = false;
-            }
+            x = Utils.getRandomBetweenMaxMin((this.anchoCosta)/2.0+this.anchoRio,this.anchoCosta);
+            z = -Utils.getRandomBetweenTwoMaxMin(2,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-1);
+            hayColisionConOtroArbol = this.huboColisionArboles(x,z
+              ,posicionesAnterioresCostaDerecha,arbol);
         }
-        if (costaIzq){
-            posicionesAnterioresCostaIzquierda.push([x,z]);
-        } else {
-            posicionesAnterioresCostaDerecha.push([x,z]);
-        }
+        posicionesAnterioresCostaDerecha.push([x,z]);
         arbol.init(x,0,z);
         this.agregarModelo(arbol);
         }
@@ -395,7 +396,7 @@ Terreno.prototype.huboColisionArboles = function(x,z,posicionesAnteriores,arbol)
         var x2 = posicionesAnteriores[i][0];
         var z2 = posicionesAnteriores[i][1];
         var distancia = Utils.distanceBetween(x,z,x2,z2);
-        var diametro = 2*arbol.getRadio();
+        var diametro = 1.0*arbol.getRadio();
         if (distancia <= diametro){
             return true;
         }
