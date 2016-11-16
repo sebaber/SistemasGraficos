@@ -1,0 +1,32 @@
+Terreno:
+
+-> Segun altura definir cual textura
+
+->activar la transparencia en el shader, en el z buffer (ademas dibujar la cosa en un orden, priemero lo opaco y luego lo transparente, desactivando el z buffer (agregando de a capas de atras para adelante))
+
+->el cielo es directamente su color , no sigue el modelo de phong
+
+Algoritmos:
+-> mapa reflexion
+-> mapa normales
+
+-> Definir bien cordenadas (u,v)
+
+Truquito piola:
+-> En cada triangulo:
+
+- Posicion (x,y,z)
+- Normales (x,y,z)
+- Tangente (x,y,z)
+- (u,v) (x,y,z) En Z puedo guardar un valor q me indique que textura corresponde (calle)
+
+Para terreno 3 texturas (para el pasto):
+
+- Piedra
+- Arena
+- Textura blanco y negro (mezcla) que me indique como va a ser la textura resultante de la mezcla.
+
+Mejor forma: (para las costas)
+2 texturas:
+- Manchas
+- Degrade

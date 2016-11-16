@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+
+  <script  src="js/three.min.js"></script>
+  <script  src="js/jquery-1.9.1.js"></script>
+  <script  src="js/controls/OrbitControls.js"></script>
+  <script src="js/loaders/ColladaLoader.js"></script>
+  <style>
+  body{
+    background-color:grey;
+  }
+
+  </style>
+</head>
+<body>
+
+  <div id="container">
+
+  </div>
+
+  <!--  A continuación se define el programa de vértices, que va a modificar la posición de los vértices !-->
+
+  <script type="x-shader/x-vertex" id="vertex-Shader">
+
+  varying vec3 color;
+  varying vec2 vUv;
+  varying vec3 vecPos;
+  varying vec3 vecNormal;
+
+  uniform float t;
+
+  void main() {
+
+    vec4 aux = vec4(position,1.0);
+
+    vecPos = (modelMatrix * vec4(position.xyz, 1.0 )).xyz;
+    //     vecNormal = normalMatrix * normal;
+    // console.log(normal);
+    vecNormal = normal;
+    vUv = uv;
+
+    gl_Position = projectionMatrix * modelViewMatrix * aux;
+
+  }
+
+  </script>
+
+
+  <script type="x-shader/x-fragment" id="fragment-Shader">
+
+  precision highp float;
+  varying vec3 color;
+  varying vec2 vUv;
+  varying vec3 vecPos;
+  varying vec3 vecNormal;
+  uniform sampler2D texture1;
+  uniform sampler2D texture2;
+  uniform sampler2D texture3;
+
+  void main() {
+    vec4 texColor=texture2D(texture2, vUv.xy);
+    //float a=dot(vec3(0.0,0.0,1.0),vecNormal);
+    vec3 col=0.5+vecNormal*0.5;
+    gl_FragColor = vec4(col,1.0);
+    //gl_FragColor = vec4(texColor.xyz,1.0);
+    //gl_FragColor = vec4(vecPos,1.0);
+
+  }
+
+  </script>
+  <script >
+
+
+  var W = 1000,H = 700;
+  var $container = $('#container');
+
+  var renderer = new THREE.WebGLRenderer({preserveDrawingBuffer:false});
+  renderer.setSize(W, H);
+  renderer.sortObjects=false;
+  renderer.autoClear = false;
+  renderer.autoClearDepth = false;
+  renderer.autoClearColor = false;
+  renderer.autoClearSencil = true;
+
+  var camera = new THREE.PerspectiveCamera(65,W/H,0.1,100000);
+
+  camera.position.set(0,50,100);
+  camera.lookAt(new THREE.Vector3(0,2,0));
+  var scene = new THREE.Scene();
+
+  controls = new THREE.OrbitControls( camera);
+
+  $container.append(renderer.domElement);
+
+
+
+
+  /*
+  var loader = new THREE.TextureLoader();
+
+  // load a resource
+  loader.load(
+  // resource URL
+  'img/eifel.jpg',
+  // Function when resource is loaded
+  function ( texture ) {
+  // do something with the texture
+  tex=texture;
+
+},
+// Function called when download progresses
+function ( xhr ) {
+console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+},
+// Function called when download errors
+function ( xhr ) {
+console.log( 'An error happened' );
+}
+);
+
+*/
+
+
+var onTextureLoaded=function(){
+  console.log("textureloaded");
+  console.log(normal);
+  tex1.wrapS = THREE.RepeatWrapping;
+  tex1.wrapT = THREE.RepeatWrapping;
+  tex2.wrapS = THREE.RepeatWrapping;
+  tex2.wrapT = THREE.RepeatWrapping;
+  tex3.wrapS = THREE.RepeatWrapping;
+  tex3.wrapT = THREE.RepeatWrapping;
+}
+var tex1=THREE.ImageUtils.loadTexture( "img/eifel.jpg",undefined,onTextureLoaded);
+var tex2=THREE.ImageUtils.loadTexture( "img/pasto1.jpg",undefined,onTextureLoaded);
+var tex3=THREE.ImageUtils.loadTexture( "img/pasto3.jpg",undefined,onTextureLoaded);
+
+uniforms=THREE.UniformsUtils.merge([THREE.UniformsLib['lights'],uniforms]);
+
+
+var uniforms = {
+  t: {
+    type: 'f', // a float
+    value: 0
+  },
+  texture1: {
+    type: "t",
+    value:tex1
+  },
+  texture2: {
+    type: "t",
+    value:tex2
+  },
+  texture3: {
+    type: "t",
+    value:tex3
+  }
+};
+
+
+// http://blog.2pha.com/experimenting-threejs-shaders-and-shadermaterial
+
+// https://threejs.org/docs/#Reference/Materials/ShaderMaterial
+var shaderMaterial = new THREE.ShaderMaterial({
+
+  uniforms:       uniforms,
+  vertexShader:   $('#vertex-Shader').text(),
+  fragmentShader:$('#fragment-Shader').text(),
+  transparent: true,
+  lights:false,
+  side: THREE.DoubleSide
+});
+
+loader = new THREE.ColladaLoader();
+loader.upAxis="Z";
+loader.load(
+  'modelos/costa.dae',
+  function ( collada ) {
+
+
+    mesh=collada.scene.children[0].children[0];
+    mesh.material=shaderMaterial;
+    mesh.rotation.x=-Math.PI/2;
+    scene.add(mesh);
+  }
+);
+
+
+scene.add(camera);
+
+function render()
+{
+  uniforms.t.value += 0.5;
+
+  requestAnimationFrame( render );
+  renderer.render(scene, camera,false,false);
+}
+
+render();
+
+</script>
+
+</body>
+</html>
