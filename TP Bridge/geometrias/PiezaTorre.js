@@ -19,6 +19,8 @@ function PiezaTorre(curva,niveles){
     ),
     niveles
   );
+
+  this.initTexture("oxido.jpg");
 }
 
 inheritPrototype(PiezaTorre, Extrusion);

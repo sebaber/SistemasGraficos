@@ -11,7 +11,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
   var pos = [];
   var vertices = [];
   this.position_buffer = [];
-  this.color_buffer = [];
+  this.texture_coord_buffer = [];
   var t;
   vertices = this.forma.getVertices();
 
@@ -24,7 +24,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
 
     var pos4 = vec4.create();
     vec4.set(pos4,pos[0],pos[1],pos[2],1.0);
-    console.log(pos);
+    // console.log(pos);
     var matrizTraslacion = mat4.create();
     mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
 

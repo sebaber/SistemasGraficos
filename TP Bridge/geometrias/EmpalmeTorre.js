@@ -32,6 +32,7 @@ function EmpalmeTorre(alturaI,altura){
     [0.5,-0.5,0]]),
     10
   );
+  this.initTexture("oxido.jpg");
 }
 
 inheritPrototype(EmpalmeTorre, ExtrusionTapas);

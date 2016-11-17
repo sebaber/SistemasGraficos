@@ -62,7 +62,7 @@ ArbolRandom.prototype.init = function (posx,posy,posz) {
 };
 
 Arbol.prototype.setRadio = function(lista){
-	this.radio = 0; 
+	this.radio = 0;
 	for (var i = 0; i < lista.length; i++) {
 		if (( i%2 == 1) &&(this.radio < lista[i])){
 			this.radio = lista[i];

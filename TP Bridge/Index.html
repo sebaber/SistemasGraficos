@@ -75,6 +75,7 @@
 // Los atributos son caracter�sticas propias de cada vertice.
 attribute vec3 aVertexPosition;
 attribute vec3 aVertexColor;
+attribute vec2 aTextureCoord;
 
 // Los uniforms son caracter�sticas propias de una etapa de dibujado completa.
 // Son comunes a todos los vertices involucrados en el dibujado.
@@ -84,14 +85,16 @@ uniform mat4 uPMatrix;
 // Los varying son propiedades que toman valor para cada fragmento a partir
 // de interpolar linealmente entre los valores que se les asigna en cada
 // v�rtice del pol�gono al cual pertenecen.
-varying highp vec4 vColor;
+//varying highp vec4 vColor;
+varying highp vec2 vTextureCoord;
 
 
 void main(void) {
   // gl_Position es una variable "built-in" de GLSL que es usada para
   // almacenar la posici�n resultante del fragmento.
   gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-  vColor = vec4(aVertexColor,1.0);
+  //vColor = vec4(aVertexColor,1.0);
+  vTextureCoord = aTextureCoord;
 }
 </script>
 
@@ -103,12 +106,16 @@ establecer el color de cada pixel. En este caso, asignamos el color blanco a
 cada pixel.
 -->
 <script id="shader-fs" type="x-shader/x-fragment">
-varying highp vec4 vColor;
+//varying highp vec4 vColor;
+varying highp vec2 vTextureCoord;
+
+uniform sampler2D uSampler;
 
 void main(void) {
   // gl_FragColor es una variable "built-in" de GLSL que es usada para
   // almacenar el color resultante del fragmento.
-  gl_FragColor = vColor;
+  //gl_FragColor = vColor;
+  gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 }
 </script>
 
@@ -132,7 +139,7 @@ var pMatrix = mat4.create();
 
 var cameraTarget;
 var cameraPos;
-var cameraRad; 
+var cameraRad;
 
 // SHADERS FUNCTION
 function getShader(gl, id) {
@@ -299,7 +306,7 @@ function setupBuffers()
 function drawScene()
 {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  
+
   configCamara();
 
 

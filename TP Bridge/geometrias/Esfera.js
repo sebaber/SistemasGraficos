@@ -7,6 +7,8 @@ function Esfera(npoints,radio, x0, y0,z) {
 	this.vertexOfProfile = this.getVertices();
 	var color = [0.2,0.1,0.1];
 	SuperficieDeRevolucion.call(this, this.vertexOfProfile,color);
+
+	this.initTexture("oxido.jpg");
 }
 
 inheritPrototype(Esfera, SuperficieDeRevolucion);

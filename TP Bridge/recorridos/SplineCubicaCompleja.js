@@ -21,40 +21,40 @@ SplineCubicaCompleja.prototype.p = function(u) {
     var uGlobal = u * this.largoDelCanvas;
     var uTramo;
     var uReal;
-    console.log("u: "+u);
-    console.log("canvas y: "+uGlobal);
+    // console.log("u: "+u);
+    // console.log("canvas y: "+uGlobal);
     for ( i = 0 ; i < this.splines.length; i++){
         var splineTramo = this.splines[i];
         if( splineTramo.inicio() <= uGlobal && uGlobal <= splineTramo.fin() ){
             if (splineTramo.inicio() != splineTramo.fin()){
-              console.log("inicio: "+splineTramo.inicio());
-              console.log("fin: "+splineTramo.fin());
+              // console.log("inicio: "+splineTramo.inicio());
+              // console.log("fin: "+splineTramo.fin());
                 uTramo = uGlobal - splineTramo.inicio();
-                console.log("uTramo: "+uTramo);
+                // console.log("uTramo: "+uTramo);
                 uReal = uTramo / (splineTramo.fin() - splineTramo.inicio());
             } else {
                 //En caso de que el camino sea nulo
                 uReal = 0.0;
             }
-            console.log("Ureal: "+uReal);
+            // console.log("Ureal: "+uReal);
             var punto;
             if(uReal === 0) punto = splineTramo.v0;
             if(uReal == 1) punto = splineTramo.v3;
             else punto = splineTramo.p(uReal);
             // var punto = splineTramo.p(uReal);
-            console.log("ANTES");
-            console.log(punto);
-            //CENTRO EL X:
+            // console.log("ANTES");
+            // console.log(punto);
+            // //CENTRO EL X:
             punto[0] = punto[0] - this.anchoCanvas/2;
-            
+
             punto[0] = punto[0]*this.factorX;
             punto[1] = punto[1]*this.factor;
-            console.log("DESPUES");
-            console.log(punto);
+            // console.log("DESPUES");
+            // console.log(punto);
             return [punto[0], punto[1],0];
         }
-        console.log("inicio: "+splineTramo.inicio());
-        console.log("fin: "+splineTramo.fin());
+        // console.log("inicio: "+splineTramo.inicio());
+        // console.log("fin: "+splineTramo.fin());
     }
     //En caso de error
     console.log("ERROR POSICION");

@@ -17,7 +17,7 @@ inheritPrototype(SuperficieDeRevolucion, Modelo);
 SuperficieDeRevolucion.prototype._setPositionAndColorVertex = function(){
 	this.position_buffer = [];
 	this.normal_buffer = [];
-	this.color_buffer = [];
+	this.texture_coord_buffer = [];
 
 	var i, j, k, x, y, z, nextX, nextY, nextZ, nextI, nextJ;
 
@@ -45,12 +45,14 @@ SuperficieDeRevolucion.prototype._setPositionAndColorVertex = function(){
 		}
 
 		for(k=0; k < partialPositions.length; ++k){
-			this.color_buffer.push(this.color[k%3]);
+			if(k%3 !== 0) this.texture_coord_buffer.push(this.color[k%3]);
+	    // this.color_buffer.push(this.color[k%3]);
 			this.position_buffer.push(partialPositions[k]);
 		}
 
 		for(k=0; k < partialNextPositions.length; ++k){
-			this.color_buffer.push(this.color[k%3]);
+			if(k%3 !== 0) this.texture_coord_buffer.push(this.color[k%3]);
+			// this.color_buffer.push(this.color[k%3]);
 			this.position_buffer.push(partialNextPositions[k]);
 		}
 
