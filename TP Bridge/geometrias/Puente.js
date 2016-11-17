@@ -5,3 +5,8 @@ function Puente(curva,anchoCalle,nlevels) {
 }
 
 inheritPrototype(Puente, Extrusion);
+
+Puente.prototype.setTextureBuffer = function(i,j){
+	this.texture_coord_buffer.push(j);
+	this.texture_coord_buffer.push(i);
+}

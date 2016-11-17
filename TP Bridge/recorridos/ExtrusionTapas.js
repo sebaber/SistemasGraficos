@@ -38,9 +38,8 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
 
-    this.texture_coord_buffer.push(1.0/this.rows * i);
-    this.texture_coord_buffer.push(0.2);
-    this.texture_coord_buffer.push(1.0/this.cols * j);
+    this.texture_coord_buffer.push(j/verticesInf.length);
+    this.texture_coord_buffer.push(0);
 
   }
 
@@ -68,8 +67,8 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
 
-    this.texture_coord_buffer.push(1.0/this.rows * i);
-    this.texture_coord_buffer.push(1.0/this.cols * j);
+    this.texture_coord_buffer.push(j/verticesInf.length);
+    this.texture_coord_buffer.push(1);
 
   }
 

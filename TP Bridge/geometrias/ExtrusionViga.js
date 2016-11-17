@@ -34,8 +34,8 @@ ExtrusionViga.prototype._setPositionAndColorVertex = function(){
       this.position_buffer.push(vertices[j][1]);
       this.position_buffer.push(vertices[j][2]);
 
-      this.texture_coord_buffer.push(1.0/this.rows * i);
-      this.texture_coord_buffer.push(1.0/this.cols * j);
+      this.texture_coord_buffer.push(j/vertices.length);
+      this.texture_coord_buffer.push(i/this.nlevels);
 
     }
   }

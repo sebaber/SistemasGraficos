@@ -5,3 +5,8 @@ function Calle(curva,anchoCalle,nlevels) {
 }
 
 inheritPrototype(Calle, Extrusion);
+
+Calle.prototype.setTextureBuffer = function(i,j){
+	this.texture_coord_buffer.push(j);
+	this.texture_coord_buffer.push(i);
+}

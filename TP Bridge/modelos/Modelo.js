@@ -111,6 +111,7 @@ Modelo.prototype.draw = function(mvMatrix){
 
   var textureCoordAttribute = gl.getAttribLocation(glProgram, "aTextureCoord");
   gl.enableVertexAttribArray(textureCoordAttribute);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
   gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
 
   // var vertexColorAttribute = gl.getAttribLocation(glProgram, "aVertexColor");

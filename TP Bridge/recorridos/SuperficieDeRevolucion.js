@@ -45,13 +45,13 @@ SuperficieDeRevolucion.prototype._setPositionAndColorVertex = function(){
 		}
 
 		for(k=0; k < partialPositions.length; ++k){
-			if(k%3 !== 0) this.texture_coord_buffer.push(this.color[k%3]);
+			if(k%3 !== 0) this.texture_coord_buffer.push(k/partialPositions.length);
 	    // this.color_buffer.push(this.color[k%3]);
 			this.position_buffer.push(partialPositions[k]);
 		}
 
 		for(k=0; k < partialNextPositions.length; ++k){
-			if(k%3 !== 0) this.texture_coord_buffer.push(this.color[k%3]);
+			if(k%3 !== 0) this.texture_coord_buffer.push(k/partialNextPositions.length);
 			// this.color_buffer.push(this.color[k%3]);
 			this.position_buffer.push(partialNextPositions[k]);
 		}

@@ -42,8 +42,7 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
       // this.color_buffer.push(1.0/this.rows * i);
       // this.color_buffer.push(0.2);
       // this.color_buffer.push(1.0/this.cols * j);
-      this.texture_coord_buffer.push(1.0/this.rows * i);
-  		this.texture_coord_buffer.push(1.0/this.cols * j);
+      this.setTextureBuffer(i/this.nlevels,j/vertices.length);
 
     }
   }
