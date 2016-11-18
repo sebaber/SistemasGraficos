@@ -40,11 +40,31 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
     anchoCalle,
     10
   );
+  var veredaDerIzq = new Vereda(new Segmento([0,0,-yCalle],[xCostaIzq,0,-yCalle]),
+    anchoCalle,
+    10,
+    0);
+  var veredaDerDer = new Vereda(new Segmento([0,0,-yCalle],[xCostaIzq,0,-yCalle]),
+    anchoCalle,
+    10,
+    1);
   var calleDer = new Calle(
     new Segmento([xCostaDer,0,-yCalle],[anchoCosta,0,-yCalle]),
     anchoCalle,
     10
   );
+  var veredaIzqIzq = new Vereda(new Segmento([xCostaDer,0,-yCalle],[anchoCosta,0,-yCalle]),
+    anchoCalle,
+    10,
+    0);
+  var veredaIzqDer = new Vereda(new Segmento([xCostaDer,0,-yCalle],[anchoCosta,0,-yCalle]),
+    anchoCalle,
+    10,
+    1);
+  this.agregarModelo(veredaDerIzq);
+  this.agregarModelo(veredaDerDer);
+  this.agregarModelo(veredaIzqIzq);
+  this.agregarModelo(veredaIzqDer);
   this.agregarModelo(calleIzq);
   this.agregarModelo(calleDer);
 
@@ -58,6 +78,26 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
     anchoCalle,
     10
   );
+  var veredaIzq = new Vereda(new BezierCubica(
+      [xCostaIzq, 0, -yCalle],//-yCalle
+      [xCostaIzq + (anchoPuente/3), ph2, -yCalle],//-yCalle
+      [xCostaIzq + (2*anchoPuente/3), ph2, -yCalle],//-yCalle
+      [xCostaIzq + anchoPuente, 0, -yCalle]
+    ),
+    anchoCalle,
+    10,
+    0);
+  var veredaDer = new Vereda(new BezierCubica(
+      [xCostaIzq, 0, -yCalle],//-yCalle
+      [xCostaIzq + (anchoPuente/3), ph2, -yCalle],//-yCalle
+      [xCostaIzq + (2*anchoPuente/3), ph2, -yCalle],//-yCalle
+      [xCostaIzq + anchoPuente, 0, -yCalle]
+    ),
+    anchoCalle,
+    10,
+    1);
+  this.agregarModelo(veredaIzq);
+  this.agregarModelo(veredaDer);
   this.agregarModelo(puente);
 
   var i,torre,viga,distViga,distPuente;
