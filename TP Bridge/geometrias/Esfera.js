@@ -1,4 +1,4 @@
-function Esfera(npoints,radio, x0, y0,z) {
+function Esfera(npoints,radio, x0, y0,z,texture_file) {
 	this.npoints = npoints;
 	this.radio = radio;
 	this.x0 = x0;
@@ -8,7 +8,7 @@ function Esfera(npoints,radio, x0, y0,z) {
 	var color = [0.2,0.1,0.1];
 	SuperficieDeRevolucion.call(this, this.vertexOfProfile,color);
 
-	this.initTexture("oxido.jpg");
+	this.initTexture(texture_file);
 }
 
 inheritPrototype(Esfera, SuperficieDeRevolucion);

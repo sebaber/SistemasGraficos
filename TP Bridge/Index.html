@@ -72,29 +72,40 @@
   El vertex shader define la posici�n y forma de cada vertice de cada pol�gono.
 -->
 <script id="shader-vs" type="x-shader/x-vertex">
-// Los atributos son caracter�sticas propias de cada vertice.
+precision mediump float;
+
 attribute vec3 aVertexPosition;
-attribute vec3 aVertexColor;
+attribute vec3 aVertexNormal;
+attribute vec3 aVertexBinormal;
+attribute vec3 aVertexTangent;
 attribute vec2 aTextureCoord;
 
-// Los uniforms son caracter�sticas propias de una etapa de dibujado completa.
-// Son comunes a todos los vertices involucrados en el dibujado.
-uniform mat4 uMVMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uModelMatrix;
 uniform mat4 uPMatrix;
+uniform mat3 uNMatrix;
 
-// Los varying son propiedades que toman valor para cada fragmento a partir
-// de interpolar linealmente entre los valores que se les asigna en cada
-// v�rtice del pol�gono al cual pertenecen.
-//varying highp vec4 vColor;
-varying highp vec2 vTextureCoord;
+varying vec2 vTextureCoord;
+varying vec3 vVertexPosition;
+
+// TBN
+varying vec3 vVertexTangent;
+varying vec3 vVertexBinormal;
+varying vec3 vVertexNormal;
 
 
 void main(void) {
   // gl_Position es una variable "built-in" de GLSL que es usada para
   // almacenar la posici�n resultante del fragmento.
-  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+  vec4 pos_in_model = uModelMatrix * vec4(aVertexPosition, 1.0);
+  gl_Position = uPMatrix * uModelMatrix * vec4(aVertexPosition, 1.0);
   //vColor = vec4(aVertexColor,1.0);
   vTextureCoord = aTextureCoord;
+  vVertexTangent = normalize(uNMatrix * aVertexTangent);
+  vVertexBinormal = normalize(uNMatrix * aVertexBinormal);
+  vVertexNormal = normalize(uNMatrix * aVertexNormal);
+  vVertexPosition = vec3(pos_in_model);
+
 }
 </script>
 
@@ -106,16 +117,42 @@ establecer el color de cada pixel. En este caso, asignamos el color blanco a
 cada pixel.
 -->
 <script id="shader-fs" type="x-shader/x-fragment">
-//varying highp vec4 vColor;
-varying highp vec2 vTextureCoord;
 
-uniform sampler2D uSampler;
+precision mediump float;
+
+// Samplers y si estan activados o no
+uniform sampler2D uTextureSampler;
+uniform sampler2D uNormalSampler;
+
+uniform bool uUseNormalMap;
+
+varying vec2 vTextureCoord;
+varying vec3 vVertexPosition;
+
+// TBN
+varying vec3 vVertexTangent;
+varying vec3 vVertexBinormal;
+varying vec3 vVertexNormal;
+
+uniform mat3 uNMatrix;
 
 void main(void) {
   // gl_FragColor es una variable "built-in" de GLSL que es usada para
   // almacenar el color resultante del fragmento.
   //gl_FragColor = vColor;
-  gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  vec3 transformedNormal = vVertexNormal;
+  vec3 transformedBinormal = vVertexBinormal;
+  vec3 tranformedTangent = vVertexTangent;
+  if(uUseNormalMap){
+    vec3 rgbNormal = normalize(texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).rgb);
+    float factorT = 2.0 * rgbNormal[0] - 1.0;
+    float factorB = 2.0 * rgbNormal[1] - 1.0;
+    float factorN = 2.0 * rgbNormal[2] - 1.0;
+    //transformedNormal = vec3(0.0, 0.0, 1.0);
+    transformedNormal = normalize( uNMatrix * (factorT * tranformedTangent + factorB * transformedBinormal) + factorN * transformedNormal);
+  }
+
+  gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 }
 </script>
 
@@ -132,6 +169,7 @@ arbol = null;
 modelo = null;
 viga = null;
 terreno = null;
+cielo = null;
 costaIzq = null;
 costaDer = null;
 var mvMatrix = mat4.create();
@@ -204,9 +242,9 @@ function initWebGL()
   }else{
     alert(  "Error: Your browser does not appear to support WebGL.");
   }
-u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
-u_view_matrix = gl.getUniformLocation(glProgram, "uViewMatrix");
-cameraPositionUniform = gl.getUniformLocation(glProgram, "uCameraPos");
+  u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
+  u_view_matrix = gl.getUniformLocation(glProgram, "uViewMatrix");
+  cameraPositionUniform = gl.getUniformLocation(glProgram, "uCameraPos");
 }
 
 function setupWebGL()
@@ -245,6 +283,47 @@ function initShaders()
 
   // Le decimos a WebGL que de aqu� en adelante use el programa generado.
   gl.useProgram(glProgram);
+
+  glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram,
+		"aVertexPosition");
+	gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
+
+	glProgram.vertexNormalAttribute = gl.getAttribLocation(glProgram,
+		"aVertexNormal");
+	gl.enableVertexAttribArray(glProgram.vertexNormalAttribute);
+
+	glProgram.textureCoordAttribute = gl.getAttribLocation(glProgram,
+		"aTextureCoord");
+	gl.enableVertexAttribArray(glProgram.textureCoordAttribute);
+
+	glProgram.vertexBinormalAttribute = gl.getAttribLocation(glProgram,
+		"aVertexBinormal");
+	// console.log("RETURN VALUE: " + glProgram.vertexBinormalAttribute);
+	gl.enableVertexAttribArray(glProgram.vertexBinormalAttribute);
+
+	glProgram.vertexTangentAttribute = gl.getAttribLocation(glProgram,
+		"aVertexTangent");
+	// console.log("RETURN VALUE: " + glProgram.vertexTangentAttribute);
+	gl.enableVertexAttribArray(glProgram.vertexTangentAttribute);
+
+	glProgram.pMatrixUniform = gl.getUniformLocation(glProgram,
+		"uPMatrix");
+	// glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,
+	// 	"uViewMatrix");
+	glProgram.ModelMatrixUniform = gl.getUniformLocation(glProgram,
+		"uModelMatrix");
+	glProgram.nMatrixUniform = gl.getUniformLocation(glProgram,
+		"uNMatrix");
+	glProgram.textureSamplerUniform = gl.getUniformLocation(glProgram,
+		"uTextureSampler");
+	glProgram.normalSamplerUniform = gl.getUniformLocation(glProgram,
+		"uNormalSampler");
+	// glProgram.reflectionSamplerUniform = gl.getUniformLocation(
+	// 	glProgram, "uReflectionSampler");
+	glProgram.useNormalMapUniform = gl.getUniformLocation(glProgram,
+		"uUseNormalMap");
+
+  // glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,"uViewMatrix");
 }
 
 function makeShader(src, type)
@@ -288,60 +367,63 @@ function setupBuffers()
   var profundidad = app.profundidad;
   terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
     alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3,profundidad,cantArboles);
-  // terreno = new Lamina(new BezierCubica([-1,2,0],[0,1,0],[1,1,0],[2,2,0]),new Segmento([-1,-2,0],[2,-2,0]),6);
-  // cilindro.rotateX(-1.5);
-  // cilindro.rotateY(-1.5);
-  modelo.agregarModelo(terreno);
-  // modelo.agregarModelo(viga);
-  // modelo.agregarModelo(arbol);
-  // modelo.agregarModelo(cilindro);
-  // modelo.agregarModelo(torre);
-  // my_grid = new CilindroAbierto(2,12,0.5);
-  // my_grid = new ConoCerrado(3,12,0.5);
-  // my_grid = new ConoAbierto(2,12,0.5);
-  // my_grid = new Esfera(12,12,0.5);
 
-}
+    // terreno = new Lamina(new BezierCubica([-1,2,0],[0,1,0],[1,1,0],[2,2,0]),new Segmento([-1,-2,0],[2,-2,0]),6);
+    // cilindro.rotateX(-1.5);
+    // cilindro.rotateY(-1.5);
+    modelo.agregarModelo(terreno);
+    cielo = new Esfera(10,30,0.0,0.0,-10,"aguaDeMar.jpg");
+    modelo.agregarModelo(cielo);
+    // modelo.agregarModelo(viga);
+    // modelo.agregarModelo(arbol);
+    // modelo.agregarModelo(cilindro);
+    // modelo.agregarModelo(torre);
+    // my_grid = new CilindroAbierto(2,12,0.5);
+    // my_grid = new ConoCerrado(3,12,0.5);
+    // my_grid = new ConoAbierto(2,12,0.5);
+    // my_grid = new Esfera(12,12,0.5);
 
-function drawScene()
-{
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  }
 
-  configCamara();
+  function drawScene()
+  {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    configCamara();
 
 
-  // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
-  // Preparamos una matriz de modelo+vista.
-  mat4.identity(mvMatrix);
-/*  if(i<=100){
+    // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uModelMatrix");
+    // Preparamos una matriz de modelo+vista.
+    mat4.identity(mvMatrix);
+    /*  if(i<=100){
     //mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
   }else{
-    //mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
-    if(i==200) i=0;
-  }
-  i++;
+  //mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
+  if(i==200) i=0;
+}
+i++;
 */
-  // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
-  // t = t + 0.01;
+// mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
+// t = t + 0.01;
 
-  // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
-  modelo.draw(mvMatrix);
+// gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
+modelo.draw(mvMatrix);
 }
 
 </script>
 </head>
 <body id="body" onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)" onmousemove="mouseMove(event)"
-    onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)" >
-  <center>
-    <h1 style="margin-top: 0px;margin-bottom: 0px">Sistemas Gr&aacute;ficos - 66.71</h1>
-    <h2 style="margin-top: 0px;margin-bottom: 0px">Trabajo pr&aacute;ctico puente - Araya - Vicario</h2>
-      <canvas id="myCanvas" name="myCanvas" width="900" height="500">
-        Your browser does not support the HTML5 canvas element.
-      </canvas>
-      <script type="text/javascript"> GUI(); </script>
-      <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
-        Your browser does not support the HTML5 canvas element.
-      </canvas>
-  </center>
+onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)" >
+<center>
+  <h1 style="margin-top: 0px;margin-bottom: 0px">Sistemas Gr&aacute;ficos - 66.71</h1>
+  <h2 style="margin-top: 0px;margin-bottom: 0px">Trabajo pr&aacute;ctico puente - Araya - Vicario</h2>
+  <canvas id="myCanvas" name="myCanvas" width="900" height="500">
+    Your browser does not support the HTML5 canvas element.
+  </canvas>
+  <script type="text/javascript"> GUI(); </script>
+  <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
+    Your browser does not support the HTML5 canvas element.
+  </canvas>
+</center>
 </body>
 </html>

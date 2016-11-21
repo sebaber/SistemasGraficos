@@ -32,7 +32,7 @@ var yPosGlobal = app.largoCosta/2;
 
 
 
-function mouseMove(event){ 
+function mouseMove(event){
 	mx = event.clientX;
 	my = event.clientY;
 	if (mouseIsDown && camaraOrbitalActiva) {
@@ -47,12 +47,12 @@ function mouseMove(event){
 	lastpos[1] = my;
 }
 
-function mouseDown(event){		
-	mouseIsDown = true;       
+function mouseDown(event){
+	mouseIsDown = true;
 }
 
 function mouseUp(event){
-	mouseIsDown = false;		
+	mouseIsDown = false;
 }
 
 function mouseWheel(event) {
@@ -153,7 +153,7 @@ function actualizarMovimientosDeCamara(pMatrix){
 
 function moverCamaraHombre(pMatrix){
 	var xPos = 0.0;
-	var yPos = 0.0;	
+	var yPos = 0.0;
 	var xRot = 0.0;
 	var yRot = 0.0;
 	var zPos = 0.0;
@@ -196,7 +196,7 @@ function moverCamaraHombre(pMatrix){
 	if (teclaBajarActiva){
 		zPos += 0.025;
 	}
-	
+
 	var angulo = yRotGlobal * -1;
 
 	var dxRespectoDeX = yPos * Math.cos(angulo);
@@ -219,9 +219,9 @@ var u_view_matrix;
 var cameraPositionUniform;
 
 function moverCamaraOrbital()
-{	
+{
 	var phi2 = phi;
-	var theta2 = theta;	
+	var theta2 = theta;
 	cameraPos[0] = cameraRad * Math.cos(theta2) * Math.sin(phi2);
 	cameraPos[2] = -1*cameraRad * Math.sin(theta2) * Math.sin(phi2);
 	cameraPos[1] = -1*cameraRad * Math.cos(phi2);
@@ -246,9 +246,9 @@ function configCamara(){
 	if (camaraOrbitalActiva){
 		CameraMatrix = actualizarMovimientosDeCamara(pMatrix);
 		gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
-		//gl.uniformMatrix4fv(u_view_matrix, false, CameraMatrix);
+		gl.uniformMatrix4fv(u_view_matrix, false, CameraMatrix);
 	} else{
 		pMatrix = actualizarMovimientosDeCamara(pMatrix);
 		gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
-	} 
+	}
 }

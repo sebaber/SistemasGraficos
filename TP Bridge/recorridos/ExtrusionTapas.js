@@ -12,6 +12,7 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
   var verticesInf = [];
   var verticesSup = [];
   this.position_buffer = [];
+  this.normal_buffer = [];
   this.texture_coord_buffer = [];
   var t,vertice;
   verticesInf = this.tapaInf.getVertices();
@@ -41,6 +42,18 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(0);
 
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(-1.0);
+
+    this.tangent_buffer.push(1.0);
+    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(0.0);
+
+    this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(-1.0);
+    this.binormal_buffer.push(0.0);
+
   }
 
   verticesSup = this.tapaSup.getVertices();
@@ -69,6 +82,18 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
 
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(1);
+
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(-1.0);
+
+    this.tangent_buffer.push(1.0);
+    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(0.0);
+
+    this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(-1.0);
+    this.binormal_buffer.push(0.0);
 
   }
 

@@ -11,6 +11,7 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
   var pos = [];
   var vertices = [];
   this.position_buffer = [];
+  this.normal_buffer = [];
   this.texture_coord_buffer = [];
   var t;
   vertices = this.forma.getVertices();
@@ -39,9 +40,18 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
       this.position_buffer.push(vertice[1]);
       this.position_buffer.push(vertice[2]);
 
-      // this.color_buffer.push(1.0/this.rows * i);
-      // this.color_buffer.push(0.2);
-      // this.color_buffer.push(1.0/this.cols * j);
+      this.normal_buffer.push(0.0);
+  		this.normal_buffer.push(0.0);
+  		this.normal_buffer.push(-1.0);
+
+  		this.tangent_buffer.push(1.0);
+  		this.tangent_buffer.push(0.0);
+  		this.tangent_buffer.push(0.0);
+
+  		this.binormal_buffer.push(0.0);
+  		this.binormal_buffer.push(-1.0);
+  		this.binormal_buffer.push(0.0);
+
       this.setTextureBuffer(i/this.nlevels,j/vertices.length);
 
     }

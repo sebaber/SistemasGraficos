@@ -18,8 +18,20 @@ Rio.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
 
-    this.texture_coord_buffer.push(1.0/this.rows * i);
-    this.texture_coord_buffer.push(1.0/this.cols * j);
+    this.texture_coord_buffer.push(i/this.nlevels);
+    this.texture_coord_buffer.push(j/vertices.length);
+
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(-1.0);
+
+    this.tangent_buffer.push(1.0);
+    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(0.0);
+
+    this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(-1.0);
+    this.binormal_buffer.push(0.0);
 
   }
 };
