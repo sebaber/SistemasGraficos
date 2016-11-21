@@ -21,6 +21,7 @@ function PiezaTorre(curva,niveles){
   );
 
   this.initTexture("oxido.jpg");
+  this.initNormalMap("oxido-normal map.jpg");
 }
 
 inheritPrototype(PiezaTorre, Extrusion);
@@ -28,4 +29,4 @@ inheritPrototype(PiezaTorre, Extrusion);
 PiezaTorre.prototype.setTextureBuffer = function(i,j){
   this.texture_coord_buffer.push(i);
   this.texture_coord_buffer.push(j);
-}
+};

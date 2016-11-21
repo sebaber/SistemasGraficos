@@ -1,5 +1,5 @@
 /**
- * @param profileVerticesList: es una lista de vertices que recorren el perfil, 
+ * @param profileVerticesList: es una lista de vertices que recorren el perfil,
  * 							con sus coordenadas r,z:
  * 								[r1,z1,r2,z2,...,rn,zn]
  */
@@ -38,11 +38,11 @@ Revolution.prototype.createPositionBuffer = function(){
 			deltaX = nextX - x;
 			deltaY = nextY - y;
 			deltaZ = nextZ - z;
-			
+
 			normalX = x * deltaZ;
 			normalY = y * deltaZ;
 			normalZ = - y * deltaY - x * deltaX;
-			
+
 			//si se le paso como punto el (0,0,0), la normal va a dar cualquier cosa
 			if(normalX == 0)
 				if(normalY == 0)

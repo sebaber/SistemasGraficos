@@ -11,6 +11,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
   var pos = [];
   var vertices = [];
   this.position_buffer = [];
+  this.normal_buffer = [];
   this.texture_coord_buffer = [];
   var t;
   vertices = this.forma.getVertices();

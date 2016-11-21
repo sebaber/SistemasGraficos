@@ -27,6 +27,9 @@ ExtrusionCerrada.prototype.addTapaInferior = function(){
     this.position_buffer.push(vertice[0]);
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
+    this.normal_buffer.push(vertice[0]);
+    this.normal_buffer.push(vertice[1]);
+    this.normal_buffer.push(-1);
     this.texture_coord_buffer.push(0);
     this.texture_coord_buffer.push(0);
   }
@@ -51,6 +54,9 @@ ExtrusionCerrada.prototype.addTapaSuperior = function(){
     this.position_buffer.push(vertice[0]);
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
+    this.normal_buffer.push(vertice[0]);
+    this.normal_buffer.push(vertice[1]);
+    this.normal_buffer.push(-1);
     this.texture_coord_buffer.push(1);
     this.texture_coord_buffer.push(1);
   }
@@ -61,6 +67,7 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
   var pos = [];
   var vertices = [];
   this.position_buffer = [];
+  this.normal_buffer = [];
   this.texture_coord_buffer = [];
 
   vertices = this.forma.getVertices();
@@ -92,6 +99,10 @@ ExtrusionCerrada.prototype._setPositionAndColorVertex = function(){
       this.position_buffer.push(vertice[0]);
       this.position_buffer.push(vertice[1]);
       this.position_buffer.push(vertice[2]);
+
+      this.normal_buffer.push(vertice[0]);
+      this.normal_buffer.push(vertice[1]);
+      this.normal_buffer.push(-1);
 
       this.texture_coord_buffer.push(j/vertices.length);
       this.texture_coord_buffer.push(i/this.nlevels);

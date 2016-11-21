@@ -18,6 +18,10 @@ Rio.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
 
+    this.normal_buffer.push(vertice[0]);
+    this.normal_buffer.push(vertice[1]);
+    this.normal_buffer.push(-1);
+
     this.texture_coord_buffer.push(1.0/this.rows * i);
     this.texture_coord_buffer.push(1.0/this.cols * j);
 

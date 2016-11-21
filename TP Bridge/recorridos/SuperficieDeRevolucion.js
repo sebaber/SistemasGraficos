@@ -48,12 +48,14 @@ SuperficieDeRevolucion.prototype._setPositionAndColorVertex = function(){
 			if(k%3 !== 0) this.texture_coord_buffer.push(partialPositions[k]);
 	    // this.color_buffer.push(this.color[k%3]);
 			this.position_buffer.push(partialPositions[k]);
+			this.normal_buffer.push(partialPositions[k]);
 		}
 
 		for(k=0; k < partialNextPositions.length; ++k){
 			if(k%3 !== 0) this.texture_coord_buffer.push(partialNextPositions[k]);
 			// this.color_buffer.push(this.color[k%3]);
 			this.position_buffer.push(partialNextPositions[k]);
+			this.normal_buffer.push(partialPositions[k]);
 		}
 
 	}
