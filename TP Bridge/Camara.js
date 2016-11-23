@@ -102,6 +102,9 @@ function keyPressDownEvent(event){
   else if (event.key == 'k'){
   	teclaRotarAbajoActiva = true;
   }
+  else if (event.key == 't'){
+    switchLight();
+  } 
 }
 
 function keyPressUpEvent(event){
@@ -142,6 +145,46 @@ function keyPressUpEvent(event){
   	app.reiniciar();
   }
 }
+
+function switchLight() {
+  var divLuz = document.getElementById("luz");
+  if (ambientalLightActive) {
+    ambientalLightActive = false;
+    directionalLightActive = true;
+    specularLightActive = false;
+    allLightActive = false;
+    console.log("Lighting: only directional");
+  } else {
+    if (directionalLightActive) {
+      ambientalLightActive = false;
+      directionalLightActive = false;
+      specularLightActive = true;
+      allLightActive = false;
+      console.log("Lighting: only specular");
+    } else {
+      if (specularLightActive) {
+        ambientalLightActive = false;
+        directionalLightActive = false;
+        specularLightActive = false;
+        allLightActive = true;
+        console.log("Lighting: all lights on");
+      } else {
+        if (allLightActive) {
+          ambientalLightActive = true;
+          directionalLightActive = false;
+          specularLightActive = false;
+          allLightActive = false;
+          console.log("Lighting: ambiental only");
+        }
+      }
+    }
+  }
+  gl.uniform1i(glProgram.lightAmbientalUniform, ambientalLightActive);
+  gl.uniform1i(glProgram.lightDirectionalUniform, directionalLightActive);
+  gl.uniform1i(glProgram.lightSpecularUniform, specularLightActive);
+  gl.uniform1i(glProgram.lightTotalUniform, allLightActive);
+}
+
 
 function actualizarMovimientosDeCamara(pMatrix){
 	if(camaraOrbitalActiva){

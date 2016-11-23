@@ -129,6 +129,9 @@ uniform bool uUseNormalMap;
 varying vec2 vTextureCoord;
 varying vec3 vVertexPosition;
 
+// Punto de vista
+uniform vec3 uCameraPos;
+
 // TBN
 varying vec3 vVertexTangent;
 varying vec3 vVertexBinormal;
@@ -136,10 +139,33 @@ varying vec3 vVertexNormal;
 
 uniform mat3 uNMatrix;
 
+// Matriz para las normales
+//uniform mat3 uNMatrix;
+// Colores de las luces
+uniform vec3 uAmbientColor;
+uniform vec3 uLightPosition;
+uniform vec3 uDirectionalColor;
+uniform vec3 uSpecularColor;
+
+// Switch luz activada
+uniform bool uLightSpecular;
+uniform bool uLightDirectional;
+uniform bool uLightAmbiental;
+uniform bool uLightTotal;
+uniform float uReflectionLevel;
+
 void main(void) {
+  vec3 lightWeighting ;
+
+  vec3 lightDirNormalized =  normalize( uLightPosition - vVertexPosition );
+  //CAMBIADO!!
+  vec3 viewVec = normalize( uCameraPos - vVertexPosition );
+
+  vec4 reflectionColor = vec4(0.0, 0.0, 0.0, 0.0);
   // gl_FragColor es una variable "built-in" de GLSL que es usada para
   // almacenar el color resultante del fragmento.
   //gl_FragColor = vColor;
+  vec4 textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
   vec3 transformedNormal = vVertexNormal;
   vec3 transformedBinormal = vVertexBinormal;
   vec3 tranformedTangent = vVertexTangent;
@@ -151,8 +177,27 @@ void main(void) {
     //transformedNormal = vec3(0.0, 0.0, 1.0);
     transformedNormal = normalize( uNMatrix * (factorT * tranformedTangent + factorB * transformedBinormal) + factorN * transformedNormal);
   }
+  if(uUseNormalMap){
+    gl_FragColor = vec4(textureColor.rgb * transformedNormal, textureColor.a);
+    
+  }else gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 
-  gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  /** Luces **/
+
+  //calculo la iluminacion a partir del sampler, por eso en fragment y no en vertex
+  float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
+  // [(2*(N*L)*N - L) * V] ^ alpha
+  vec3 parentesis = 2.0 * directionalLightWeighting * transformedNormal - lightDirNormalized;
+  float corchete = max(dot(parentesis, viewVec), 0.0); 
+  float specularLightWeighting = pow(corchete,15.0);
+  if(uLightTotal){ lightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting + uSpecularColor * specularLightWeighting ; }else{
+  if(uLightAmbiental){ lightWeighting = uAmbientColor ; }else{
+  if(uLightDirectional){ lightWeighting = uDirectionalColor * directionalLightWeighting ; }else{
+  lightWeighting = uSpecularColor * specularLightWeighting ;
+  }
+  }
+  }
+
 }
 </script>
 
@@ -324,7 +369,40 @@ function initShaders()
 		"uUseNormalMap");
 
   // glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,"uViewMatrix");
+
+  glProgram.ambientColorUniform = gl.getUniformLocation(glProgram,
+    "uAmbientColor");
+  glProgram.lightingDirectionUniform = gl.getUniformLocation(
+    glProgram, "uLightPosition");
+  glProgram.directionalColorUniform = gl.getUniformLocation(
+    glProgram, "uDirectionalColor");
+  glProgram.specularColorUniform = gl.getUniformLocation(glProgram,
+    "uSpecularColor");
+
+  glProgram.lightAmbientalUniform = gl.getUniformLocation(glProgram,
+    "uLightAmbiental");
+  glProgram.lightDirectionalUniform = gl.getUniformLocation(
+    glProgram, "uLightDirectional");
+  glProgram.lightSpecularUniform = gl.getUniformLocation(glProgram,
+    "uLightSpecular");
+  glProgram.lightTotalUniform = gl.getUniformLocation(glProgram,
+    "uLightTotal");
+
+  //Actualiza variables de luces
+  gl.uniform1i(glProgram.lightAmbientalUniform, ambientalLightActive);
+  gl.uniform1i(glProgram.lightDirectionalUniform, directionalLightActive);
+  gl.uniform1i(glProgram.lightSpecularUniform, specularLightActive);
+  gl.uniform1i(glProgram.lightTotalUniform, allLightActive);
 }
+
+/**
+ * SWITCH DE TIPOS DE LUCES ACTIVAS
+ */
+
+var ambientalLightActive = false;
+var directionalLightActive = false;
+var specularLightActive = false;
+var allLightActive = true;
 
 function makeShader(src, type)
 {
@@ -365,6 +443,24 @@ function setupBuffers()
   var ph2 = app.ph2;
   var ph3 = app.ph3;
   var profundidad = app.profundidad;
+
+  var ra = 0.3;
+  var ga = 0.3;
+  var ba = 0.3;
+  var rd = 1.0;
+  var gd = 1.0;
+  var bd = 1.0;
+  var rs = 1.0;
+  var gs = 1.0;
+  var bs = 1.0;
+
+    // Dibujamos el cielo
+  //gl.uniform1i(glProgram.useNormalMapUniform, cielo.useNormalMap);
+  //gl.uniform1i(glProgram.useReflectionMapUniform, cielo.useReflectionMap);
+  gl.uniform3f(glProgram.ambientColorUniform, 1.0, 1.0, 1.0);
+  gl.uniform3f(glProgram.directionalColorUniform, 1.0, 1.0, 1.0);
+  gl.uniform3f(glProgram.specularColorUniform, rs, gs, bs);
+
   terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
     alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3,profundidad,cantArboles);
 
