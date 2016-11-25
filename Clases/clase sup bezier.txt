@@ -1,0 +1,19 @@
+Superficie de bezier:
+
+-> Por cada punto de la curva de bezier, agrego una curva ortogonal:   
+
+I I I I
+I_I_I_I
+
+-> Con u recorro la curva bezier, con v recorro las curvas de los puntos de control de la curva de bezier
+
+-> En la sup de bezier de los 16 puntos, solo los 4 puntos de la esquina estan en la sup de bezier
+
+-> Condicion de las los segmentos de la curva: que sean colineales (C1)  /\ No   -- Si
+
+
+Superficie BSPline:
+
+-> Formada por la sumatoria de multiplicacion de bases de BSPline
+
+-> Ningun punto de las curvas pertenece a la superficie (ninguno de los 16 puntos)
