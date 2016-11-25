@@ -169,6 +169,38 @@ void main(void) {
   vec3 transformedNormal = vVertexNormal;
   vec3 transformedBinormal = vVertexBinormal;
   vec3 tranformedTangent = vVertexTangent;
+
+  /** Luces **/
+
+  //calculo la iluminacion a partir del sampler, por eso en fragment y no en vertex
+  float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
+  // [(2*(N*L)*N - L) * V] ^ alpha
+  vec3 parentesis = 2.0 * directionalLightWeighting * transformedNormal - lightDirNormalized;
+  float corchete = max(dot(parentesis, viewVec), 0.0); 
+  float specularLightWeighting = pow(corchete,15.0);
+  if(uLightTotal)
+  { 
+    lightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting + uSpecularColor * specularLightWeighting ; 
+  }
+  else
+  {
+    if(uLightAmbiental)
+    { 
+      lightWeighting = uAmbientColor ; 
+    }
+    else
+      {
+      if(uLightDirectional)
+      { 
+        lightWeighting = uDirectionalColor * directionalLightWeighting ; 
+      }
+      else
+      {
+        lightWeighting = uSpecularColor * specularLightWeighting ;
+      }
+    }
+  }
+
   if(uUseNormalMap){
     vec3 rgbNormal = normalize(texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).rgb);
     float factorT = 2.0 * rgbNormal[0] - 1.0;
@@ -180,23 +212,10 @@ void main(void) {
   if(uUseNormalMap){
     gl_FragColor = vec4(textureColor.rgb * transformedNormal, textureColor.a);
     
-  }else gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-
-  /** Luces **/
-
-  //calculo la iluminacion a partir del sampler, por eso en fragment y no en vertex
-  float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
-  // [(2*(N*L)*N - L) * V] ^ alpha
-  vec3 parentesis = 2.0 * directionalLightWeighting * transformedNormal - lightDirNormalized;
-  float corchete = max(dot(parentesis, viewVec), 0.0); 
-  float specularLightWeighting = pow(corchete,15.0);
-  if(uLightTotal){ lightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting + uSpecularColor * specularLightWeighting ; }else{
-  if(uLightAmbiental){ lightWeighting = uAmbientColor ; }else{
-  if(uLightDirectional){ lightWeighting = uDirectionalColor * directionalLightWeighting ; }else{
-  lightWeighting = uSpecularColor * specularLightWeighting ;
-  }
-  }
-  }
+  } else {
+    //gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+  } 
 
 }
 </script>
@@ -444,23 +463,6 @@ function setupBuffers()
   var ph3 = app.ph3;
   var profundidad = app.profundidad;
 
-  var ra = 0.3;
-  var ga = 0.3;
-  var ba = 0.3;
-  var rd = 1.0;
-  var gd = 1.0;
-  var bd = 1.0;
-  var rs = 1.0;
-  var gs = 1.0;
-  var bs = 1.0;
-
-    // Dibujamos el cielo
-  //gl.uniform1i(glProgram.useNormalMapUniform, cielo.useNormalMap);
-  //gl.uniform1i(glProgram.useReflectionMapUniform, cielo.useReflectionMap);
-  gl.uniform3f(glProgram.ambientColorUniform, 1.0, 1.0, 1.0);
-  gl.uniform3f(glProgram.directionalColorUniform, 1.0, 1.0, 1.0);
-  gl.uniform3f(glProgram.specularColorUniform, rs, gs, bs);
-
   terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
     alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3,profundidad,cantArboles);
 
@@ -468,7 +470,15 @@ function setupBuffers()
     // cilindro.rotateX(-1.5);
     // cilindro.rotateY(-1.5);
     modelo.agregarModelo(terreno);
+  
+    //Agregamos los colores para el cielo  
+    gl.uniform3f(glProgram.ambientColorUniform, 1.0, 1.0, 1.0 );
+    gl.uniform3f(glProgram.directionalColorUniform, 0.0, 0.0, 0.0);
+    gl.uniform3f(glProgram.specularColorUniform, 0.0, 0.0, 0.0);
+
+
     cielo = new Esfera(10,30,0.0,0.0,-10,"aguaDeMar.jpg");
+    cielo.setLightConfiguration(1.0, 1.0, 1.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
     modelo.agregarModelo(cielo);
     // modelo.agregarModelo(viga);
     // modelo.agregarModelo(arbol);

@@ -4,6 +4,22 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
   this.largoCosta = largoCosta;
   this.anchoRio = anchoRio;
 
+  // ///////////////////////////////////////////////////
+  // Configuración de la luz
+  // Se inicializan las variables asociadas con la Iluminación
+  var lighting;
+  lighting = true;
+  gl.uniform1i(glProgram.useLightingUniform, lighting);
+  gl.uniform1i(glProgram.useNormalMapUniform, false);
+  gl.uniform1i(glProgram.useReflectionMapUniform, false);
+  // var lightPosition = [0.0, 0.0, 0.0];
+  // var lightPosition = [0,0,1000000000];
+  var lightPosition = [ 727503182, 50135369, 142622255 ]; // donde esta el sol
+  // en la textura
+  // mat4.multiplyVec3(CameraMatrix, lightPosition);
+  gl.uniform3fv(glProgram.lightingDirectionUniform, lightPosition); // uniform:
+  ////////////////////////////////////////////////////////////////////////7
+
   var prof = profundidad;
 
   var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,prof,30);
