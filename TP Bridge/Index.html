@@ -171,7 +171,14 @@ void main(void) {
   vec3 tranformedTangent = vVertexTangent;
 
   /** Luces **/
-
+if(uUseNormalMap){
+    vec3 rgbNormal = normalize(texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).rgb);
+    float factorT = 2.0 * rgbNormal[0] - 1.0;
+    float factorB = 2.0 * rgbNormal[1] - 1.0;
+    float factorN = 2.0 * rgbNormal[2] - 1.0;
+    //transformedNormal = vec3(0.0, 0.0, 1.0);
+    transformedNormal = normalize( uNMatrix * (factorT * tranformedTangent + factorB * transformedBinormal) + factorN * transformedNormal);
+  }
   //calculo la iluminacion a partir del sampler, por eso en fragment y no en vertex
   float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
   // [(2*(N*L)*N - L) * V] ^ alpha
@@ -201,16 +208,9 @@ void main(void) {
     }
   }
 
+  
   if(uUseNormalMap){
-    vec3 rgbNormal = normalize(texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).rgb);
-    float factorT = 2.0 * rgbNormal[0] - 1.0;
-    float factorB = 2.0 * rgbNormal[1] - 1.0;
-    float factorN = 2.0 * rgbNormal[2] - 1.0;
-    //transformedNormal = vec3(0.0, 0.0, 1.0);
-    transformedNormal = normalize( uNMatrix * (factorT * tranformedTangent + factorB * transformedBinormal) + factorN * transformedNormal);
-  }
-  if(uUseNormalMap){
-    gl_FragColor = vec4(textureColor.rgb * transformedNormal, textureColor.a);
+    gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
     
   } else {
     //gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
@@ -470,11 +470,6 @@ function setupBuffers()
     // cilindro.rotateX(-1.5);
     // cilindro.rotateY(-1.5);
     modelo.agregarModelo(terreno);
-  
-    //Agregamos los colores para el cielo  
-    gl.uniform3f(glProgram.ambientColorUniform, 1.0, 1.0, 1.0 );
-    gl.uniform3f(glProgram.directionalColorUniform, 0.0, 0.0, 0.0);
-    gl.uniform3f(glProgram.specularColorUniform, 0.0, 0.0, 0.0);
 
 
     cielo = new Esfera(10,30,0.0,0.0,-10,"aguaDeMar.jpg");
