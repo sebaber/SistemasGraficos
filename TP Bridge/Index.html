@@ -183,23 +183,23 @@ if(uUseNormalMap){
   float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
   // [(2*(N*L)*N - L) * V] ^ alpha
   vec3 parentesis = 2.0 * directionalLightWeighting * transformedNormal - lightDirNormalized;
-  float corchete = max(dot(parentesis, viewVec), 0.0); 
+  float corchete = max(dot(parentesis, viewVec), 0.0);
   float specularLightWeighting = pow(corchete,15.0);
   if(uLightTotal)
-  { 
-    lightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting + uSpecularColor * specularLightWeighting ; 
+  {
+    lightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting + uSpecularColor * specularLightWeighting ;
   }
   else
   {
     if(uLightAmbiental)
-    { 
-      lightWeighting = uAmbientColor ; 
+    {
+      lightWeighting = uAmbientColor ;
     }
     else
       {
       if(uLightDirectional)
-      { 
-        lightWeighting = uDirectionalColor * directionalLightWeighting ; 
+      {
+        lightWeighting = uDirectionalColor * directionalLightWeighting ;
       }
       else
       {
@@ -208,14 +208,14 @@ if(uUseNormalMap){
     }
   }
 
-  
+
   if(uUseNormalMap){
     gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-    
+
   } else {
     //gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
     gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-  } 
+  }
 
 }
 </script>
@@ -472,7 +472,7 @@ function setupBuffers()
     modelo.agregarModelo(terreno);
 
 
-    cielo = new Esfera(10,30,0.0,0.0,-10,"aguaDeMar.jpg");
+    cielo = new Esfera(10,30,0.0,0.0,-10,"sky_lightblue.jpg");
     cielo.setLightConfiguration(1.0, 1.0, 1.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
     modelo.agregarModelo(cielo);
     // modelo.agregarModelo(viga);
