@@ -42,17 +42,17 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(0);
 
+    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(1.0);
+    this.tangent_buffer.push(0.0);
+
+    this.binormal_buffer.push(-1.0);
+    this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(0.0);
+    
     this.normal_buffer.push(0.0);
     this.normal_buffer.push(0.0);
     this.normal_buffer.push(-1.0);
-
-    this.tangent_buffer.push(1.0);
-    this.tangent_buffer.push(0.0);
-    this.tangent_buffer.push(0.0);
-
-    this.binormal_buffer.push(0.0);
-    this.binormal_buffer.push(-1.0);
-    this.binormal_buffer.push(0.0);
 
   }
 
@@ -83,17 +83,17 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(1);
 
+    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(1.0);
+    this.tangent_buffer.push(0.0);
+
+    this.binormal_buffer.push(-1.0);
+    this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(0.0);
+    
     this.normal_buffer.push(0.0);
     this.normal_buffer.push(0.0);
     this.normal_buffer.push(-1.0);
-
-    this.tangent_buffer.push(1.0);
-    this.tangent_buffer.push(0.0);
-    this.tangent_buffer.push(0.0);
-
-    this.binormal_buffer.push(0.0);
-    this.binormal_buffer.push(-1.0);
-    this.binormal_buffer.push(0.0);
 
   }
 

@@ -2,6 +2,7 @@ function Rio(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   ExtrusionAbierta.call(this,curva, new PerfilRio(anchoCosta,anchoRio,profundidad),nlevels);
 
   this.initTexture("aguaDeMar.jpg");
+  this.initNormalMap("rocas2-normalmap.jpg");
 }
 
 inheritPrototype(Rio, ExtrusionAbierta);
@@ -21,17 +22,17 @@ Rio.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     this.texture_coord_buffer.push(i/this.nlevels);
     this.texture_coord_buffer.push(j/vertices.length);
 
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(-1.0);
-
-    this.tangent_buffer.push(1.0);
     this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(-1.0);
     this.tangent_buffer.push(0.0);
 
-    this.binormal_buffer.push(0.0);
     this.binormal_buffer.push(-1.0);
     this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(0.0);
+    
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(0.0);
+    this.normal_buffer.push(1.0);
 
   }
 };
