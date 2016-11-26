@@ -15,6 +15,9 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
   this.texture_coord_buffer = [];
   var t;
   vertices = this.forma.getVertices();
+  var normales = this.forma.getNormals();
+  var binormales = this.forma.getBinormals();
+  var tangentes = this.forma.getTangentes();
   for (var i = 0.0; i < this.nlevels; i++) {
     t = i/(this.nlevels-1);
 
@@ -52,17 +55,17 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
   		// this.binormal_buffer.push(-1.0);
   		// this.binormal_buffer.push(0.0);
 
-      this.tangent_buffer.push(0.0);
-    this.tangent_buffer.push(-1.0);
-    this.tangent_buffer.push(0.0);
+      this.tangent_buffer.push(tangentes[j][0]);
+    this.tangent_buffer.push(tangentes[j][1]);
+    this.tangent_buffer.push(tangentes[j][2]);
 
-    this.binormal_buffer.push(-1.0);
-    this.binormal_buffer.push(0.0);
-    this.binormal_buffer.push(0.0);
+    this.binormal_buffer.push(binormales[j][0]);
+    this.binormal_buffer.push(binormales[j][1]);
+    this.binormal_buffer.push(binormales[j][2]);
 
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(1.0);
+    this.normal_buffer.push(normales[j][0]);
+    this.normal_buffer.push(normales[j][1]);
+    this.normal_buffer.push(normales[j][2]);
 
       this.setTextureBuffer(i/this.nlevels,j/vertices.length);
 

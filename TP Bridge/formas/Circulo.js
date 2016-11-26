@@ -30,11 +30,47 @@ Circulo.prototype.getVertices = function() {
 	return vertices;
 };
 
+Circulo.prototype.getNormals = function() {
+	var vertices = [];
+  var d = 1.0 / this.npoints;
+  var pos;
+  for (var i = 0; i < this.npoints; i++) {
+		var t = d * i;
+    vertices.push(this.getNormal(t));
+	}
+	vertices.push(this.getNormal(0.0));
+	return vertices;
+};
+
+Circulo.prototype.getBinormals = function() {
+	var vertices = [];
+  var d = 1.0 / this.npoints;
+  var pos;
+  for (var i = 0; i < this.npoints; i++) {
+		var t = d * i;
+    vertices.push(this.getBiNormal(t));
+	}
+	vertices.push(this.getBiNormal(0.0));
+	return vertices;
+};
+
+Circulo.prototype.getTangentes = function() {
+	var vertices = [];
+  var d = 1.0 / this.npoints;
+  var pos;
+  for (var i = 0; i < this.npoints; i++) {
+		var t = d * i;
+    vertices.push(this.getTangente(t));
+	}
+	vertices.push(this.getTangente(0.0));
+	return vertices;
+};
+
 Circulo.prototype.getTangente = function(t) {
 	var nt = [ -2 * Math.PI * this.radio * Math.sin(2 * Math.PI * t),
 			2 * Math.PI * this.radio * Math.cos(2 * Math.PI * t), this.z ];
 	vec3.normalize(nt, nt);
-	return [ vect[0], vect[1], vect[2] ];
+	return nt;
 };
 
 Circulo.prototype.getNormal = function(t) {
