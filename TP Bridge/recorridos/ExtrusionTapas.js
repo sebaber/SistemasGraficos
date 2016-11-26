@@ -38,6 +38,17 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     vec4.set(vertice,verticesInf[j][0],verticesInf[j][1],verticesInf[j][2],1.0);
     vec4.transformMat4(vertice,vertice,matFinal);
 
+    var tangenteInf = vec4.create();
+    var normalInf = vec4.create();
+    var binormalInf = vec4.create();
+
+    vec4.set(tangenteInf,tangentesInf[j][0],tangentesInf[j][1],tangentesInf[j][2],1.0);
+    vec4.transformMat4(tangenteInf,tangenteInf,matrizRotacion);
+    vec4.set(normalInf,normalesInf[j][0],normalesInf[j][1],normalesInf[j][2],1.0);
+    vec4.transformMat4(normalInf,normalInf,matrizRotacion);
+    vec4.set(binormalInf,binormalesInf[j][0],binormalesInf[j][1],binormalesInf[j][2],1.0);
+    vec4.transformMat4(binormalInf,binormalInf,matrizRotacion);
+
     this.position_buffer.push(vertice[0]);
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
@@ -45,17 +56,17 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(0);
 
-    this.tangent_buffer.push(tangentesInf[j][0]);
-    this.tangent_buffer.push(tangentesInf[j][1]);
-    this.tangent_buffer.push(tangentesInf[j][2]);
+    this.tangent_buffer.push(tangenteInf[0]);
+  this.tangent_buffer.push(tangenteInf[1]);
+  this.tangent_buffer.push(tangenteInf[2]);
 
-    this.binormal_buffer.push(binormalesInf[j][0]);
-    this.binormal_buffer.push(binormalesInf[j][1]);
-    this.binormal_buffer.push(binormalesInf[j][2]);
+  this.binormal_buffer.push(binormalInf[0]);
+  this.binormal_buffer.push(binormalInf[1]);
+  this.binormal_buffer.push(binormalInf[2]);
 
-    this.normal_buffer.push(normalesInf[j][0]);
-    this.normal_buffer.push(normalesInf[j][1]);
-    this.normal_buffer.push(normalesInf[j][2]);
+  this.normal_buffer.push(normalInf[0]);
+  this.normal_buffer.push(normalInf[1]);
+  this.normal_buffer.push(normalInf[2]);
 
   }
 
@@ -81,24 +92,35 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     vec4.set(vertice,verticesSup[j][0],verticesSup[j][1],verticesSup[j][2],1.0);
     vec4.transformMat4(vertice,vertice,matFinal);
 
+    var tangenteSup = vec4.create();
+    var normalSup = vec4.create();
+    var binormalSup = vec4.create();
+
+    vec4.set(tangenteSup,tangentesSup[j][0],tangentesSup[j][1],tangentesSup[j][2],1.0);
+    vec4.transformMat4(tangenteSup,tangenteSup,matrizRotacion);
+    vec4.set(normalSup,normalesSup[j][0],normalesSup[j][1],normalesSup[j][2],1.0);
+    vec4.transformMat4(normalSup,normalSup,matrizRotacion);
+    vec4.set(binormalSup,binormalesSup[j][0],binormalesSup[j][1],binormalesSup[j][2],1.0);
+    vec4.transformMat4(binormalSup,binormalSup,matrizRotacion);
+
     this.position_buffer.push(vertice[0]);
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
 
-    this.texture_coord_buffer.push(j/verticesInf.length);
+    this.texture_coord_buffer.push(j/verticesSup.length);
     this.texture_coord_buffer.push(1);
 
-    this.tangent_buffer.push(tangentesSup[j][0]);
-    this.tangent_buffer.push(tangentesSup[j][1]);
-    this.tangent_buffer.push(tangentesSup[j][2]);
+    this.tangent_buffer.push(tangenteSup[0]);
+  this.tangent_buffer.push(tangenteSup[1]);
+  this.tangent_buffer.push(tangenteSup[2]);
 
-    this.binormal_buffer.push(binormalesSup[j][0]);
-    this.binormal_buffer.push(binormalesSup[j][1]);
-    this.binormal_buffer.push(binormalesSup[j][2]);
+  this.binormal_buffer.push(binormalSup[0]);
+  this.binormal_buffer.push(binormalSup[1]);
+  this.binormal_buffer.push(binormalSup[2]);
 
-    this.normal_buffer.push(normalesSup[j][0]);
-    this.normal_buffer.push(normalesSup[j][1]);
-    this.normal_buffer.push(normalesSup[j][2]);
+  this.normal_buffer.push(normalSup[0]);
+  this.normal_buffer.push(normalSup[1]);
+  this.normal_buffer.push(normalSup[2]);
 
   }
 

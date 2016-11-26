@@ -17,18 +17,6 @@ function PerfilCalle(anchoCalle) {
     [-0.1,-(anchoCalle/2)+(anchoCalle/6),0],//[-2,0.5,0],
     [0.2,-(anchoCalle/2)+(anchoCalle/6),0],//[-2,0.5,0],
     [0.2,0,0],//[-2,0.5,0],
-
-
-
-
-
-
-
-
-
-
-
-
   ];
   var i;
   this.segmentos = [];

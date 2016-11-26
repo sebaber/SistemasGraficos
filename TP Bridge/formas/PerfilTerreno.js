@@ -68,7 +68,7 @@ PerfilTerreno.prototype.createNormales = function() {
   for (var t = 0; t <= 1; t+=this.u) {
     // vertices.push(this.splineCompleja.p(t));
     pos = this.splineCompleja.n(t);
-    vertices.push([pos[0],pos[2],pos[1]]);
+    vertices.push([pos[0],pos[1],pos[2]]);
 	}
 	return vertices;
 };
@@ -79,7 +79,7 @@ PerfilTerreno.prototype.createBinormales = function() {
   for (var t = 0; t <= 1; t+=this.u) {
     // vertices.push(this.splineCompleja.p(t));
     pos = this.splineCompleja.bn(t);
-    vertices.push([pos[0],pos[2],pos[1]]);
+    vertices.push([pos[0],pos[1],pos[2]]);
 	}
 	return vertices;
 };
@@ -90,7 +90,7 @@ PerfilTerreno.prototype.createTangentes = function() {
   for (var t = 0; t <= 1; t+=this.u) {
     // vertices.push(this.splineCompleja.p(t));
     pos = this.splineCompleja.t(t);
-    vertices.push([pos[0],pos[2],pos[1]]);
+    vertices.push([pos[0],pos[1],pos[2]]);
 	}
 	return vertices;
 };

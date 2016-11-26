@@ -6,13 +6,25 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
 
 inheritPrototype(Base, ExtrusionAbierta);
 
-Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,tangentes,normales,binormales,i){
+Base.prototype.setPosicionVertices= function(matrizTraslacion,matrizRotacion,vertices,tangentes,normales,binormales,i){
 
   for (var j = 0.0; j < vertices.length; j++) {
 
     var vertice = vec4.create();
     vec4.set(vertice,vertices[j][0],vertices[j][1],vertices[j][2],1.0);
     vec4.transformMat4(vertice,vertice,matrizTraslacion);
+
+    var tangente = vec4.create();
+    var normal = vec4.create();
+    var binormal = vec4.create();
+
+    vec4.set(tangente,tangentes[j][0],tangentes[j][1],tangentes[j][2],1.0);
+    vec4.transformMat4(tangente,tangente,matrizRotacion);
+    vec4.set(normal,normales[j][0],normales[j][1],normales[j][2],1.0);
+    vec4.transformMat4(normal,normal,matrizRotacion);
+    vec4.set(binormal,binormales[j][0],binormales[j][1],binormales[j][2],1.0);
+    vec4.transformMat4(binormal,binormal,matrizRotacion);
+
     if(j===0) vertice[0] = 0;
     if(j==vertices.length-1) vertice[0] = app.anchoCosta;
 
@@ -27,17 +39,17 @@ Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,tangentes
     this.texture_coord_buffer.push(vertice[0]/app.anchoCosta);
     this.texture_coord_buffer.push(vertice[1]/app.largoCosta);
 
-    this.tangent_buffer.push(tangentes[j][0]);
-  this.tangent_buffer.push(tangentes[j][1]);
-  this.tangent_buffer.push(tangentes[j][2]);
+    this.tangent_buffer.push(tangente[0]);
+  this.tangent_buffer.push(tangente[1]);
+  this.tangent_buffer.push(tangente[2]);
 
-  this.binormal_buffer.push(binormales[j][0]);
-  this.binormal_buffer.push(binormales[j][1]);
-  this.binormal_buffer.push(binormales[j][2]);
+  this.binormal_buffer.push(binormal[0]);
+  this.binormal_buffer.push(binormal[1]);
+  this.binormal_buffer.push(binormal[2]);
 
-  this.normal_buffer.push(normales[j][0]);
-  this.normal_buffer.push(normales[j][1]);
-  this.normal_buffer.push(normales[j][2]);
+  this.normal_buffer.push(normal[0]);
+  this.normal_buffer.push(normal[1]);
+  this.normal_buffer.push(normal[2]);
 
   }
 };

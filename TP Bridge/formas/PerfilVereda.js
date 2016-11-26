@@ -12,12 +12,12 @@ function PerfilVereda(anchoCalle,discriminante) {
 
   }else{
     this.vertices = [
-      [0.2,-anchoCalle/2,0],//[3,1,0],
       [-0.2,-anchoCalle/2,0],
-      [-0.2,-(anchoCalle/2)+(anchoCalle/8),0],//[2.5,1,0],
-      [-0.1,-(anchoCalle/2)+(anchoCalle/6),0],//[2,0.5,0],
-      [0.2,-(anchoCalle/2)+(anchoCalle/6),0],//[2,0.5,0],
       [0.2,-anchoCalle/2,0],//[3,1,0],
+      [0.2,-(anchoCalle/2)+(anchoCalle/6),0],//[2,0.5,0],
+      [-0.1,-(anchoCalle/2)+(anchoCalle/6),0],//[2,0.5,0],
+      [-0.2,-(anchoCalle/2)+(anchoCalle/8),0],//[2.5,1,0],
+      [-0.2,-anchoCalle/2,0]//[3,1,0],
     ];
 
   }

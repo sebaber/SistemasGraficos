@@ -1,9 +1,6 @@
-function Esfera(npoints,radio, x0, y0,z,texture_file) {
+function Esfera(npoints,radio,texture_file) {
 	this.npoints = npoints;
 	this.radio = radio;
-	this.x0 = x0;
-	this.y0 = y0;
-	this.z = z;
 	this.vertexOfProfile = this.getVertices();
 	var color = [0.2,0.1,0.1];
 	SuperficieDeRevolucion.call(this, this.vertexOfProfile,color);
@@ -14,8 +11,8 @@ function Esfera(npoints,radio, x0, y0,z,texture_file) {
 inheritPrototype(Esfera, SuperficieDeRevolucion);
 
 Esfera.prototype.getPosition = function(t) {
-	return [ this.radio * Math.cos( Math.PI * t - (Math.PI/2.0)) + this.x0,
-			this.radio * Math.sin( Math.PI * t - (Math.PI/2.0)) + this.z];
+	return [ this.radio * Math.cos( Math.PI * t - (Math.PI/2.0)),
+			this.radio * Math.sin( Math.PI * t - (Math.PI/2.0))];
 };
 
 Esfera.prototype.getVertices = function() {

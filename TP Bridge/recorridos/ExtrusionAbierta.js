@@ -31,7 +31,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
     var matrizTraslacion = mat4.create();
     mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
 
-    this.setPosicionVertices(matrizTraslacion,vertices,tangentes,normales,binormales,i);
+    this.setPosicionVertices(matrizTraslacion,matrizRotacion,vertices,tangentes,normales,binormales,i);
   }
 };
 

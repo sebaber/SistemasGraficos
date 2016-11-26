@@ -4,21 +4,6 @@
 function PerfilTorre(vertices) {
   this.vertices = vertices;
   this.npoints = this.vertices.length;
-  this.normalPoints = [
-    [1,-1,0],
-    [1,-1,0],
-    [1,-1,0],
-    [-1,-1,0],
-    [-1,-1,0],
-    [-1,-1,0],
-    [-1,1,0],
-    [-1,1,0],
-    [-1,2,0],
-    [1,1,0],
-    [1,1,0],
-    [1,1,0],
-    [1,-1,0]
-  ];
   var i;
   this.segmentos = [];
   this.normals = [];
