@@ -21,6 +21,16 @@ function ModeloAbierto(_rows, _cols) {
   this.normalMap = null;
   this.useNormalMap = false;
 
+  this.ra = 0.3;
+  this.ga = 0.3;
+  this.ba = 0.3;
+  this.rd = 1.0;
+  this.gd = 1.0;
+  this.bd = 1.0;
+  this.rs = 1.0;
+  this.gs = 1.0;
+  this.bs = 1.0;
+
   this._initBuffers();
 }
 
@@ -136,7 +146,29 @@ ModeloAbierto.prototype._setupWebGLBuffers = function(){
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
 };
 
+ModeloAbierto.prototype.setLightConfiguration = function(ra, ga, ba, rd, gd, bd, rs, gs, bs){
+  this.ra = ra;
+  this.ga = ga;
+  this.ba = ba;
+  this.rd = rd;
+  this.gd = gd;
+  this.bd = bd;
+  this.rs = rs;
+  this.gs = gs;
+  this.bs = bs;
+}
+
+ModeloAbierto.prototype.activateLightConfiguration = function(){
+
+  //gl.uniform1i(glProgram.useNormalMapUniform, cielo.useNormalMap);
+  //gl.uniform1i(glProgram.useReflectionMapUniform, cielo.useReflectionMap);
+  gl.uniform3f(glProgram.ambientColorUniform, this.ra, this.ga, this.ba );
+  gl.uniform3f(glProgram.directionalColorUniform, this.rd, this.gd, this.bd);
+  gl.uniform3f(glProgram.specularColorUniform, this.rs, this.gs, this.bs);
+}
+
 ModeloAbierto.prototype.draw = function(mvMatrix){
+  //  this.activateLightConfiguration();
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
 

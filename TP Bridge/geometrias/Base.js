@@ -15,6 +15,7 @@ Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     vec4.transformMat4(vertice,vertice,matrizTraslacion);
     if(j===0) vertice[0] = 0;
     if(j==vertices.length-1) vertice[0] = app.anchoCosta;
+
     // console.log(vertice);
     this.position_buffer.push(vertice[0]);
     this.position_buffer.push(vertice[1]);
@@ -23,8 +24,8 @@ Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     // console.log("NUEVO PUNTO DE LA BASE");
     // console.log("i: "+i/this.nlevels+" j: "+j/vertices.length);
     // console.log("");
-    this.texture_coord_buffer.push(i/this.nlevels);
-    this.texture_coord_buffer.push(j/vertices.length);
+    this.texture_coord_buffer.push(vertice[0]/app.anchoCosta);
+    this.texture_coord_buffer.push(vertice[1]/app.largoCosta);
 
     this.normal_buffer.push(0.0);
     this.normal_buffer.push(0.0);
