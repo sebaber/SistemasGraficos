@@ -16,6 +16,9 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
   this.texture_coord_buffer = [];
   var t,vertice;
   verticesInf = this.tapaInf.getVertices();
+  var normalesInf = this.tapaInf.getNormals();
+  var binormalesInf = this.tapaInf.getBinormals();
+  var tangentesInf = this.tapaInf.getTangentes();
 
   pos = this.curva.getPosition(0);
   matrizRotacion = Utils.getMatrizRotacion(this.curva.getTangente(0),this.curva.getNormal(0),this.curva.getBiNormal(0));
@@ -42,22 +45,24 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(0);
 
-    this.tangent_buffer.push(0.0);
-    this.tangent_buffer.push(1.0);
-    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(tangentesInf[j][0]);
+    this.tangent_buffer.push(tangentesInf[j][1]);
+    this.tangent_buffer.push(tangentesInf[j][2]);
 
-    this.binormal_buffer.push(-1.0);
-    this.binormal_buffer.push(0.0);
-    this.binormal_buffer.push(0.0);
-    
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(-1.0);
+    this.binormal_buffer.push(binormalesInf[j][0]);
+    this.binormal_buffer.push(binormalesInf[j][1]);
+    this.binormal_buffer.push(binormalesInf[j][2]);
+
+    this.normal_buffer.push(normalesInf[j][0]);
+    this.normal_buffer.push(normalesInf[j][1]);
+    this.normal_buffer.push(normalesInf[j][2]);
 
   }
 
   verticesSup = this.tapaSup.getVertices();
-
+  var normalesSup = this.tapaSup.getNormals();
+  var binormalesSup = this.tapaSup.getBinormals();
+  var tangentesSup = this.tapaSup.getTangentes();
   pos = this.curva.getPosition(1);
   matrizRotacion = Utils.getMatrizRotacion(this.curva.getTangente(1),this.curva.getNormal(1),this.curva.getBiNormal(1));
 
@@ -83,17 +88,17 @@ ExtrusionTapas.prototype._setPositionAndColorVertex = function(){
     this.texture_coord_buffer.push(j/verticesInf.length);
     this.texture_coord_buffer.push(1);
 
-    this.tangent_buffer.push(0.0);
-    this.tangent_buffer.push(1.0);
-    this.tangent_buffer.push(0.0);
+    this.tangent_buffer.push(tangentesSup[j][0]);
+    this.tangent_buffer.push(tangentesSup[j][1]);
+    this.tangent_buffer.push(tangentesSup[j][2]);
 
-    this.binormal_buffer.push(-1.0);
-    this.binormal_buffer.push(0.0);
-    this.binormal_buffer.push(0.0);
-    
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(-1.0);
+    this.binormal_buffer.push(binormalesSup[j][0]);
+    this.binormal_buffer.push(binormalesSup[j][1]);
+    this.binormal_buffer.push(binormalesSup[j][2]);
+
+    this.normal_buffer.push(normalesSup[j][0]);
+    this.normal_buffer.push(normalesSup[j][1]);
+    this.normal_buffer.push(normalesSup[j][2]);
 
   }
 
