@@ -29,8 +29,23 @@ function PerfilTerreno(anchoCosta,anchoRio,profundidad,u) {
   }
   this.vertices = [];
   this.vertices = this.createVertices();
+  this.normales = this.createNormales();
+  this.binormales = this.createBinormales();
+  this.tangentes = this.createTangentes();
   this.npoints = this.vertices.length;
 }
+
+PerfilTerreno.prototype.getNormals = function(){
+  return this.normales;
+};
+
+PerfilTerreno.prototype.getBinormals = function(){
+  return this.binormales;
+};
+
+PerfilTerreno.prototype.getTangentes = function(){
+  return this.tangentes;
+};
 
 PerfilTerreno.prototype.getPoints = function(){
 	return this.npoints;
@@ -42,6 +57,39 @@ PerfilTerreno.prototype.createVertices = function() {
   for (var t = 0; t <= 1; t+=this.u) {
     // vertices.push(this.splineCompleja.p(t));
     pos = this.splineCompleja.p(t);
+    vertices.push([pos[0],pos[2],pos[1]]);
+	}
+	return vertices;
+};
+
+PerfilTerreno.prototype.createNormales = function() {
+  var vertices = [];
+  var pos;
+  for (var t = 0; t <= 1; t+=this.u) {
+    // vertices.push(this.splineCompleja.p(t));
+    pos = this.splineCompleja.n(t);
+    vertices.push([pos[0],pos[2],pos[1]]);
+	}
+	return vertices;
+};
+
+PerfilTerreno.prototype.createBinormales = function() {
+  var vertices = [];
+  var pos;
+  for (var t = 0; t <= 1; t+=this.u) {
+    // vertices.push(this.splineCompleja.p(t));
+    pos = this.splineCompleja.bn(t);
+    vertices.push([pos[0],pos[2],pos[1]]);
+	}
+	return vertices;
+};
+
+PerfilTerreno.prototype.createTangentes = function() {
+  var vertices = [];
+  var pos;
+  for (var t = 0; t <= 1; t+=this.u) {
+    // vertices.push(this.splineCompleja.p(t));
+    pos = this.splineCompleja.t(t);
     vertices.push([pos[0],pos[2],pos[1]]);
 	}
 	return vertices;

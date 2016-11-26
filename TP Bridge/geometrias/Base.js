@@ -6,7 +6,7 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
 
 inheritPrototype(Base, ExtrusionAbierta);
 
-Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
+Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,tangentes,normales,binormales,i){
 
   for (var j = 0.0; j < vertices.length; j++) {
 
@@ -27,17 +27,17 @@ Base.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     this.texture_coord_buffer.push(vertice[0]/app.anchoCosta);
     this.texture_coord_buffer.push(vertice[1]/app.largoCosta);
 
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(0.0);
-    this.normal_buffer.push(-1.0);
+    this.tangent_buffer.push(tangentes[j][0]);
+  this.tangent_buffer.push(tangentes[j][1]);
+  this.tangent_buffer.push(tangentes[j][2]);
 
-    this.tangent_buffer.push(1.0);
-    this.tangent_buffer.push(0.0);
-    this.tangent_buffer.push(0.0);
+  this.binormal_buffer.push(binormales[j][0]);
+  this.binormal_buffer.push(binormales[j][1]);
+  this.binormal_buffer.push(binormales[j][2]);
 
-    this.binormal_buffer.push(0.0);
-    this.binormal_buffer.push(-1.0);
-    this.binormal_buffer.push(0.0);
+  this.normal_buffer.push(normales[j][0]);
+  this.normal_buffer.push(normales[j][1]);
+  this.normal_buffer.push(normales[j][2]);
 
   }
 };

@@ -15,6 +15,9 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
   this.texture_coord_buffer = [];
   var t;
   vertices = this.forma.getVertices();
+  var normales = this.forma.getNormals();
+  var binormales = this.forma.getBinormals();
+  var tangentes = this.forma.getTangentes();
 
   for (var i = 0.0; i < this.nlevels; i++) {
     t = i/(this.nlevels-1);
@@ -28,7 +31,7 @@ ExtrusionAbierta.prototype._setPositionAndColorVertex = function(){
     var matrizTraslacion = mat4.create();
     mat4.translate(matrizTraslacion,matrizTraslacion,pos4);
 
-    this.setPosicionVertices(matrizTraslacion,vertices,i);
+    this.setPosicionVertices(matrizTraslacion,vertices,tangentes,normales,binormales,i);
   }
 };
 
