@@ -438,15 +438,24 @@ function makeShader(src, type)
 
 function setupBuffers()
 {
-  // viga = new Viga(new BezierCubica([-1,0,0],[0,2,0],[1,2,0],[2,0,0]),0.5,12,10);
+  // ///////////////////////////////////////////////////
+  // Configuración de la luz
+  // Se inicializan las variables asociadas con la Iluminación
+  var lighting;
+  lighting = true;
+  gl.uniform1i(glProgram.useLightingUniform, lighting);
+  gl.uniform1i(glProgram.useNormalMapUniform, false);
+  gl.uniform1i(glProgram.useReflectionMapUniform, false);
+  // var lightPosition = [0.0, 0.0, 0.0];
+  // var lightPosition = [0,0,1000000000];
+  var lightPosition = [ 727503182, 50135369, 142622255 ]; // donde esta el sol
+  // en la textura
+  // mat4.multiplyVec3(CameraMatrix, lightPosition);
+  gl.uniform3fv(glProgram.lightingDirectionUniform, lightPosition); // uniform:
+  ///////////////////////////////////////////////////////
+
   modelo = new ModeloComplejo();
-  // viga.setPosition(0,0,-10);
-  // viga.rotateY(Math.PI/2);
-  // arbol = new ArbolRandom();
-  // cilindro = new CilindroCerrado(new Segmento([0,0,0],[3,2,0]),0.5,12,10);
-  // cilindro.setPosition(7,0,-10);
-  // torre = new Torre(new Segmento([0,0,0],[3,2,0]),10);
-  // torre.setPosition(3,0,-10);
+
   var anchoCosta = app.anchoCosta;
   var largoCosta = app.largoCosta;
   var anchoRio = app.anchoRio;

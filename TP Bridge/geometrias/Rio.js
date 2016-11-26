@@ -19,8 +19,8 @@ Rio.prototype.setPosicionVertices= function(matrizTraslacion,vertices,i){
     this.position_buffer.push(vertice[1]);
     this.position_buffer.push(vertice[2]);
 
-    this.texture_coord_buffer.push(i/this.nlevels);
-    this.texture_coord_buffer.push(j/vertices.length);
+    this.texture_coord_buffer.push(vertice[0]/app.anchoCosta);
+    this.texture_coord_buffer.push(vertice[1]/app.largoCosta);
 
     this.tangent_buffer.push(0.0);
     this.tangent_buffer.push(-1.0);
