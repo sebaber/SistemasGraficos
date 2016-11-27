@@ -173,7 +173,6 @@ void main(void) {
   vec4 textureColor;
   if(uUseMezclaMap){
 
-    // float porcentaje = textureMezcla.g / 255.0;
     if(vVertexPosition.y > -0.1){
       textureColor = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
     }else if(vVertexPosition.y > -0.3){
@@ -181,12 +180,6 @@ void main(void) {
         vec4 textureColor2 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
         vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         textureColor = mix(textureColor1, textureColor2, textureColor3.g);
-    // }else if(vVertexPosition.y > -0.4){
-    //
-    //     vec4 textureColor1 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
-    //     vec4 textureColor2 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
-    //     vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-    //     textureColor = mix(textureColor2, textureColor1, textureColor3.g);
     }else if(vVertexPosition.y > -0.5){
       vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
         vec4 textureColor1 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
@@ -241,14 +234,15 @@ void main(void) {
     }
   }
 
-
-  if(uUseNormalMap){
-    gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-
-  } else {
-    //gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-    gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-  }
+  gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+  // 
+  // if(uUseNormalMap){
+  //   gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+  //
+  // } else {
+  //   //gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  //   gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+  // }
 
 }
 </script>
