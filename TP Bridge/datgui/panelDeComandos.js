@@ -12,28 +12,23 @@ var app={
 	dibujarTodosLosPuntos:function(){
 		cargarSegundoCanvas();
 	},
-
+	velocidad: 0.035,
 	agregarPuntos:true,
-//terreno = new Terreno(12,12,5,4,4,0.2)
-//Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
 	profundidad:0.8,
-	anchoCosta: 20.0,
-	largoCosta: 14.0,
+	anchoCosta: 60.0,
+	largoCosta: 60.0,
 	anchoRio: 3.0,
 	anchoCalle: 4,
 	ph1:0.4,
 	ph2:1,
 	ph3:3,
-	yCalle: 6,
+	yCalle: 30,
 	nroTorres: 4,
 	sepTensor: 0.2,
 //Inicializacion del target de la camara
 	targetX: 0,
 	targetY: 0,
-	cantArboles: 2,
-//  var h1=1.5;
-//  var h2=1;
-//  var h3=0.5;
+	cantArboles: 5,
 	alturaTorre1: 1.5,
   	alturaTorre2: 1.0,
   	alturaTorre3: 0.5
@@ -42,8 +37,6 @@ var app={
 configCamaraTargets();
 
 function configCamaraTargets (){
-	//x = anchoCosta * 2 + anchoDelRio
-	//y = largoCosta
 	app.targetX = (app.anchoCosta) / 2;
 	app.targetY = (app.largoCosta) / 2;
 	cameraTarget =[app.targetX, 0.0 , -app.targetY]; // [0.0, 0.0 , 0.0];
@@ -63,10 +56,11 @@ function GUI (){
 		// f2.add(app,'anchoCosta',5,50).name("Ancho Costa");
 		// f2.add(app,'largoCosta',5,50).name("Largo Costa");
 		// f2.add(app,'anchoCalle',2,8).name("Ancho Calles");
-		f2.add(app,'yCalle',2,10).name("Posicion Calle").step(1.0);
-		f2.add(app,'cantArboles',0,10).name("Cantidad Arboles").step(1.0);
+		f2.add(app,'yCalle',5,55).name("Posicion Calle").step(1.0);
+		f2.add(app,'cantArboles',0,20).name("Cantidad Arboles").step(1.0);
 		f2.add(app,'nroTorres',2,4).name("Numero Torres").step(1.0);
 		f2.add(app,'sepTensor',0.05,1).name("Separacion Tensores").step(0.05);
+		f2.add(app,'velocidad',0.005, 0.1).name("Velocidad Movimiento").step(0.005);
 		// f2.add(app,'alturaTorre1',0.1,2.0).name("Alturta Torre 1").step(0.1);
 		// f2.add(app,'alturaTorre2',0.1,2.0).name("Alturta Torre 2").step(0.1);
 		// f2.add(app,'alturaTorre3',0.1,2.0).name("Alturta Torre 3").step(0.1);

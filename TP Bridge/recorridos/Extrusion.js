@@ -66,7 +66,7 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
   		// this.binormal_buffer.push(-1.0);
   		// this.binormal_buffer.push(0.0);
 
-      this.tangent_buffer.push(tangente[0]);
+    this.tangent_buffer.push(tangente[0]);
     this.tangent_buffer.push(tangente[1]);
     this.tangent_buffer.push(tangente[2]);
 
@@ -78,7 +78,12 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
     this.normal_buffer.push(normal[1]);
     this.normal_buffer.push(normal[2]);
 
-      this.setTextureBuffer(i/this.nlevels,j/vertices.length);
+    var n = i;
+    while (n >= 3.0){
+      n -= 3.0;
+    }  
+    cantParaDibujar = 3;
+    this.setTextureBuffer(n/cantParaDibujar,j/vertices.length);
 
     }
   }

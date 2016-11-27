@@ -535,8 +535,8 @@ function initShaders()
 
                                           modelo.agregarModelo(terreno);
 
-                                          cielo = new Esfera(10,30,"sky_lightblue.jpg");
-                                          cielo.translate(0.0,-10,0.0);
+                                          cielo = new Esfera(10,27,"sky_lightblue.jpg");
+                                          cielo.translate(app.largoCosta/2,-10,-app.anchoCosta/2);
                                           cielo.setLightConfiguration(1.0, 1.0, 1.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
                                           modelo.agregarModelo(cielo);
 

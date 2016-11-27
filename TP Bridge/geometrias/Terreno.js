@@ -39,28 +39,28 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
   var calleIzq = new Calle(
     new Segmento([0,0,-yCalle],[xCostaIzq,0,-yCalle]),
     anchoCalle,
-    10
+    20
   );
   var veredaDerIzq = new Vereda(new Segmento([0,0,-yCalle],[xCostaIzq,0,-yCalle]),
     anchoCalle,
-    10,
+    20,
     0);
   var veredaDerDer = new Vereda(new Segmento([0,0,-yCalle],[xCostaIzq,0,-yCalle]),
     anchoCalle,
-    10,
+    20,
     1);
   var calleDer = new Calle(
     new Segmento([xCostaDer,0,-yCalle],[anchoCosta,0,-yCalle]),
     anchoCalle,
-    10
+    20
   );
   var veredaIzqIzq = new Vereda(new Segmento([xCostaDer,0,-yCalle],[anchoCosta,0,-yCalle]),
     anchoCalle,
-    10,
+    20,
     0);
   var veredaIzqDer = new Vereda(new Segmento([xCostaDer,0,-yCalle],[anchoCosta,0,-yCalle]),
     anchoCalle,
-    10,
+    20,
     1);
   this.agregarModelo(veredaDerIzq);
   this.agregarModelo(veredaDerDer);
@@ -310,8 +310,8 @@ Terreno.prototype.agregarArboles = function(cantArboles,anchoCalle,yCalle) {
     hayColisionConOtroArbol = true;
     while (hayColisionConOtroArbol){
       //PRIMERA COSTA
-      x = Utils.getRandomBetweenMaxMin(2,(this.anchoCosta)/2.0-this.anchoRio);
-      z = -Utils.getRandomBetweenTwoMaxMin(2,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-1);
+      x = Utils.getRandomBetweenMaxMin(10,(this.anchoCosta)/2.0-this.anchoRio - 10);
+      z = -Utils.getRandomBetweenTwoMaxMin(10,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-10);
       hayColisionConOtroArbol = this.huboColisionArboles(x,z,posicionesAnterioresCostaIzquierda,arbol);
     }
     posicionesAnterioresCostaIzquierda.push([x,z]);
@@ -326,7 +326,7 @@ Terreno.prototype.agregarArboles = function(cantArboles,anchoCalle,yCalle) {
     while (hayColisionConOtroArbol){
       //SEGUNDA COSTA
       x = Utils.getRandomBetweenMaxMin((this.anchoCosta)/2.0+this.anchoRio,this.anchoCosta);
-      z = -Utils.getRandomBetweenTwoMaxMin(2,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-1);
+      z = -Utils.getRandomBetweenTwoMaxMin(10,(yCalle-anchoCalle),(yCalle+anchoCalle),this.largoCosta-10);
       hayColisionConOtroArbol = this.huboColisionArboles(x,z,posicionesAnterioresCostaDerecha,arbol);
     }
     posicionesAnterioresCostaDerecha.push([x,z]);

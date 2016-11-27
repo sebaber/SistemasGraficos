@@ -27,7 +27,7 @@ var teclaRotarArribaActiva = false;
 var xRotGlobal = 0.0;
 var yRotGlobal = Math.PI * 0.5;
 var zPosGlobal = -0.75;
-var xPosGlobal = 0.0;
+var xPosGlobal = -app.largoCosta*0.3;
 var yPosGlobal = app.largoCosta/2;
 
 
@@ -222,22 +222,22 @@ function moverCamaraHombre(pMatrix){
 	mat4.rotate(pMatrix, pMatrix, xRotGlobal, [Math.cos(yRotGlobal), 0, Math.sin(yRotGlobal)]);
 
 	if (teclaArribaActiva){
-		yPos += 0.025;
+		yPos += app.velocidad;
 	}
 	if (teclaAbajoActiva) {
-		yPos -= 0.025;
+		yPos -= app.velocidad;
 	}
 	if (teclaDerechaActiva){
-		xPos += 0.025;
+		xPos += app.velocidad;
 	}
 	if (teclaIzquierdaActiva){
-		xPos -= 0.025;
+		xPos -= app.velocidad;
 	}
 	if (teclaSubirActiva){
-		zPos -= 0.025;
+		zPos -= app.velocidad;
 	}
 	if (teclaBajarActiva){
-		zPos += 0.025;
+		zPos += app.velocidad;
 	}
 
 	var angulo = yRotGlobal * -1;
