@@ -3,6 +3,8 @@ function ModeloAbierto(_rows, _cols) {
   this.cols = _cols;
   this.rows = _rows;
   this.texture = null;
+  this.texture2 = null;
+  this.texture3 = null;
 
   this.index_buffer = null;
   this.position_buffer = null;
@@ -20,6 +22,9 @@ function ModeloAbierto(_rows, _cols) {
 
   this.normalMap = null;
   this.useNormalMap = false;
+
+  this.mezcla = null;
+  this.useMezcla = false;
 
   this.ra = 0.3;
   this.ga = 0.3;
@@ -68,6 +73,46 @@ ModeloAbierto.prototype.initNormalMap = function(normal_file) {
 		handleLoadedTexture(tex, im);
 	};
 	this.normalMap.image.src = "./assets/" + normal_file;
+};
+
+ModeloAbierto.prototype.initTexture2 = function(normal_file) {
+	var aux_texture = gl.createTexture();
+	this.texture2 = aux_texture;
+	this.texture2.image = new Image();
+
+	var tex = this.texture2;
+	var im = tex.image;
+	this.texture2.image.onload = function() {
+		handleLoadedTexture(tex, im);
+	};
+	this.texture2.image.src = "./assets/" + normal_file;
+};
+
+ModeloAbierto.prototype.initTexture3 = function(normal_file) {
+	var aux_texture = gl.createTexture();
+	this.texture3 = aux_texture;
+	this.texture3.image = new Image();
+
+	var tex = this.texture3;
+	var im = tex.image;
+	this.texture3.image.onload = function() {
+		handleLoadedTexture(tex, im);
+	};
+	this.texture3.image.src = "./assets/" + normal_file;
+};
+
+ModeloAbierto.prototype.initMezcla = function(normal_file) {
+	this.useMezcla = true;
+	var aux_texture = gl.createTexture();
+	this.mezcla = aux_texture;
+	this.mezcla.image = new Image();
+
+	var tex = this.mezcla;
+	var im = tex.image;
+	this.mezcla.image.onload = function() {
+		handleLoadedTexture(tex, im);
+	};
+	this.mezcla.image.src = "./assets/" + normal_file;
 };
 
 function handleLoadedTexture(tex, im) {
@@ -172,6 +217,8 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
 
+  gl.uniform1i(glProgram.useMezclaMapUniform, this.useMezcla);
+
   gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
   gl.vertexAttribPointer(glProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
@@ -191,6 +238,22 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
   gl.bindTexture(gl.TEXTURE_2D, this.texture);
   gl.uniform1i(gl.getUniformLocation(glProgram, "uTextureSampler"), 0);
 
+  gl.activeTexture(gl.TEXTURE1);
+  gl.bindTexture(gl.TEXTURE_2D, this.normalMap);
+  gl.uniform1i(glProgram.normalSamplerUniform, 1);
+
+  gl.activeTexture(gl.TEXTURE2);
+  gl.bindTexture(gl.TEXTURE_2D, this.texture2);
+  gl.uniform1i(glProgram.texture2Uniform, 2);
+
+  gl.activeTexture(gl.TEXTURE3);
+  gl.bindTexture(gl.TEXTURE_2D, this.texture3);
+  gl.uniform1i(glProgram.texture3Uniform, 3);
+
+  gl.activeTexture(gl.TEXTURE4);
+  gl.bindTexture(gl.TEXTURE_2D, this.mezcla);
+  gl.uniform1i(glProgram.mezclaSamplerUniform,4);
+
   this.applyTransformationMatrix(mvMatrix,false);
 
   gl.uniformMatrix4fv(glProgram.ModelMatrixUniform, false, this.getObjectMatrix());
@@ -199,9 +262,6 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
 	mat3.normalFromMat4(normalMatrix,this.getObjectMatrix());
 	gl.uniformMatrix3fv(glProgram.nMatrixUniform, false, normalMatrix);
 
-	gl.activeTexture(gl.TEXTURE1);
-	gl.bindTexture(gl.TEXTURE_2D, this.normalMap);
-	gl.uniform1i(glProgram.normalSamplerUniform, 1);
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 

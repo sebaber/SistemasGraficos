@@ -2,6 +2,10 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   ExtrusionAbierta.call(this,curva, new PerfilTerreno(anchoCosta,anchoRio,profundidad,0.1),nlevels);
 
   this.initTexture("tierra1.jpg");
+  this.initNormalMap("rocas2-normalmap.jpg");
+  this.initTexture2("pasto1.jpg");
+  this.initTexture3("rocas2.jpg");
+  this.initMezcla("mezcla2.jpg");
 }
 
 inheritPrototype(Base, ExtrusionAbierta);

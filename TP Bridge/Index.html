@@ -122,9 +122,13 @@ precision mediump float;
 
 // Samplers y si estan activados o no
 uniform sampler2D uTextureSampler;
+uniform sampler2D uTexture2;
+uniform sampler2D uTexture3;
+uniform sampler2D uMezclaSampler;
 uniform sampler2D uNormalSampler;
 
 uniform bool uUseNormalMap;
+uniform bool uUseMezclaMap;
 
 varying vec2 vTextureCoord;
 varying vec3 vVertexPosition;
@@ -161,17 +165,44 @@ void main(void) {
   //CAMBIADO!!
   vec3 viewVec = normalize( uCameraPos - vVertexPosition );
 
+
   vec4 reflectionColor = vec4(0.0, 0.0, 0.0, 0.0);
   // gl_FragColor es una variable "built-in" de GLSL que es usada para
   // almacenar el color resultante del fragmento.
   //gl_FragColor = vColor;
-  vec4 textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  vec4 textureColor;
+  if(uUseMezclaMap){
+
+    // float porcentaje = textureMezcla.g / 255.0;
+    if(vVertexPosition.y > -0.1){
+      textureColor = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
+    }else if(vVertexPosition.y > -0.3){
+        vec4 textureColor1 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec4 textureColor2 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        textureColor = mix(textureColor1, textureColor2, textureColor3.g);
+    // }else if(vVertexPosition.y > -0.4){
+    //
+    //     vec4 textureColor1 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
+    //     vec4 textureColor2 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
+    //     vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    //     textureColor = mix(textureColor2, textureColor1, textureColor3.g);
+    }else if(vVertexPosition.y > -0.5){
+      vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec4 textureColor1 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec4 textureColor2;
+        if(textureColor3.g <0.5) textureColor2 = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        else textureColor2 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
+        textureColor = mix(textureColor2, textureColor1, textureColor3.g);
+    }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+
   vec3 transformedNormal = vVertexNormal;
   vec3 transformedBinormal = vVertexBinormal;
   vec3 tranformedTangent = vVertexTangent;
 
   /** Luces **/
-if(uUseNormalMap){
+  if(uUseNormalMap){
     vec3 rgbNormal = normalize(texture2D(uNormalSampler, vec2(vTextureCoord.s, vTextureCoord.t)).rgb);
     float factorT = 2.0 * rgbNormal[0] - 1.0;
     float factorB = 2.0 * rgbNormal[1] - 1.0;
@@ -196,7 +227,7 @@ if(uUseNormalMap){
       lightWeighting = uAmbientColor ;
     }
     else
-      {
+    {
       if(uLightDirectional)
       {
         lightWeighting = uDirectionalColor * directionalLightWeighting ;
@@ -349,180 +380,185 @@ function initShaders()
   gl.useProgram(glProgram);
 
   glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram,
-		"aVertexPosition");
-	gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
+    "aVertexPosition");
+    gl.enableVertexAttribArray(glProgram.vertexPositionAttribute);
 
-	glProgram.vertexNormalAttribute = gl.getAttribLocation(glProgram,
-		"aVertexNormal");
-	gl.enableVertexAttribArray(glProgram.vertexNormalAttribute);
+    glProgram.vertexNormalAttribute = gl.getAttribLocation(glProgram,
+      "aVertexNormal");
+      gl.enableVertexAttribArray(glProgram.vertexNormalAttribute);
 
-	glProgram.textureCoordAttribute = gl.getAttribLocation(glProgram,
-		"aTextureCoord");
-	gl.enableVertexAttribArray(glProgram.textureCoordAttribute);
+      glProgram.textureCoordAttribute = gl.getAttribLocation(glProgram,
+        "aTextureCoord");
+        gl.enableVertexAttribArray(glProgram.textureCoordAttribute);
 
-	glProgram.vertexBinormalAttribute = gl.getAttribLocation(glProgram,
-		"aVertexBinormal");
-	// console.log("RETURN VALUE: " + glProgram.vertexBinormalAttribute);
-	gl.enableVertexAttribArray(glProgram.vertexBinormalAttribute);
+        glProgram.vertexBinormalAttribute = gl.getAttribLocation(glProgram,
+          "aVertexBinormal");
+          // console.log("RETURN VALUE: " + glProgram.vertexBinormalAttribute);
+          gl.enableVertexAttribArray(glProgram.vertexBinormalAttribute);
 
-	glProgram.vertexTangentAttribute = gl.getAttribLocation(glProgram,
-		"aVertexTangent");
-	// console.log("RETURN VALUE: " + glProgram.vertexTangentAttribute);
-	gl.enableVertexAttribArray(glProgram.vertexTangentAttribute);
+          glProgram.vertexTangentAttribute = gl.getAttribLocation(glProgram,
+            "aVertexTangent");
+            // console.log("RETURN VALUE: " + glProgram.vertexTangentAttribute);
+            gl.enableVertexAttribArray(glProgram.vertexTangentAttribute);
 
-	glProgram.pMatrixUniform = gl.getUniformLocation(glProgram,
-		"uPMatrix");
-	// glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,
-	// 	"uViewMatrix");
-	glProgram.ModelMatrixUniform = gl.getUniformLocation(glProgram,
-		"uModelMatrix");
-	glProgram.nMatrixUniform = gl.getUniformLocation(glProgram,
-		"uNMatrix");
-	glProgram.textureSamplerUniform = gl.getUniformLocation(glProgram,
-		"uTextureSampler");
-	glProgram.normalSamplerUniform = gl.getUniformLocation(glProgram,
-		"uNormalSampler");
-	// glProgram.reflectionSamplerUniform = gl.getUniformLocation(
-	// 	glProgram, "uReflectionSampler");
-	glProgram.useNormalMapUniform = gl.getUniformLocation(glProgram,
-		"uUseNormalMap");
+            glProgram.pMatrixUniform = gl.getUniformLocation(glProgram,
+              "uPMatrix");
+              // glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,
+              // 	"uViewMatrix");
+              glProgram.ModelMatrixUniform = gl.getUniformLocation(glProgram,
+                "uModelMatrix");
+                glProgram.nMatrixUniform = gl.getUniformLocation(glProgram,
+                  "uNMatrix");
+                  glProgram.textureSamplerUniform = gl.getUniformLocation(glProgram,
+                    "uTextureSampler");
+                    glProgram.texture2Uniform = gl.getUniformLocation(glProgram,"uTexture2");
+                    glProgram.texture3Uniform = gl.getUniformLocation(glProgram,"uTexture3");
+                    glProgram.mezclaSamplerUniform = gl.getUniformLocation(glProgram,"uMezclaSampler");
+                    glProgram.normalSamplerUniform = gl.getUniformLocation(glProgram,"uNormalSampler");
+                    // glProgram.reflectionSamplerUniform = gl.getUniformLocation(
+                    // 	glProgram, "uReflectionSampler");
+                    glProgram.useNormalMapUniform = gl.getUniformLocation(glProgram,
+                      "uUseNormalMap");
 
-  // glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,"uViewMatrix");
+                      glProgram.useMezclaMapUniform = gl.getUniformLocation(glProgram,
+                        "uUseMezclaMap");
 
-  glProgram.ambientColorUniform = gl.getUniformLocation(glProgram,
-    "uAmbientColor");
-  glProgram.lightingDirectionUniform = gl.getUniformLocation(
-    glProgram, "uLightPosition");
-  glProgram.directionalColorUniform = gl.getUniformLocation(
-    glProgram, "uDirectionalColor");
-  glProgram.specularColorUniform = gl.getUniformLocation(glProgram,
-    "uSpecularColor");
+                        // glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,"uViewMatrix");
 
-  glProgram.lightAmbientalUniform = gl.getUniformLocation(glProgram,
-    "uLightAmbiental");
-  glProgram.lightDirectionalUniform = gl.getUniformLocation(
-    glProgram, "uLightDirectional");
-  glProgram.lightSpecularUniform = gl.getUniformLocation(glProgram,
-    "uLightSpecular");
-  glProgram.lightTotalUniform = gl.getUniformLocation(glProgram,
-    "uLightTotal");
+                        glProgram.ambientColorUniform = gl.getUniformLocation(glProgram,
+                          "uAmbientColor");
+                          glProgram.lightingDirectionUniform = gl.getUniformLocation(
+                            glProgram, "uLightPosition");
+                            glProgram.directionalColorUniform = gl.getUniformLocation(
+                              glProgram, "uDirectionalColor");
+                              glProgram.specularColorUniform = gl.getUniformLocation(glProgram,
+                                "uSpecularColor");
 
-  //Actualiza variables de luces
-  gl.uniform1i(glProgram.lightAmbientalUniform, ambientalLightActive);
-  gl.uniform1i(glProgram.lightDirectionalUniform, directionalLightActive);
-  gl.uniform1i(glProgram.lightSpecularUniform, specularLightActive);
-  gl.uniform1i(glProgram.lightTotalUniform, allLightActive);
-}
+                                glProgram.lightAmbientalUniform = gl.getUniformLocation(glProgram,
+                                  "uLightAmbiental");
+                                  glProgram.lightDirectionalUniform = gl.getUniformLocation(
+                                    glProgram, "uLightDirectional");
+                                    glProgram.lightSpecularUniform = gl.getUniformLocation(glProgram,
+                                      "uLightSpecular");
+                                      glProgram.lightTotalUniform = gl.getUniformLocation(glProgram,
+                                        "uLightTotal");
 
-/**
- * SWITCH DE TIPOS DE LUCES ACTIVAS
- */
+                                        //Actualiza variables de luces
+                                        gl.uniform1i(glProgram.lightAmbientalUniform, ambientalLightActive);
+                                        gl.uniform1i(glProgram.lightDirectionalUniform, directionalLightActive);
+                                        gl.uniform1i(glProgram.lightSpecularUniform, specularLightActive);
+                                        gl.uniform1i(glProgram.lightTotalUniform, allLightActive);
+                                      }
 
-var ambientalLightActive = false;
-var directionalLightActive = false;
-var specularLightActive = false;
-var allLightActive = true;
+                                      /**
+                                      * SWITCH DE TIPOS DE LUCES ACTIVAS
+                                      */
 
-function makeShader(src, type)
-{
-  //compile the vertex shader
-  var shader = gl.createShader(type);
-  gl.shaderSource(shader, src);
-  gl.compileShader(shader);
+                                      var ambientalLightActive = false;
+                                      var directionalLightActive = false;
+                                      var specularLightActive = false;
+                                      var allLightActive = true;
 
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
-  }
-  return shader;
-}
+                                      function makeShader(src, type)
+                                      {
+                                        //compile the vertex shader
+                                        var shader = gl.createShader(type);
+                                        gl.shaderSource(shader, src);
+                                        gl.compileShader(shader);
 
-function setupBuffers()
-{
-  // ///////////////////////////////////////////////////
-  // Configuración de la luz
-  // Se inicializan las variables asociadas con la Iluminación
-  var lighting;
-  lighting = true;
-  gl.uniform1i(glProgram.useLightingUniform, lighting);
-  gl.uniform1i(glProgram.useNormalMapUniform, false);
-  gl.uniform1i(glProgram.useReflectionMapUniform, false);
-  // var lightPosition = [0.0, 0.0, 0.0];
-  // var lightPosition = [0,0,1000000000];
-  var lightPosition = [ 727503182, 50135369, 142622255 ]; // donde esta el sol
-  // en la textura
-  // mat4.multiplyVec3(CameraMatrix, lightPosition);
-  gl.uniform3fv(glProgram.lightingDirectionUniform, lightPosition); // uniform:
-  ///////////////////////////////////////////////////////
+                                        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                                          alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+                                        }
+                                        return shader;
+                                      }
 
-  modelo = new ModeloComplejo();
+                                      function setupBuffers()
+                                      {
+                                        // ///////////////////////////////////////////////////
+                                        // Configuración de la luz
+                                        // Se inicializan las variables asociadas con la Iluminación
+                                        var lighting;
+                                        lighting = true;
+                                        gl.uniform1i(glProgram.useLightingUniform, lighting);
+                                        gl.uniform1i(glProgram.useNormalMapUniform, false);
+                                        gl.uniform1i(glProgram.useReflectionMapUniform, false);
+                                        // var lightPosition = [0.0, 0.0, 0.0];
+                                        // var lightPosition = [0,0,1000000000];
+                                        var lightPosition = [ 727503182, 50135369, 142622255 ]; // donde esta el sol
+                                        // en la textura
+                                        // mat4.multiplyVec3(CameraMatrix, lightPosition);
+                                        gl.uniform3fv(glProgram.lightingDirectionUniform, lightPosition); // uniform:
+                                        ///////////////////////////////////////////////////////
 
-  var anchoCosta = app.anchoCosta;
-  var largoCosta = app.largoCosta;
-  var anchoRio = app.anchoRio;
-  var anchoCalle = app.anchoCalle;
-  var nroTorres = app.nroTorres;
-  var sepTensor = app.sepTensor;
-  var alturaTorre1 = app.alturaTorre1;
-  var alturaTorre2 = app.alturaTorre2;
-  var alturaTorre3 = app.alturaTorre3;
-  var yCalle = app.yCalle;
-  var cantArboles = app.cantArboles;
-  var ph1 = app.ph1;
-  var ph2 = app.ph2;
-  var ph3 = app.ph3;
-  var profundidad = app.profundidad;
+                                        modelo = new ModeloComplejo();
 
-  terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
-    alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3,profundidad,cantArboles);
+                                        var anchoCosta = app.anchoCosta;
+                                        var largoCosta = app.largoCosta;
+                                        var anchoRio = app.anchoRio;
+                                        var anchoCalle = app.anchoCalle;
+                                        var nroTorres = app.nroTorres;
+                                        var sepTensor = app.sepTensor;
+                                        var alturaTorre1 = app.alturaTorre1;
+                                        var alturaTorre2 = app.alturaTorre2;
+                                        var alturaTorre3 = app.alturaTorre3;
+                                        var yCalle = app.yCalle;
+                                        var cantArboles = app.cantArboles;
+                                        var ph1 = app.ph1;
+                                        var ph2 = app.ph2;
+                                        var ph3 = app.ph3;
+                                        var profundidad = app.profundidad;
 
-    modelo.agregarModelo(terreno);
+                                        terreno = new Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,
+                                          alturaTorre1,alturaTorre2,alturaTorre3,yCalle,ph1,ph2,ph3,profundidad,cantArboles);
 
-    cielo = new Esfera(10,30,"sky_lightblue.jpg");
-    cielo.translate(0.0,-10,0.0);
-    cielo.setLightConfiguration(1.0, 1.0, 1.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
-    modelo.agregarModelo(cielo);
+                                          modelo.agregarModelo(terreno);
 
-  }
+                                          cielo = new Esfera(10,30,"sky_lightblue.jpg");
+                                          cielo.translate(0.0,-10,0.0);
+                                          cielo.setLightConfiguration(1.0, 1.0, 1.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
+                                          modelo.agregarModelo(cielo);
 
-  function drawScene()
-  {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                                        }
 
-    configCamara();
+                                        function drawScene()
+                                        {
+                                          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+                                          configCamara();
 
 
-    // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uModelMatrix");
-    // Preparamos una matriz de modelo+vista.
-    mat4.identity(mvMatrix);
-    /*  if(i<=100){
-    //mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
-  }else{
-  //mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
-  if(i==200) i=0;
-}
-i++;
-*/
-// mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
-// t = t + 0.01;
+                                          // var u_model_view_matrix = gl.getUniformLocation(glProgram, "uModelMatrix");
+                                          // Preparamos una matriz de modelo+vista.
+                                          mat4.identity(mvMatrix);
+                                          /*  if(i<=100){
+                                          //mat4.translate(mvMatrix, mvMatrix, [0.01, 0.0, 0.0]);
+                                        }else{
+                                        //mat4.translate(mvMatrix, mvMatrix, [-0.01, 0.0, 0.0]);
+                                        if(i==200) i=0;
+                                      }
+                                      i++;
+                                      */
+                                      // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
+                                      // t = t + 0.01;
 
-// gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
-modelo.draw(mvMatrix);
-}
+                                      // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
+                                      modelo.draw(mvMatrix);
+                                    }
 
-</script>
-</head>
-<body id="body" onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)" onmousemove="mouseMove(event)"
-onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)" >
-<center>
-  <h1 style="margin-top: 0px;margin-bottom: 0px">Sistemas Gr&aacute;ficos - 66.71</h1>
-  <h2 style="margin-top: 0px;margin-bottom: 0px">Trabajo pr&aacute;ctico puente - Araya - Vicario</h2>
-  <canvas id="myCanvas" name="myCanvas" width="900" height="500">
-    Your browser does not support the HTML5 canvas element.
-  </canvas>
-  <script type="text/javascript"> GUI(); </script>
-  <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
-    Your browser does not support the HTML5 canvas element.
-  </canvas>
-</center>
-</body>
-</html>
+                                    </script>
+                                  </head>
+                                  <body id="body" onload="initWebGL()" onkeydown="keyPressDownEvent(event)" onkeyup="keyPressUpEvent(event)" onmousemove="mouseMove(event)"
+                                  onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" onwheel="mouseWheel(event)" >
+                                  <center>
+                                    <h1 style="margin-top: 0px;margin-bottom: 0px">Sistemas Gr&aacute;ficos - 66.71</h1>
+                                    <h2 style="margin-top: 0px;margin-bottom: 0px">Trabajo pr&aacute;ctico puente - Araya - Vicario</h2>
+                                    <canvas id="myCanvas" name="myCanvas" width="900" height="500">
+                                      Your browser does not support the HTML5 canvas element.
+                                    </canvas>
+                                    <script type="text/javascript"> GUI(); </script>
+                                    <canvas width="200" height="200" id="perfilDelRioCanvas" style="border:1px solid #d3d3d3;">
+                                      Your browser does not support the HTML5 canvas element.
+                                    </canvas>
+                                  </center>
+                                </body>
+                                </html>

@@ -70,6 +70,8 @@ Modelo.prototype.initNormalMap = function(normal_file) {
 	this.normalMap.image.src = "./assets/" + normal_file;
 };
 
+
+
 function handleLoadedTexture(tex, im) {
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 	gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -168,12 +170,14 @@ Modelo.prototype.activateLightConfiguration = function(){
   gl.uniform3f(glProgram.ambientColorUniform, this.ra, this.ga, this.ba );
   gl.uniform3f(glProgram.directionalColorUniform, this.rd, this.gd, this.bd);
   gl.uniform3f(glProgram.specularColorUniform, this.rs, this.gs, this.bs);
-}
+};
 
 Modelo.prototype.draw = function(mvMatrix){
   this.activateLightConfiguration();
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
+
+  gl.uniform1i(glProgram.useMezclaMapUniform, false);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
   gl.vertexAttribPointer(glProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
