@@ -20,6 +20,9 @@ function ModeloAbierto(_rows, _cols) {
 	this.webgl_binormal_buffer = null;
 	this.webgl_normal_buffer = null;
 
+  this.reflectionMap = null;
+  this.useReflectionMap = false;
+
   this.normalMap = null;
   this.useNormalMap = false;
 
@@ -113,6 +116,20 @@ ModeloAbierto.prototype.initMezcla = function(normal_file) {
 		handleLoadedTexture(tex, im);
 	};
 	this.mezcla.image.src = "./assets/" + normal_file;
+};
+
+ModeloAbierto.prototype.initReflectionMap = function(reflection_file) {
+	this.useReflectionMap = true;
+	var aux_texture = gl.createTexture();
+	this.reflectionMap = aux_texture;
+	this.reflectionMap.image = new Image();
+
+	var tex = this.reflectionMap;
+	var im = tex.image;
+	this.reflectionMap.image.onload = function() {
+		handleLoadedTexture(tex, im);
+	};
+	this.reflectionMap.image.src = "./assets/" + reflection_file;
 };
 
 function handleLoadedTexture(tex, im) {
@@ -213,11 +230,15 @@ ModeloAbierto.prototype.activateLightConfiguration = function(){
 }
 
 ModeloAbierto.prototype.draw = function(mvMatrix){
-  //  this.activateLightConfiguration();
+   this.activateLightConfiguration();
+
+  gl.uniform1f(glProgram.reflectionLevel, 0.05);
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
 
   gl.uniform1i(glProgram.useMezclaMapUniform, this.useMezcla);
+
+  gl.uniform1i(glProgram.useReflectionMapUniform, this.uUseReflectionMap);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
   gl.vertexAttribPointer(glProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
@@ -253,6 +274,10 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
   gl.activeTexture(gl.TEXTURE4);
   gl.bindTexture(gl.TEXTURE_2D, this.mezcla);
   gl.uniform1i(glProgram.mezclaSamplerUniform,4);
+
+  gl.activeTexture(gl.TEXTURE5);
+	gl.bindTexture(gl.TEXTURE_2D, this.reflectionMap);
+	gl.uniform1i(glProgram.reflectionSamplerUniform, 5);
 
   this.applyTransformationMatrix(mvMatrix,false);
 

@@ -3,6 +3,7 @@ function Viga(curva,radio,npoints,nlevels){
 
 	this.initTexture("alambres.jpg");
 	this.initNormalMap("alambres-mormalmap.jpg");
+	this.initReflectionMap("sky_lightblue.jpg");
 }
 
 inheritPrototype(Viga, Extrusion);

@@ -9,7 +9,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
 
   var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,prof,30);
   // var base = new Base(new Segmento([0,0,0,0],[0,10,0]),xCostaDer,anchoRio,20);
-  console.log(base);
+  // console.log(base);
   this.agregarModelo(base);
 
   var rio = new Rio(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,ph1+0.2,30);
@@ -20,17 +20,17 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
   var xCostaIzq = base.getXMinimaDelRioParaY(yCalle)-anchoRio;
   var xCostaDer = base.getXMaximaDelRioParaY(yCalle)+anchoRio;
   var anchoPuente = xCostaDer-xCostaIzq;
-  console.log("xCostaDer: "+xCostaDer);
-  console.log("xCostaDer: "+xCostaIzq);
+  // console.log("xCostaDer: "+xCostaDer);
+  // console.log("xCostaDer: "+xCostaIzq);
   var offsetTorrePuente = (anchoPuente/6);
   var distTorres = (anchoPuente-(2*offsetTorrePuente))/(nroTorres-1);
   var alturaTotal = ph1+ph2+ph3;
   var h1=ph2/2+ph1;
   var h2=ph2/2+ph3/2;
   var h3=ph3/2;
-  console.log("ph1: "+ph1);
-  console.log("ph2: "+ph2);
-  console.log("ph3: "+ph3);
+  // console.log("ph1: "+ph1);
+  // console.log("ph2: "+ph2);
+  // console.log("ph3: "+ph3);
   // var h1=alturaTorre1;
   // var h2=alturaTorre2;
   // var h3=alturaTorre3;

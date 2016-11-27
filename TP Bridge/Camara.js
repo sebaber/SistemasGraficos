@@ -104,7 +104,7 @@ function keyPressDownEvent(event){
   }
   else if (event.key == 't'){
     switchLight();
-  } 
+  }
 }
 
 function keyPressUpEvent(event){
@@ -252,6 +252,11 @@ function moverCamaraHombre(pMatrix){
 	zPosGlobal += (zPos);
 	//Aplico la traslacion
 	mat4.translate(pMatrix, pMatrix, [xPosGlobal, zPosGlobal , yPosGlobal]);
+	// console.log("before");
+	// console.log(glProgram.cameraPositionUniform);
+	gl.uniform3f(glProgram.cameraPositionUniform, xPosGlobal,	zPosGlobal, yPosGlobal);
+	// console.log("after");
+	// console.log(glProgram);
 
 	return pMatrix;
 }
@@ -259,7 +264,6 @@ function moverCamaraHombre(pMatrix){
 var cameraMatrix;
 var u_proj_matrix;
 var u_view_matrix;
-var cameraPositionUniform;
 
 function moverCamaraOrbital()
 {
@@ -280,6 +284,11 @@ function moverCamaraOrbital()
 
 	mat4.multiply(pMatrix,pMatrix,cameraMatrix);
 	mat4.translate(pMatrix, pMatrix,[cameraPos[0],cameraPos[1],cameraPos[2]]);
+	// console.log(glProgram);
+	// console.log(cameraPos);
+	gl.uniform3f(glProgram.cameraPositionUniform, cameraPos[0],
+		cameraPos[1], cameraPos[2]);
+		// console.log(glProgram.cameraPositionUniform);
 	return cameraMatrix;
 }
 

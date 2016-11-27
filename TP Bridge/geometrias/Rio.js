@@ -3,6 +3,7 @@ function Rio(curva,anchoCosta,anchoRio,profundidad,nlevels) {
 
   this.initTexture("aguaDeMar.jpg");
   this.initNormalMap("rocas2-normalmap.jpg");
+  this.initReflectionMap("sky_lightblue.jpg");
 }
 
 inheritPrototype(Rio, ExtrusionAbierta);

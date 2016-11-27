@@ -21,6 +21,9 @@ function Modelo(_rows, _cols) {
   this.normalMap = null;
   this.useNormalMap = false;
 
+  this.reflectionMap = null;
+  this.useReflectionMap = false;
+
   this.ra = 0.3;
   this.ga = 0.3;
   this.ba = 0.3;
@@ -70,7 +73,19 @@ Modelo.prototype.initNormalMap = function(normal_file) {
 	this.normalMap.image.src = "./assets/" + normal_file;
 };
 
+Modelo.prototype.initReflectionMap = function(reflection_file) {
+	this.useReflectionMap = true;
+	var aux_texture = gl.createTexture();
+	this.reflectionMap = aux_texture;
+	this.reflectionMap.image = new Image();
 
+	var tex = this.reflectionMap;
+	var im = tex.image;
+	this.reflectionMap.image.onload = function() {
+		handleLoadedTexture(tex, im);
+	};
+	this.reflectionMap.image.src = "./assets/" + reflection_file;
+};
 
 function handleLoadedTexture(tex, im) {
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -175,7 +190,10 @@ Modelo.prototype.activateLightConfiguration = function(){
 Modelo.prototype.draw = function(mvMatrix){
   this.activateLightConfiguration();
 
+  gl.uniform1f(glProgram.reflectionLevel, 0.05);
+
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
+  gl.uniform1i(glProgram.useReflectionMapUniform, this.uUseReflectionMap);
 
   gl.uniform1i(glProgram.useMezclaMapUniform, false);
 
@@ -209,6 +227,10 @@ Modelo.prototype.draw = function(mvMatrix){
 	gl.activeTexture(gl.TEXTURE1);
 	gl.bindTexture(gl.TEXTURE_2D, this.normalMap);
 	gl.uniform1i(glProgram.normalSamplerUniform, 1);
+
+  gl.activeTexture(gl.TEXTURE2);
+	gl.bindTexture(gl.TEXTURE_2D, this.reflectionMap);
+	gl.uniform1i(glProgram.reflectionSamplerUniform, 2);
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 

@@ -126,9 +126,11 @@ uniform sampler2D uTexture2;
 uniform sampler2D uTexture3;
 uniform sampler2D uMezclaSampler;
 uniform sampler2D uNormalSampler;
+uniform sampler2D uReflectionSampler;
 
 uniform bool uUseNormalMap;
 uniform bool uUseMezclaMap;
+uniform bool uUseReflectionMap;
 
 varying vec2 vTextureCoord;
 varying vec3 vVertexPosition;
@@ -233,16 +235,36 @@ void main(void) {
       }
     }
   }
+  if(uUseReflectionMap){
+    //////////////////////////
 
-  gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-  // 
-  // if(uUseNormalMap){
-  //   gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-  //
-  // } else {
-  //   //gl_FragColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-  //   gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-  // }
+    //1 - u is the unit vector that goes from the camera to the current vertex: it is the position of the vertex in eye space and it is also the view vector.
+    //viewVec;
+    //2 - n is the vertex normal in eye space.
+    //transformedNormal;
+    //3 - r is the reflected vision vector against the normal n:
+    //          r = 2 * ( n dot u) * n - u
+    vec3 r = reflect(viewVec, transformedNormal);
+    //4 - m is an intermediate value:
+    // m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1)*(r.z+1) )
+    float x = r[0];
+    float y = -r[2];
+    float z = r[1];
+    float m = 2.0 * sqrt( (x)*(x) + (y)*(y) + (z)*(z) );
+    //5 - s and t are the final texture coordinates:
+    // s = r.x / m + 0.5
+    // t = r.y / m + 0.5
+    vec2 cord;
+    cord[0] = .5*(x / m + 0.5);
+    cord[1] = (y / m + 0.5);
+
+    //////////////////////////////////
+
+    reflectionColor = texture2D(uReflectionSampler, cord);
+    gl_FragColor = (1.0 - uReflectionLevel)* vec4(textureColor.rgb * lightWeighting, textureColor.a) + uReflectionLevel*reflectionColor;
+  }else{
+    gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+  }
 
 }
 </script>
@@ -267,7 +289,7 @@ var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 
 var cameraTarget;
-var cameraPos;
+cameraPos = [ 0.0,0.0, 0.0 ];
 var cameraRad;
 
 // SHADERS FUNCTION
@@ -335,7 +357,7 @@ function initWebGL()
   }
   u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
   u_view_matrix = gl.getUniformLocation(glProgram, "uViewMatrix");
-  cameraPositionUniform = gl.getUniformLocation(glProgram, "uCameraPos");
+
 }
 
 function setupWebGL()
@@ -374,6 +396,10 @@ function initShaders()
 
   // Le decimos a WebGL que de aqu� en adelante use el programa generado.
   gl.useProgram(glProgram);
+  glProgram.cameraPositionUniform = gl.getUniformLocation(glProgram, "uCameraPos");
+
+  glProgram.reflectionLevel = gl.getUniformLocation(glProgram,
+		"uReflectionLevel");
 
   glProgram.vertexPositionAttribute = gl.getAttribLocation(glProgram,
     "aVertexPosition");
@@ -411,8 +437,8 @@ function initShaders()
                     glProgram.texture3Uniform = gl.getUniformLocation(glProgram,"uTexture3");
                     glProgram.mezclaSamplerUniform = gl.getUniformLocation(glProgram,"uMezclaSampler");
                     glProgram.normalSamplerUniform = gl.getUniformLocation(glProgram,"uNormalSampler");
-                    // glProgram.reflectionSamplerUniform = gl.getUniformLocation(
-                    // 	glProgram, "uReflectionSampler");
+                    glProgram.reflectionSamplerUniform = gl.getUniformLocation(
+                    	glProgram, "uReflectionSampler");
                     glProgram.useNormalMapUniform = gl.getUniformLocation(glProgram,
                       "uUseNormalMap");
 
