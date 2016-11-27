@@ -5,7 +5,7 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   this.initNormalMap("rocas2-normalmap.jpg");
   this.initTexture2("pasto1.jpg");
   this.initTexture3("rocas2.jpg");
-  this.initMezcla("mezcla7.jpg");
+  this.initMezcla("mezcla.jpg");
 }
 
 inheritPrototype(Base, ExtrusionAbierta);

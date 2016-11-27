@@ -16,7 +16,7 @@ var app={
 	agregarPuntos:true,
 //terreno = new Terreno(12,12,5,4,4,0.2)
 //Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor)
-	profundidad:0.6,
+	profundidad:0.8,
 	anchoCosta: 20.0,
 	largoCosta: 14.0,
 	anchoRio: 3.0,
