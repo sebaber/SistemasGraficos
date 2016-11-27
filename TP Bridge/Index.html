@@ -195,6 +195,7 @@ void main(void) {
         else textureColor2 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
         textureColor = mix(textureColor2, textureColor1, textureColor3.g);
     }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  //   textureColor = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
   }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 
   vec3 transformedNormal = vVertexNormal;

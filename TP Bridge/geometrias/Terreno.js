@@ -13,7 +13,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
   this.agregarModelo(base);
 
   var rio = new Rio(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,ph1,30);
-  this.agregarModelo(rio);
+  // this.agregarModelo(rio);
   this.rotateX(-(3.14/2.0));
 
   // var xCostaIzqTorre = base.getXMinimaDelRioParaY(yCalle);
