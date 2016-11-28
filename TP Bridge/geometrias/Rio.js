@@ -3,6 +3,8 @@ function Rio(curva,anchoCosta,anchoRio,profundidad,nlevels) {
 
   this.initTexture("aguaDeMar.jpg");
   this.initNormalMap("rocas2-normalmap.jpg");
+  this.setTransparente(true);
+  this.setLightConfiguration(0.5, 0.5, 0.5,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
   this.initReflectionMap("sky_lightblue.jpg");
 }
 

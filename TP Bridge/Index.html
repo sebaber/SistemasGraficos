@@ -160,6 +160,14 @@ uniform bool uLightAmbiental;
 uniform bool uLightTotal;
 uniform float uReflectionLevel;
 
+uniform bool uUseTransparenteUniform;
+
+varying vec3 vLightWeighting;
+
+uniform float uAlpha;
+
+uniform sampler2D uSampler;
+
 void main(void) {
   vec3 lightWeighting ;
 
@@ -263,7 +271,12 @@ void main(void) {
     reflectionColor = texture2D(uReflectionSampler, cord);
     gl_FragColor = (1.0 - uReflectionLevel)* vec4(textureColor.rgb * lightWeighting, textureColor.a) + uReflectionLevel*reflectionColor;
   }else{
-    gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+
+    if (!uUseTransparenteUniform){
+      gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+    } else {
+      gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a * 1.0);      
+    }
   }
 
 }
@@ -445,6 +458,8 @@ function initShaders()
                       glProgram.useMezclaMapUniform = gl.getUniformLocation(glProgram,
                         "uUseMezclaMap");
 
+  glProgram.useTransparenteUniform = gl.getUniformLocation(
+    glProgram, "uUseTransparenteUniform");
                         // glProgram.ViewMatrixUniform = gl.getUniformLocation(glProgram,"uViewMatrix");
 
                         glProgram.ambientColorUniform = gl.getUniformLocation(glProgram,

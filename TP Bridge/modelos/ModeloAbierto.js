@@ -39,6 +39,9 @@ function ModeloAbierto(_rows, _cols) {
   this.gs = 1.0;
   this.bs = 1.0;
 
+  this.transparente = false;
+  this.base = false;
+
   this._initBuffers();
 }
 
@@ -48,6 +51,22 @@ ModeloAbierto.prototype._initBuffers = function(){
   this._createIndexBuffer();
   this._setPositionAndColorVertex();
   this._setupWebGLBuffers();
+};
+
+ModeloAbierto.prototype.setTransparente = function(trans){
+  this.transparente = trans;
+};
+
+ModeloAbierto.prototype.getTransparente = function(){
+  return this.transparente;
+};
+
+ModeloAbierto.prototype.setBase = function(bas){
+  this.base = bas;
+};
+
+ModeloAbierto.prototype.getBase = function(){
+  return this.base;
 };
 
 ModeloAbierto.prototype.initTexture = function(texture_file) {
@@ -233,6 +252,18 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
    this.activateLightConfiguration();
 
   gl.uniform1f(glProgram.reflectionLevel, 0.05);
+
+  if (this.transparente) {
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    gl.enable(gl.BLEND);
+    gl.disable(gl.DEPTH_TEST);
+    gl.uniform1f(gl.alphaUniform, 1.0);
+    gl.uniform1i(glProgram.useTransparenteUniform, true);
+  } else {
+    gl.disable(gl.BLEND);
+    gl.enable(gl.DEPTH_TEST);
+    gl.uniform1i(glProgram.useTransparenteUniform, false);
+  }
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
 

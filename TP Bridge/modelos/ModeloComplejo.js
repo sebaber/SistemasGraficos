@@ -7,9 +7,19 @@ ModeloComplejo.prototype.agregarModelo = function(modelo){
 };
 
 ModeloComplejo.prototype.draw = function(mvMatrix){
-  for(var i = 0;i<this.modelos.length;++i){
-    this.modelos[i].draw(mvMatrix);
+  for(var i = 0;(i<this.modelos.length);++i){
+    if ((!this.modelos[i].transparente)&&(this.modelos[i].base))
+      this.modelos[i].draw(mvMatrix);
   }
+  for(var i = 0;(i<this.modelos.length);++i){
+    if ((this.modelos[i].transparente)&&(!this.modelos[i].base))
+      this.modelos[i].draw(mvMatrix);
+  }
+  for(var i = 0;(i<this.modelos.length);++i){
+    if ((!this.modelos[i].transparente)&&(!this.modelos[i].base))
+      this.modelos[i].draw(mvMatrix);
+  }
+
 };
 
 ModeloComplejo.prototype.rotateX = function(alfa){
