@@ -7,7 +7,7 @@ function Terreno(anchoCosta,largoCosta,anchoRio,anchoCalle,nroTorres,sepTensor,a
 
   var prof = profundidad;
 
-  var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200),anchoCosta,anchoRio,prof,30);
+  var base = new Base(perfilDelRioObject.obtenerFuncionSpline(largoCosta,200,anchoRio,200,2.5),anchoCosta,anchoRio,prof,30);
   // var base = new Base(new Segmento([0,0,0,0],[0,10,0]),xCostaDer,anchoRio,20);
   // console.log(base);
   this.agregarModelo(base);

@@ -36,7 +36,8 @@ SplineCubicaCompleja.prototype.p = function(u) {
                 //En caso de que el camino sea nulo
                 uReal = 0.0;
             }
-            // console.log("Ureal: "+uReal);
+            console.log("uGlobal: "+ uGlobal);
+            console.log("uReal: "+ uReal);
             var punto;
             if(uReal === 0) punto = splineTramo.v0;
             if(uReal == 1) punto = splineTramo.v3;

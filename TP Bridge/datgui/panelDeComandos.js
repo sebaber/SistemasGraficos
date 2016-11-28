@@ -17,7 +17,7 @@ var app={
 	profundidad:0.8,
 	anchoCosta: 60.0,
 	largoCosta: 60.0,
-	anchoRio: 1.9,
+	anchoRio: 5,
 	anchoCalle: 4,
 	ph1:0.4,
 	ph2:1,

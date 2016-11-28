@@ -148,7 +148,7 @@ Perfil.prototype.obtenerPuntosSplineTransformados =function (largoDelRio,pasoDeC
 	return puntosCurvaSuaveTransformado;
 }
 
-Perfil.prototype.obtenerFuncionSpline =function (largoDelRio,largoDelCanvas,anchoDelRio,anchoDelCanvas){
+Perfil.prototype.obtenerFuncionSpline =function (largoDelRio,largoDelCanvas,anchoDelRio,anchoDelCanvas, factorX = 1){
 	var puntosDelCamino = [];
 
 	puntosDelCamino.push(this.inicio);
@@ -167,5 +167,6 @@ Perfil.prototype.obtenerFuncionSpline =function (largoDelRio,largoDelCanvas,anch
 			puntosDelCamino[k+2],puntosDelCamino[k+3]);
 		splineCompleja.agregarSpline(splineTramo);
 	}
+	splineCompleja.factorX *= factorX;
 	return splineCompleja;
 }

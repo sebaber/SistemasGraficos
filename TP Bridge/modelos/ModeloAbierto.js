@@ -256,7 +256,7 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
   if (this.transparente) {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
     gl.enable(gl.BLEND);
-    gl.disable(gl.DEPTH_TEST);
+    //gl.disable(gl.DEPTH_TEST);
     gl.uniform1f(gl.alphaUniform, 1.0);
     gl.uniform1i(glProgram.useTransparenteUniform, true);
   } else {
