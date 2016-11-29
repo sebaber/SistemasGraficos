@@ -76,7 +76,7 @@ Extrusion.prototype._setPositionAndColorVertex = function(){
 
     this.normal_buffer.push(normal[0]);
     this.normal_buffer.push(normal[1]);
-    this.normal_buffer.push(normal[2]);
+    this.normal_buffer.push(-1*normal[2]);
 
     var n = i;
     while (n >= 3.0){
