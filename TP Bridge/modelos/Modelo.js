@@ -224,7 +224,7 @@ Modelo.prototype.draw = function(mvMatrix){
   }
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
-  gl.uniform1i(glProgram.useReflectionMapUniform, this.uUseReflectionMap);
+  gl.uniform1i(glProgram.useReflectionMapUniform, this.useReflectionMap);
 
   gl.uniform1i(glProgram.useMezclaMapUniform, false);
 

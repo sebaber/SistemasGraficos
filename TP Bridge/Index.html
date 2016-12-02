@@ -175,7 +175,6 @@ void main(void) {
   //CAMBIADO!!
   vec3 viewVec = normalize( uCameraPos - vVertexPosition );
 
-
   vec4 reflectionColor = vec4(0.0, 0.0, 0.0, 0.0);
   // gl_FragColor es una variable "built-in" de GLSL que es usada para
   // almacenar el color resultante del fragmento.
@@ -202,9 +201,9 @@ void main(void) {
   //   textureColor = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
   // }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
 
-  vec3 transformedNormal = vVertexNormal;
-  vec3 transformedBinormal = vVertexBinormal;
-  vec3 tranformedTangent = vVertexTangent;
+  vec3 transformedNormal = normalize(vVertexNormal);
+  vec3 transformedBinormal = normalize(vVertexBinormal);
+  vec3 tranformedTangent = normalize(vVertexTangent);
 
   /** Luces **/
   if(uUseNormalMap){
@@ -216,10 +215,10 @@ void main(void) {
     transformedNormal = normalize( uNMatrix * (factorT * tranformedTangent + factorB * transformedBinormal) + factorN * transformedNormal);
   }
   //calculo la iluminacion a partir del sampler, por eso en fragment y no en vertex
-  float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0);
+  float directionalLightWeighting = max(dot(transformedNormal, lightDirNormalized), 0.0 );
   // [(2*(N*L)*N - L) * V] ^ alpha
   vec3 parentesis = 2.0 * directionalLightWeighting * transformedNormal - lightDirNormalized;
-  float corchete = max(dot(parentesis, viewVec), 0.0);
+  float corchete = max( dot(parentesis, viewVec), 0.0);
   float specularLightWeighting = pow(corchete,15.0);
   if(uLightTotal)
   {
@@ -270,12 +269,15 @@ void main(void) {
 
     reflectionColor = texture2D(uReflectionSampler, cord);
     gl_FragColor = (1.0 - uReflectionLevel)* vec4(textureColor.rgb * lightWeighting, textureColor.a) + uReflectionLevel*reflectionColor;
+    //gl_FragColor = vec4(specularLightWeighting,specularLightWeighting,specularLightWeighting, textureColor.a);
+    // specularLightWeighting
+    //gl_FragColor = vec4(viewVec.rgb , 1.0);
   }else{
 
     if (!uUseTransparenteUniform){
       gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
     } else {
-      gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a * 1.0);      
+      gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a * 1.0);
     }
   }
 
@@ -457,6 +459,8 @@ function initShaders()
 
                       glProgram.useMezclaMapUniform = gl.getUniformLocation(glProgram,
                         "uUseMezclaMap");
+                        glProgram.useReflectionMapUniform = gl.getUniformLocation(glProgram,
+                          "uUseReflectionMap");
 
   glProgram.useTransparenteUniform = gl.getUniformLocation(
     glProgram, "uUseTransparenteUniform");
@@ -519,7 +523,7 @@ function initShaders()
                                         gl.uniform1i(glProgram.useLightingUniform, lighting);
                                         gl.uniform1i(glProgram.useNormalMapUniform, false);
                                         gl.uniform1i(glProgram.useReflectionMapUniform, false);
-                                        // var lightPosition = [0.0, 0.0, 0.0];
+                                        //var lightPosition = [0.0, 0.0, 0.0];
                                         // var lightPosition = [0,0,1000000000];
                                         var lightPosition = [ 727503182, 50135369, 142622255 ]; // donde esta el sol
                                         // en la textura

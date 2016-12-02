@@ -269,7 +269,7 @@ ModeloAbierto.prototype.draw = function(mvMatrix){
 
   gl.uniform1i(glProgram.useMezclaMapUniform, this.useMezcla);
 
-  gl.uniform1i(glProgram.useReflectionMapUniform, this.uUseReflectionMap);
+  gl.uniform1i(glProgram.useReflectionMapUniform, this.useReflectionMap);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
   gl.vertexAttribPointer(glProgram.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
