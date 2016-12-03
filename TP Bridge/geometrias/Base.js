@@ -6,6 +6,7 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   this.initTexture2("pasto1.jpg");
   this.initTexture3("rocas2.jpg");
   this.initMezcla("mezcla.jpg");
+  this.setLightConfiguration(0.3, 0.3, 0.3,1.0, 1.0, 1.0,0.1, 0.1, 0.1);
 }
 
 inheritPrototype(Base, ExtrusionAbierta);
@@ -40,8 +41,8 @@ Base.prototype.setPosicionVertices= function(matrizTraslacion,matrizRotacion,ver
     // console.log("NUEVO PUNTO DE LA BASE");
     // console.log("i: "+i/this.nlevels+" j: "+j/vertices.length);
     // console.log("");
-    this.texture_coord_buffer.push(vertice[0]/app.anchoCosta);
-    this.texture_coord_buffer.push(vertice[1]/app.largoCosta);
+    this.texture_coord_buffer.push(vertice[0]*4.0/app.anchoCosta);
+    this.texture_coord_buffer.push(vertice[1]*4.0/app.largoCosta);
 
     this.tangent_buffer.push(tangente[0]);
   this.tangent_buffer.push(tangente[1]);
