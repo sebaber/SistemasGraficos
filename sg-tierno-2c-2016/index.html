@@ -1,0 +1,225 @@
+
+<!doctype html>
+<meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+<meta content="ISO-8859-1" http-equiv="encoding">
+<html>
+    <head>
+        <title>66.71 Tierno Jonathan</title>
+        <style>
+            body{ background-color: DeepSkyBlue; }
+            canvas{ background-color: white; display: block;}
+            .close-button {width: 100% !important;}
+            #gui-container>div {float:right;}
+            .dg.main {width: 100% !important;}
+            .hidden {display: none;}
+            .visible {display: block;}
+            .close-button {display: none !important}
+            .principalcanvas {
+                width: 100vw;
+                height: 100vh;
+                display: block;
+            }
+            .overlay {
+                height: 100%;
+                width: 0;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                right: 0;
+                background-color: rgb(0,0,0);
+                background-color: rgba(0,0,0, 0.3);
+                overflow-x: hidden;
+                transition: 0.5s;
+            }
+
+            .overlay-content {
+                position: relative;
+                top: 25%;
+                width: 100%;
+                text-align: center;
+                margin-top: 30px;
+            }
+
+            .overlay a {
+                padding: 8px;
+                text-decoration: none;
+                font-size: 36px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+
+            .overlay a:hover, .overlay a:focus {
+                color: #f1f1f1;
+            }
+
+            .overlay .closebtn {
+                position: absolute;
+                top: -10px;
+                right: 2px;
+                font-size: 30px;
+            }
+            a {
+                color: #035E0f;
+                text-decoration: none;
+            }
+            a:hover { 
+                color: #000FFF;
+            }
+            .openbtn {
+                position: absolute;
+                top: 5px;
+                right: 20px;
+                font-size: 30px;
+            }
+
+            .openbtnCtn {
+                position: absolute;
+                top: 40px;
+                right: 20px;
+                font-size: 30px;
+            }
+            @media screen and (max-height: 450px) {
+              .overlay a {font-size: 20px}
+              .overlay .closebtn {
+                font-size: 20;
+                top: -10px;
+                right: 2px;
+              }
+            }
+        </style>
+        <script type="text/javascript" src="lib/dat.gui.min.js"></script>
+        <script type="text/javascript" src="lib/gl-matrix.js"></script>
+        <script type="text/javascript" src="lib/webgl-debug.js"></script>
+       
+       <script type="text/javascript" src="js/material/Light.js"></script>
+        <script type="text/javascript" src="js/core/Utils.js"></script>
+        <script type="text/javascript" src="js/core/GLContext.js"></script>
+
+        <script type="text/javascript" src="js/controller/EventsController.js"></script>
+        <script type="text/javascript" src="js/controller/CurveController.js"></script>
+        
+        <script type="text/javascript" src="js/core/Transformable.js"></script>
+        
+        <script type="text/javascript" src="js/camera/Camera.js"></script>
+        <script type="text/javascript" src="js/camera/FreeCamera.js"></script>
+        <script type="text/javascript" src="js/camera/FixedCenterCamera.js"></script>
+        
+        <script type="text/javascript" src="js/buffer/GLBuffers.js"></script>
+        <script type="text/javascript" src="js/core/Geometry.js"></script>
+
+        
+        <script type="text/javascript" src="js/material/Material.js"></script>
+        <script type="text/javascript" src="js/material/Texture.js"></script>
+        <script type="text/javascript" src="js/material/CubeMap.js"></script>
+        <script type="text/javascript" src="js/material/TexturedMaterial.js"></script>
+
+
+        <script type="text/javascript" src="js/surface/TextureGenerator.js"></script>
+        <script type="text/javascript" src="js/surface/RevolutionSurface.js"></script>
+        <script type="text/javascript" src="js/surface/SweptSurface.js"></script>
+        <script type="text/javascript" src="js/surface/ColumnHat.js"></script>
+
+        <script type="text/javascript" src="js/model/Model.js"></script>
+        <script type="text/javascript" src="js/model/Scene.js"></script>
+        <script type="text/javascript" src="js/model/Axis.js"></script>
+
+        <script type="text/javascript" src="js/shader/ShaderSource.js"></script>
+        <script type="text/javascript" src="js/shader/PhongSource.js"></script>
+        <script type="text/javascript" src="js/shader/Shader.js"></script>
+        <script type="text/javascript" src="js/shader/ShaderBinder.js"></script>
+        <script type="text/javascript" src="js/shader/ShaderProgram.js"></script>
+        <script type="text/javascript" src="js/shader/PhongShaderProgram.js"></script>
+
+
+        
+        <script type="text/javascript" src="js/curve/Curve.js"></script>
+        <script type="text/javascript" src="js/curve/ParametricCurve.js"></script>
+        <script type="text/javascript" src="js/curve/ComplexCurve.js"></script>
+        <script type="text/javascript" src="js/curve/AproximatedCurve.js"></script>
+        <script type="text/javascript" src="js/curve/Circle.js"></script>
+        <script type="text/javascript" src="js/curve/Segment.js"></script>
+        
+
+        <script type="text/javascript" src="js/scenemodels/Sky.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Field.js"></script>
+        <script type="text/javascript" src="js/scenemodels/BridgePanel.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Bridge.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Road.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Tree.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Forest.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Column.js"></script>
+        <script type="text/javascript" src="js/scenemodels/Water.js"></script>
+
+        <script type="text/javascript" src="js/App.js"></script>
+
+        <script>
+           
+            //
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+
+
+            function initWebGL()
+            {
+
+                var app = new Application("my-canvas", "curve-editor","gui-container");
+                app.run()
+            }
+            
+            function openNav() {
+                document.getElementById("myNav").style.width = "25%";
+            }
+
+            function openNavCtl() {
+                document.getElementById("contr").style.width = "25%";
+            }
+
+            function closeNav() {
+                document.getElementById("myNav").style.width = "0%";
+            }
+
+            function closeNavCtl() {
+                document.getElementById("contr").style.width = "0%";
+            }
+
+        </script>
+
+
+
+    </head>
+    <body style="overflow: hidden; margin: 0px;" onload="initWebGL()">
+
+            
+                <canvas tabindex="0" id="my-canvas"  class="principalcanvas">
+                Your browser does not support the HTML5 canvas element.
+                </canvas>
+                <div id="myNav" class="overlay" style="border:1px solid #000000;">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <div id= "gui-container" style="width: 100%;"></div>
+                    <canvas id="curve-editor" style="width: 25vw;height:25vw;" style="background:transparent;border:1px solid #000000;" >
+                        Your browser does not support the HTML5 canvas element.
+                    </canvas>
+                </div>
+                <div id="contr" onclick="closeNavCtl()" class="overlay" style="border:1px solid #000000;">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNavCtl()">&times;</a>
+                <ul style="color: #FFFFFF">
+                  <li>C: Intercambiar Cámara</li>
+                  <li>W: Adelante</li>
+                  <li>A: Izquierda</li>
+                  <li>S: Atrás</li>
+                  <li>D: Derecha</li>
+                  <li>Espacio: Alejar (Cámara Orbital) </li>
+                  <li>Control: Acercar (Cámara Orbital) </li>
+                  <li>Mouse (Click + Mover): Rotación de visión.</li>
+                  <li>Rueda Mouse: Zoom In / Zoom Out (Cámara Orbital).</li>
+                </ul>
+                </div>
+                <a href="javascript:void(0)" class="openbtn" onclick="openNav()">Menú</a>
+                <a href="javascript:void(0)" class="openbtnCtn" onclick="openNavCtl()">Instrucciones</a>
+    </body>
+</html>
+
+
