@@ -65,9 +65,9 @@ Esfera.prototype._setPositionAndColorVertex = function(){
 			this.position_buffer.push(x);
 			this.position_buffer.push(y);
 			this.position_buffer.push(z);
-			this.normal_buffer.push(-1*z);
+			this.normal_buffer.push(-1.0*z);
 			this.normal_buffer.push(y);
-			this.normal_buffer.push(-1*x);
+			this.normal_buffer.push(1.0*x);
 
 			this.texture_coord_buffer.push((this.numberOfVerticesInProfile - i)/this.numberOfVerticesInProfile);
 			this.texture_coord_buffer.push((this.numberOfAngularSteps- j)/this.numberOfAngularSteps);

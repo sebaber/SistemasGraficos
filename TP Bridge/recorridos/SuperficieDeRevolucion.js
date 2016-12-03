@@ -49,7 +49,7 @@ SuperficieDeRevolucion.prototype._setPositionAndColorVertex = function(){
 			this.position_buffer.push(y);
 			this.position_buffer.push(z);
 			this.normal_buffer.push(y);
-			this.normal_buffer.push(-1*x);
+			this.normal_buffer.push(-1.0*x);
 			this.normal_buffer.push(z);
 
 			this.texture_coord_buffer.push((this.numberOfVerticesInProfile - i)/this.numberOfVerticesInProfile);
