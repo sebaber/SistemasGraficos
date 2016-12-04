@@ -252,7 +252,7 @@ function moverCamaraHombre(pMatrix){
 	zPosGlobal += (zPos);
 	//Aplico la traslacion
 
-	gl.uniform3fv(glProgram.cameraPositionUniform, [-xPosGlobal ,-zPosGlobal ,-yPosGlobal ]);
+	gl.uniform3fv(glProgram.cameraPositionUniform, [-xPosGlobal , -zPosGlobal ,-yPosGlobal ]);
 	mat4.translate(pMatrix, pMatrix, [xPosGlobal, zPosGlobal , yPosGlobal]);
 	// console.log("after");
 	console.log("x: "+xPosGlobal+" y: "+yPosGlobal+" z: "+zPosGlobal);
@@ -288,8 +288,8 @@ function moverCamaraOrbital()
 	mat4.translate(pMatrix, pMatrix,[cameraPos[0],cameraPos[1],cameraPos[2]]);
 	// console.log(glProgram);
 	// console.log(cameraPos);
-	gl.uniform3f(glProgram.cameraPositionUniform, cameraPos[0],
-		cameraPos[1], cameraPos[2]);
+	gl.uniform3fv(glProgram.cameraPositionUniform, [ -cameraPos[0],
+		-cameraPos[1], -cameraPos[2] ]);
 		// console.log(glProgram.cameraPositionUniform);
 	return cameraMatrix;
 }
