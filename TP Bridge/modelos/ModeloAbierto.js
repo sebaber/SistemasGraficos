@@ -331,6 +331,10 @@ function handleLoadedTexture(tex, im) {
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.reflectionMap);
     gl.uniform1i(glProgram.reflectionSamplerUniform, 5);
 
+    gl.activeTexture(gl.TEXTURE6);
+    gl.bindTexture(gl.TEXTURE_2D, this.mezcla);
+    gl.uniform1i(glProgram.mezclaSampler2Uniform,6);
+
     this.applyTransformationMatrix(mvMatrix,false);
 
     gl.uniformMatrix4fv(glProgram.ModelMatrixUniform, false, this.getObjectMatrix());

@@ -160,6 +160,8 @@ uniform bool uLightAmbiental;
 uniform bool uLightTotal;
 uniform float uReflectionLevel;
 
+uniform float uRandom;
+
 uniform bool uUseTransparenteUniform;
 
 varying vec3 vLightWeighting;
@@ -480,6 +482,8 @@ function initShaders()
                                       glProgram.lightTotalUniform = gl.getUniformLocation(glProgram,
                                         "uLightTotal");
 
+                                        glProgram.random = gl.getUniformLocation(glProgram,"uRandom");
+
                                         //Actualiza variables de luces
                                         gl.uniform1i(glProgram.lightAmbientalUniform, ambientalLightActive);
                                         gl.uniform1i(glProgram.lightDirectionalUniform, directionalLightActive);
@@ -577,7 +581,8 @@ function initShaders()
                                       */
                                       // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
                                       // t = t + 0.01;
-
+                                      var random = Math.random();
+                                      gl.uniform1f(glProgram.random, random);
                                       // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
                                       modelo.draw(mvMatrix);
                                     }
