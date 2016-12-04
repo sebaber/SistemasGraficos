@@ -1,9 +1,9 @@
 function Rio(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   ExtrusionAbierta.call(this,curva, new PerfilRio(anchoCosta,anchoRio,profundidad),nlevels);
 
-  this.initTexture("aguaDeMar.jpg");
+  this.initTexture("water2.jpg");
   this.initNormalMap("rocas2-normalmap.jpg");
-  this.setTransparente(true);
+  // this.setTransparente(true);
   this.setLightConfiguration(0.5, 0.5, 0.5,0.0, 0.0, 0.0,0.0, 0.0, 0.0)
   this.initReflectionMap("sky_lightblue.jpg");
 }

@@ -93,17 +93,38 @@ Modelo.prototype.initNormalMap = function(normal_file) {
 };
 
 Modelo.prototype.initReflectionMap = function(reflection_file) {
-	this.useReflectionMap = true;
-	var aux_texture = gl.createTexture();
-	this.reflectionMap = aux_texture;
-	this.reflectionMap.image = new Image();
+  this.useReflectionMap = true;
+  var texture = gl.createTexture();
+  this.reflectionMap = texture;
 
-	var tex = this.reflectionMap;
-	var im = tex.image;
-	this.reflectionMap.image.onload = function() {
-		handleLoadedTexture(tex, im);
-	};
-	this.reflectionMap.image.src = "./assets/" + reflection_file;
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+ // gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+ // gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  var sources = [
+    ["assets/cubemap/right.jpg", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
+    ["assets/cubemap/left.jpg", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
+    ["assets/cubemap/top.jpg", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
+    ["assets/cubemap/bottom.jpg", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
+    ["assets/cubemap/front.jpg", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
+    ["assets/cubemap/back.jpg", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+  ];
+
+  for (var i = 0; i < sources.length; i++) {
+    var image = new Image();
+    image.src = sources[i][0];
+    gl.texImage2D(sources[i][1], 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([255, 0, 0, 255]));
+    image.onload = function(texture, face, image) {
+      return function() {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+        gl.texImage2D(face, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+      }
+    } (texture, sources[i][1], image);
+  }
 };
 
 function handleLoadedTexture(tex, im) {
@@ -209,19 +230,19 @@ Modelo.prototype.activateLightConfiguration = function(){
 Modelo.prototype.draw = function(mvMatrix){
   this.activateLightConfiguration();
 
-  gl.uniform1f(glProgram.reflectionLevel, 0.05);
+  gl.uniform1f(glProgram.reflectionLevel, 1.0);
 
-  if (this.transparente) {
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-    gl.enable(gl.BLEND);
-    //gl.disable(gl.DEPTH_TEST);
-    gl.uniform1f(gl.alphaUniform, 1.0);
-    gl.uniform1i(glProgram.useTransparenteUniform, true);
-  } else {
-    gl.disable(gl.BLEND);
-    gl.enable(gl.DEPTH_TEST);
-    gl.uniform1i(glProgram.useTransparenteUniform, false);
-  }
+  // if (this.transparente) {
+  //   gl.blendFunc(gl.SRC_ALPHA, 0.0);
+  //   gl.enable(gl.BLEND);
+  //   //gl.disable(gl.DEPTH_TEST);
+  //   gl.uniform1f(gl.alphaUniform, 1.0);
+  //   gl.uniform1i(glProgram.useTransparenteUniform, true);
+  // } else {
+  //   gl.disable(gl.BLEND);
+  //   gl.enable(gl.DEPTH_TEST);
+  //   gl.uniform1i(glProgram.useTransparenteUniform, false);
+  // }
 
   gl.uniform1i(glProgram.useNormalMapUniform, this.useNormalMap);
   gl.uniform1i(glProgram.useReflectionMapUniform, this.useReflectionMap);
@@ -259,9 +280,9 @@ Modelo.prototype.draw = function(mvMatrix){
 	gl.bindTexture(gl.TEXTURE_2D, this.normalMap);
 	gl.uniform1i(glProgram.normalSamplerUniform, 1);
 
-  gl.activeTexture(gl.TEXTURE2);
-	gl.bindTexture(gl.TEXTURE_2D, this.reflectionMap);
-	gl.uniform1i(glProgram.reflectionSamplerUniform, 2);
+  gl.activeTexture(gl.TEXTURE5);
+	gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.reflectionMap);
+	gl.uniform1i(glProgram.reflectionSamplerUniform, 5);
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
