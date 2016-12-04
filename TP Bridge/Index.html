@@ -180,26 +180,34 @@ void main(void) {
   // almacenar el color resultante del fragmento.
   //gl_FragColor = vColor;
   vec4 textureColor;
+  vec2 textureST = vTextureCoord;
+  float largo = 0.4;
+  float textureM = (vVertexPosition.y + 0.1)/0.4;
+  float textureS = textureST[0];
+  float textureT = textureST[1];
   if(uUseMezclaMap){
-
     if(vVertexPosition.y > -0.1){
-      textureColor = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
+      textureColor = texture2D(uTexture2, vec2(textureS, textureT));
     }else if(vVertexPosition.y > -0.3){
-        vec4 textureColor1 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
-        vec4 textureColor2 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
-        vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        textureColor = mix(textureColor1, textureColor2, textureColor3.g);
+        vec4 textureColor1 = texture2D(uTexture2, vec2(textureS, textureT));
+        vec4 textureColor2 = texture2D(uTexture3, vec2(textureM, textureT));
+        vec4 textureColor3 = texture2D(uMezclaSampler, vec2(textureM, textureT));
+        textureColor = mix(textureColor1, textureColor2, textureColor3.r);
+    //}else if((vVertexPosition.y >= -0.305) && (vVertexPosition.y <= -0.2905)){
+    //    textureColor = texture2D(uTexture3 , vec2(textureM, textureT));
     }else if(vVertexPosition.y > -0.5){
-      vec4 textureColor3 = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        vec4 textureColor1 = texture2D(uTexture3, vec2(vTextureCoord.s, vTextureCoord.t));
-        vec4 textureColor2;
-        if(textureColor3.g <0.5) textureColor2 = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-        else textureColor2 = texture2D(uTexture2, vec2(vTextureCoord.s, vTextureCoord.t));
-        textureColor = mix(textureColor2, textureColor1, textureColor3.g);
-    }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-  }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-  //   textureColor = texture2D(uMezclaSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-  // }else textureColor = texture2D(uTextureSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+        vec4 textureColor3 = texture2D(uMezclaSampler, vec2(textureM, textureT));
+        vec4 textureColor1 = texture2D(uTexture3, vec2(textureM, textureT));
+        vec4 textureColor2 = texture2D(uTextureSampler, vec2(textureS, textureT));
+        //if(textureColor3.r < 0.5) 
+        //textureColor2 = texture2D(uTextureSampler, vec2(textureS, textureT));
+        //else
+        //textureColor2 = texture2D(uTexture2, vec2(textureS, textureT));*/
+        textureColor = mix(textureColor2, textureColor1, textureColor3.r);
+    }else textureColor = texture2D(uTextureSampler, vec2(textureS, textureT));
+  }else textureColor = texture2D(uTextureSampler, vec2(textureS, textureT));
+  //   textureColor = texture2D(uMezclaSampler, vec2(textureS, textureT));
+  // }else textureColor = texture2D(uTextureSampler, vec2(textureS, textureT));
 
   vec3 transformedNormal = normalize(vVertexNormal);
   vec3 transformedBinormal = normalize(vVertexBinormal);

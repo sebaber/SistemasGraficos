@@ -5,7 +5,8 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   this.initNormalMap("rocas2-normalmap.jpg");
   this.initTexture2("pasto1.jpg");
   this.initTexture3("rocas2.jpg");
-  this.initMezcla("mezcla.jpg");
+  //this.initMezcla("mezcla.jpg");
+  this.initMezcla("difuminado3.jpeg");
   this.setLightConfiguration(0.3, 0.3, 0.3,1.0, 1.0, 1.0,0.1, 0.1, 0.1);
 }
 
@@ -41,8 +42,8 @@ Base.prototype.setPosicionVertices= function(matrizTraslacion,matrizRotacion,ver
     // console.log("NUEVO PUNTO DE LA BASE");
     // console.log("i: "+i/this.nlevels+" j: "+j/vertices.length);
     // console.log("");
-    this.texture_coord_buffer.push(vertice[0]*4.0/app.anchoCosta);
-    this.texture_coord_buffer.push(vertice[1]*4.0/app.largoCosta);
+    this.texture_coord_buffer.push(vertice[0]*6.0/app.anchoCosta);
+    this.texture_coord_buffer.push(vertice[1]*6.0/app.largoCosta);
 
     this.tangent_buffer.push(tangente[0]);
   this.tangent_buffer.push(tangente[1]);
