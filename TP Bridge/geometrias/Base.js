@@ -5,7 +5,6 @@ function Base(curva,anchoCosta,anchoRio,profundidad,nlevels) {
   this.initNormalMap("rocas2-normalmap.jpg");
   this.initTexture2("pasto1.jpg");
   this.initTexture3("rocas2.jpg");
-  //this.initMezcla("mezcla.jpg");
   this.initMezcla("difuminado3.jpeg");
   this.setLightConfiguration(0.3, 0.3, 0.3,1.0, 1.0, 1.0,0.1, 0.1, 0.1);
 }

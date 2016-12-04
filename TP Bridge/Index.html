@@ -126,7 +126,7 @@ uniform sampler2D uTexture2;
 uniform sampler2D uTexture3;
 uniform sampler2D uMezclaSampler;
 uniform sampler2D uNormalSampler;
-uniform sampler2D uReflectionSampler;
+uniform samplerCube uReflectionSampler;
 
 uniform bool uUseNormalMap;
 uniform bool uUseMezclaMap;
@@ -159,6 +159,8 @@ uniform bool uLightDirectional;
 uniform bool uLightAmbiental;
 uniform bool uLightTotal;
 uniform float uReflectionLevel;
+
+uniform float uRandom;
 
 uniform bool uUseTransparenteUniform;
 
@@ -251,42 +253,38 @@ void main(void) {
     }
   }
   if(uUseReflectionMap){
+
+    // vec3 N = transformedNormal;
+    //  vec3 L = lightDirNormalized;
+    //  vec3 V = viewVec;
+
+     vec3 uD = uDirectionalColor;
+    // acá en el medio de estos dos códigos calculo computedDiffuse color según la textura que tenga el material, la normal segun el mapa de normales (sobreescribo N)
+      vec3 reflect = reflect(-viewVec, transformedNormal);
+     uD = (1. - uReflectionLevel) *uD + (uReflectionLevel) *textureCube(uReflectionSampler, reflect  ).rgb;
+    //  uAmbientColor = uDirectionalColor.rgb; //le pongo el ambient color igual al difuse porque me sirvió.
+    //  uD.w = uAlpha;
+    // vec4 cube = normalize(textureCube(uReflectionSampler, reflect  ));
+
+ // por acá mas abajo uso el computedDiffuseColor, computedAmbientColor y el computedSpecularColor (que lo calculé por ahí) para calcular la luz del modelo de phong y asigno el color del fragmento.
+
+    lightWeighting = uAmbientColor + uD * directionalLightWeighting + uSpecularColor * specularLightWeighting ;
+
+
+    gl_FragColor = vec4(textureColor.rgb * lightWeighting, 255.0);
     //////////////////////////
 
-    //1 - u is the unit vector that goes from the camera to the current vertex: it is the position of the vertex in eye space and it is also the view vector.
-    //viewVec;
-    //2 - n is the vertex normal in eye space.
-    //transformedNormal;
-    //3 - r is the reflected vision vector against the normal n:
-    //          r = 2 * ( n dot u) * n - u
-    vec3 r = reflect(viewVec, transformedNormal);
-    //4 - m is an intermediate value:
-    // m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1)*(r.z+1) )
-    float x = r[0];
-    float y = -r[2];
-    float z = r[1];
-    float m = 2.0 * sqrt( (x)*(x) + (y)*(y) + (z)*(z) );
-    //5 - s and t are the final texture coordinates:
-    // s = r.x / m + 0.5
-    // t = r.y / m + 0.5
-    vec2 cord;
-    cord[0] = .5*(x / m + 0.5);
-    cord[1] = (y / m + 0.5);
-
-    //////////////////////////////////
-
-    reflectionColor = texture2D(uReflectionSampler, cord);
-    gl_FragColor = (1.0 - uReflectionLevel)* vec4(textureColor.rgb * lightWeighting, textureColor.a) + uReflectionLevel*reflectionColor;
+    // gl_FragColor = vec4(cube.rgb, 255.0);
     //gl_FragColor = vec4(specularLightWeighting,specularLightWeighting,specularLightWeighting, textureColor.a);
     // specularLightWeighting
     //gl_FragColor = vec4(viewVec.rgb , 1.0);
   }else{
 
-    if (!uUseTransparenteUniform){
-      gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
-    } else {
+    // if (!uUseTransparenteUniform){
+      // gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a);
+    // } else {
       gl_FragColor = vec4(textureColor.rgb * lightWeighting, textureColor.a * 1.0);
-    }
+    // }
   }
 
 }
@@ -492,6 +490,8 @@ function initShaders()
                                       glProgram.lightTotalUniform = gl.getUniformLocation(glProgram,
                                         "uLightTotal");
 
+                                        glProgram.random = gl.getUniformLocation(glProgram,"uRandom");
+
                                         //Actualiza variables de luces
                                         gl.uniform1i(glProgram.lightAmbientalUniform, ambientalLightActive);
                                         gl.uniform1i(glProgram.lightDirectionalUniform, directionalLightActive);
@@ -589,7 +589,8 @@ function initShaders()
                                       */
                                       // mat4.rotate(mvMatrix, mvMatrix, t, [0.0, 1.0, 0.0]);
                                       // t = t + 0.01;
-
+                                      var random = Math.random();
+                                      gl.uniform1f(glProgram.random, random);
                                       // gl.uniformMatrix4fv(u_model_view_matrix, false, mvMatrix);
                                       modelo.draw(mvMatrix);
                                     }
